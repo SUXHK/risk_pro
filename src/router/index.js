@@ -1,27 +1,60 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-
 Vue.use(VueRouter)
+const originalPush = VueRouter.prototype.push
 
-const routes = [
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
+export const constantRoutes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    redirect: '/dashboard',
+    component: () =>
+      import(/* webpackChunkName: "Risk-Home" */ '@/layout/index.vue'),
+    children: [
+      {
+        path: '/dashboard',
+        name: 'dashboard',
+        redirect: '/dashboard',
+        component: () =>
+          import(
+            /* webpackChunkName: "Risk-User" */ '@/layout/EmptyLayout.vue'
+          ),
+        // meta: { title: '首页' },
+        children: [
+          {
+            path: '',
+            meta: { title: '仪表盘' },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-User" */ '@/views/dashboard/dashboard.vue'
+              )
+          }
+        ]
+      }
+    ]
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/login',
+    name: 'Login',
+    meta: { title: '登录' },
+    component: () =>
+      import(/* webpackChunkName: "Risk-Login" */ '@/views/login/index.vue')
   }
 ]
 
-const router = new VueRouter({
-  routes
-})
+const createRouter = () =>
+  new VueRouter({
+    routes: constantRoutes
+  })
 
+const router = createRouter()
+// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
 export default router

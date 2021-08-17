@@ -1,17 +1,162 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="zh-CN">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+    <title>
+      <%= htmlWebpackPlugin.options.isProd ? '' : 'Dev - ' %>风控管理系统
+    </title>
+    <style>
+      .first-loading-wrp {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 90vh;
+        min-height: 90vh;
+      }
+
+      .first-loading-wrp > h1 {
+        font-size: 30px;
+        letter-spacing: 10px;
+        font-weight: bolder;
+      }
+
+      .first-loading-wrp .loading-wrp {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 98px;
+      }
+
+      .dot {
+        position: relative;
+        box-sizing: border-box;
+        display: inline-block;
+        width: 64px;
+        height: 64px;
+        font-size: 64px;
+        transform: rotate(45deg);
+        animation: antRotate 1.2s infinite linear;
+      }
+
+      .dot i {
+        position: absolute;
+        display: block;
+        width: 28px;
+        height: 28px;
+        background-color: #1890ff;
+        border-radius: 100%;
+        opacity: 0.3;
+        transform: scale(0.75);
+        transform-origin: 50% 50%;
+        animation: antSpinMove 1s infinite linear alternate;
+      }
+
+      .dot i:nth-child(1) {
+        top: 0;
+        left: 0;
+      }
+
+      .dot i:nth-child(2) {
+        top: 0;
+        right: 0;
+        -webkit-animation-delay: 0.4s;
+        animation-delay: 0.4s;
+      }
+
+      .dot i:nth-child(3) {
+        right: 0;
+        bottom: 0;
+        -webkit-animation-delay: 0.8s;
+        animation-delay: 0.8s;
+      }
+
+      .dot i:nth-child(4) {
+        bottom: 0;
+        left: 0;
+        -webkit-animation-delay: 1.2s;
+        animation-delay: 1.2s;
+      }
+
+      @keyframes antRotate {
+        to {
+          -webkit-transform: rotate(405deg);
+          transform: rotate(405deg);
+        }
+      }
+
+      @-webkit-keyframes antRotate {
+        to {
+          -webkit-transform: rotate(405deg);
+          transform: rotate(405deg);
+        }
+      }
+
+      @keyframes antSpinMove {
+        to {
+          opacity: 1;
+        }
+      }
+
+      @-webkit-keyframes antSpinMove {
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+    <% if(htmlWebpackPlugin.options.isProd){ %>
+    <!-- nprogress 的样式表文件 -->
+    <link
+      crossorigin="anonymous"
+      integrity="sha384-QUGa0w7S89w/V+840rnBtrQYyUEd1VHb88E0/8vc9FvgRy7b7wHlk8S+o0bNJcv0"
+      href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css"
+      rel="stylesheet"
+    />
+
+    <script
+      crossorigin="anonymous"
+      integrity="sha512-XdUZ5nrNkVySQBnnM5vzDqHai823Spoq1W3pJoQwomQja+o4Nw0Ew1ppxo5bhF2vMug6sfibhKWcNJsG8Vj9tg=="
+      src="https://lib.baomitu.com/vue/2.6.14/vue.min.js"
+    ></script>
+    <script
+      crossorigin="anonymous"
+      integrity="sha512-c5QVsHf336TmWncPySsNK2ncFiVsPEWOiJGDH/Le/5U6q1hU6F5B7ziAgRwCokxjmu4HZBkfWsQg/D/+X3hFww=="
+      src="https://lib.baomitu.com/vue-router/3.5.1/vue-router.min.js"
+    ></script>
+    <script
+      crossorigin="anonymous"
+      integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
+      src="https://lib.baomitu.com/lodash.js/4.17.21/lodash.min.js"
+    ></script>
+    <script
+      crossorigin="anonymous"
+      integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+      src="https://lib.baomitu.com/axios/0.21.1/axios.min.js"
+    ></script>
+    <script
+      crossorigin="anonymous"
+      integrity="sha384-WVrcwN/kiINFnwTi170GvMPVLHVBao1WfcXL/BZAK3VaUaaWX0OOsxMgCiFmrIb1"
+      src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js"
+    ></script>
+    <% } %>
   </head>
   <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
+    <div id="app">
+      <div class="first-loading-wrp">
+        <div class="loading-wrp">
+          <span class="dot dot-spin">
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+          </span>
+        </div>
+        <h1>风控管理系统</h1>
+      </div>
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>
