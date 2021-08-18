@@ -1,5 +1,6 @@
 import { login, logout, getInfo } from '@/api/user.js'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+
 // import storage from '@/utils/storage.js'
 // import _ from 'lodash'
 
@@ -15,41 +16,6 @@ const mutations = {
     state.token = token
   },
   SET_MENULIST: (state, array) => {
-    // 临时效果
-    // const dashboard = {
-    //   children: [
-    //     {
-    //       children: '',
-    //       code: 'dashboard',
-    //       icon: 'dashboard-2-fill',
-    //       id: 101,
-    //       ismenu: 1,
-    //       levels: 2,
-    //       name: '仪表盘',
-    //       num: 1,
-    //       parentId: 104,
-    //       url: '/dashboard'
-    //     }
-    //   ],
-    //   code: 'index',
-    //   icon: 'home-smile-fill',
-    //   id: 104,
-    //   ismenu: 1,
-    //   levels: 1,
-    //   name: '首页',
-    //   num: 3,
-    //   parentId: 0,
-    //   url: 'index'
-    // }
-    // array.menus.unshift(dashboard)
-    // array.menus[1].icon = 'stack-fill'
-    // array.menus[1].children.forEach(element => {
-    //   element.icon = 'notification-badge-fill'
-    // })
-    // 删除即可
-    // array.menus.sort(a => {
-    //   console.log(a.id)
-    // })
     state.menuList = array.menus
     state.name = array.name
   },
@@ -82,7 +48,7 @@ const actions = {
         })
     })
   },
-  getInfo({ commit, state }) {
+  getInfo({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       getInfo()
         .then(result => {
@@ -91,6 +57,7 @@ const actions = {
           if (retCode === '000000') {
             commit('SET_BREADCRUMB', data)
             commit('SET_MENULIST', data)
+            dispatch('settings/getName', data.name, { root: true })
           }
           resolve(result)
         })

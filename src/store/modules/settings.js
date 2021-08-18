@@ -1,6 +1,7 @@
 import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/config/settings'
-
+import Cookies from 'js-cookie'
+import { Message } from 'element-ui'
 const {
   showSettings,
   tagsView,
@@ -8,10 +9,11 @@ const {
   sidebarLogo,
   themeStyle
 } = defaultSettings
-const theme = JSON.parse(localStorage.getItem('Theme')) || ''
+// const theme = JSON.parse(localStorage.getItem('Theme')) || ''
+
 const state = {
   show: false,
-  theme: variables.theme || theme,
+  theme: variables.theme,
   showSettings: showSettings,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
@@ -21,7 +23,7 @@ const state = {
     borderChecked: false,
     stripeChecked: true,
     tableSize: 'medium', // medium small mini
-    fixedChecked: true
+    fixedChecked: false
     // normalFullFlag: true
   }
 }
@@ -47,6 +49,29 @@ const actions = {
   },
   changeTableSettings({ commit }, data) {
     commit('TABLES_ETTINGS', data)
+  },
+  getThemeSetting({ commit }, data) {
+    console.log(data)
+    commit('CHANGE_SETTING', data)
+  },
+  getName({ commit, dispatch }, userName) {
+    console.log(userName)
+
+    const a = Cookies.get('Theme')
+    if (a) {
+      const { name, style } = JSON.parse(a)
+      if (name === userName) {
+        if (style !== 'dark') {
+          // setTimeout(() => {
+          Message.success('已恢复上次的设置的主题')
+          dispatch('getThemeSetting', {
+            key: 'themeStyle',
+            value: style
+          })
+          // }, 3000)
+        }
+      }
+    }
   }
 }
 

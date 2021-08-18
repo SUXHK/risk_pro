@@ -132,7 +132,7 @@
 </template>
 
 <script>
-import objToURL from '@/utils/obj-url'
+import objToURL from '@/utils/ObjToUrl'
 export default {
   inject: ['reload'],
   name: 'tableSettings',

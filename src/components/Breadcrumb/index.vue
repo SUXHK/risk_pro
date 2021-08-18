@@ -83,8 +83,8 @@ export default {
     cursor: text;
   }
 }
-.el-breadcrumb__inner,
-.el-breadcrumb__inner a {
-  font-weight: 400 !important;
-}
+// .el-breadcrumb__inner,
+// .el-breadcrumb__inner a {
+//   font-weight: 400 !important;
+// }
 </style>

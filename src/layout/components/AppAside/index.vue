@@ -12,8 +12,8 @@
     <logo :collapse="isCollapse" class="logo" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
-        :default-active="activeMenu"
         class="menu-list"
+        :class="{ light: $store.state.settings.themeStyle === 'light' }"
         :background-color="
           $store.state.settings.themeStyle === 'light'
             ? variables.menuLightBg
@@ -21,13 +21,18 @@
         "
         :text-color="
           $store.state.settings.themeStyle === 'light'
-            ? 'rgba(0,0,0,.65)'
-            : '#fff'
+            ? '#515a6e'
+            : 'rgba(255, 255, 255, 0.95)'
         "
-        active-text-color="#fff"
-        :unique-opened="true"
+        :active-text-color="
+          $store.state.settings.themeStyle === 'light'
+            ? '#6672fb'
+            : 'rgba(255, 255, 255, 0.95)'
+        "
+        :default-active="activeMenu"
         :collapse="isCollapse"
         :collapse-transition="false"
+        :unique-opened="true"
         router
       >
         <!-- 一级菜单 -->

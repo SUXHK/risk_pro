@@ -1,11 +1,23 @@
 import router from '@/router'
-// import { MessageBox } from 'element-ui'
-// import store from './store'
+// import store from '@/store'
+// import Cookies from 'js-cookie'
 import { MessageBox, Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/GetPageTitle'
+
+// const a = Cookies.get('Theme')
+// if (a) {
+//   const { style } = JSON.parse(a)
+//   if (style) {
+//     console.log(style)
+//     store.dispatch('settings/getThemeSetting', {
+//       key: 'themeStyle',
+//       value: style
+//     })
+//   }
+// }
 
 NProgress.configure({
   easing: 'ease',
@@ -74,3 +86,14 @@ router.afterEach(() => {
   // finish progress bar
   NProgress.done()
 })
+
+// console.log(store.dispatch('settings/getThemeSetting'))
+
+// console.log(store)
+// const a = Cookies.get('Theme')
+// if (a) {
+//   const { style } = JSON.parse(a)
+//   if (style) {
+//     settings.themeStyle = style
+//   }
+// }

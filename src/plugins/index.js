@@ -5,6 +5,7 @@ import '@/plugins/element.js'
 import '@/plugins/dayjs'
 import '@/plugins/lodash'
 import '@/assets/icons/index.js'
+import '@/plugins/af-table-column'
 import 'normalize.css/normalize.css'
 
 import '@/config/permission'

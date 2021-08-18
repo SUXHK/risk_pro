@@ -195,6 +195,11 @@ export default {
         key: 'themeStyle',
         value: val
       })
+      const t = {
+        name: this.$store.getters.name,
+        style: val
+      }
+      Cookies.set('Theme', JSON.stringify(t))
     },
 
     updateStyle(style, oldCluster, newCluster) {
@@ -346,7 +351,7 @@ export default {
         key: 'theme',
         value: val
       })
-      Cookies.set('theme', val)
+
       // console.log(val)
       // window.sessionStorage.setItem('theme', val)
       // this.$message.close()
