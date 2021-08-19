@@ -83,6 +83,7 @@
                     minlength="4"
                     clearable
                     @keyup.enter.native="handleLogin"
+                    ref="kaptcha"
                   ></el-input>
                 </el-form-item>
                 <el-form-item
@@ -97,7 +98,7 @@
                     <img
                       alt="验证码"
                       :src="`/rs-mgr/kaptcha?${numRandom}`"
-                      style="height: 46px;
+                      style="height: 44px;
                   width: 100%;
                   border-style: none;"
                     />
@@ -212,6 +213,8 @@ export default {
       this.$refs.username.focus()
     } else if (this.ruleLoginForm.password === '') {
       this.$refs.password.focus()
+    } else {
+      this.$refs.kaptcha.focus()
     }
   },
   methods: {
@@ -386,12 +389,12 @@ export default {
             padding-left: 15px;
             color: #889aa4;
             font-size: 16px;
-            line-height: 46px;
+            line-height: 44px;
             // vertical-align: middle;
             // vertical-align: baseline;
             display: inline-block;
             .svg {
-              line-height: 46px;
+              line-height: 44px;
               // vertical-align: -webkit-baseline-middle;
               vertical-align: middle;
             }
@@ -402,10 +405,10 @@ export default {
           }
           .login-code {
             width: 100%;
-            height: 46px;
+            height: 44px;
             cursor: pointer;
             // text-align: center;
-            // line-height: 46px;
+            // line-height: 44px;
           }
         }
         .right-btn {
@@ -414,7 +417,7 @@ export default {
           display: flex;
           flex-direction: column;
           .btn {
-            height: 46px;
+            height: 44px;
             position: relative;
             top: -24px;
             width: 65%;

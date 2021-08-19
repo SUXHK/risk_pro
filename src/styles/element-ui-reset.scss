@@ -72,7 +72,7 @@
   .el-form-item__content {
     display: flex;
     flex-wrap: nowrap;
-    line-height: 46px;
+    line-height: 44px;
   }
   .el-form-item:nth-child(7),
   .login-code {
@@ -80,7 +80,7 @@
   }
   .el-input {
     display: inline-block;
-    height: 46px;
+    height: 44px;
     input {
       background: transparent;
       border: 0px;
@@ -88,8 +88,8 @@
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
       color: #333;
-      height: 46px;
-      line-height: 46px;
+      height: 44px;
+      line-height: 44px;
       caret-color: #333;
       &:-webkit-autofill {
         box-shadow: 0 0 0px 1000px #fff inset !important;
@@ -98,7 +98,7 @@
     }
   }
   .el-input__icon {
-    line-height: 46px;
+    line-height: 44px;
   }
 
   .el-form-item {
