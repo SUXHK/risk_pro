@@ -122,7 +122,7 @@
       <el-button
         size="mini"
         @click="changeFull"
-        plain
+        :plain="!tableParams.full"
         icon="el-icon-full-screen"
       >
         {{ tableParams.full ? '退出全屏' : '表格全屏' }}

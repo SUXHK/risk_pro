@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import '@/plugins/axios'
-import '@/plugins/registerServiceWorker'
 import '@/plugins/element.js'
 import '@/plugins/dayjs'
 import '@/plugins/lodash'

@@ -1,5 +1,4 @@
 import { Loading } from 'element-ui'
-
 const install = (Vue, opts = {}) => {
   /* 全局加载层 */
   Vue.prototype.$baseLoading = (index, text) => {

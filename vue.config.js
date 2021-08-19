@@ -54,36 +54,17 @@ module.exports = {
   chainWebpack: config => {
     // 发布模式选择 main-prod.js
     config.when(process.env.NODE_ENV === 'production', config => {
-      config
-        .entry('app')
-        .clear()
-        .add('./src/main-prod.js')
-
-      // cdn模式
-      config.set('externals', {
-        vue: 'Vue',
-        'vue-router': 'VueRouter',
-        axios: 'axios',
-        lodash: 'lodash',
-        nprogress: 'NProgress'
-      })
-
       // 追加isProd 判断cdn模式
       config.plugin('html').tap(args => {
         args[0].isProd = true
         return args
       })
       // 修复HMR
-      config.resolve.symlinks(true)
+      // config.resolve.symlinks(true)
     })
 
     // 开发模式 main-dev.js
     config.when(process.env.NODE_ENV === 'development', config => {
-      config
-        .entry('app')
-        .clear()
-        .add('./src/main.js')
-
       // 追加isProd 判断开发模式不加载cdn
       config.plugin('html').tap(args => {
         args[0].isProd = false

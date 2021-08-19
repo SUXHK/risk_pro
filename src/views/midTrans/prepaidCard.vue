@@ -218,7 +218,7 @@
 <script>
 import { bizQuery } from '@/api/dynamic/biz'
 import TableSetting from '@/components/TableSetting'
-import { midTransPrepaidCard } from '@/assets/typeOptions.json'
+import { midTransPrepaidCard } from '@/assets/selectoptions/typeOptions.json'
 export default {
   components: {
     TableSetting

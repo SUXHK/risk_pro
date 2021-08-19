@@ -24,7 +24,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 65px;
+  min-height: 55px;
   color: rgba(0, 0, 0, 0.45);
   background: #fff;
   border-top: 1px dashed #dcdfe6;

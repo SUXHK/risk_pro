@@ -245,14 +245,17 @@ export default {
 
               if (retCode === '000000') {
                 //   console.log(meta.status)
-                this.$notify({
-                  title: this.$store.getters.name + '   欢迎回来~ 👏👏👏 ',
-                  // message: '登录' + retMsg + '   ' + timeFix(),
-                  message: timeFix(),
-                  type: 'success',
-                  duration: 10000,
-                  offset: 40
-                })
+                setTimeout(() => {
+                  this.$notify({
+                    title: this.$store.getters.name + '   欢迎回来~ 👏👏👏 ',
+                    // message: '登录' + retMsg + '   ' + timeFix(),
+                    message: timeFix(),
+                    type: 'success',
+                    duration: 10000,
+                    offset: 40
+                  })
+                }, 500)
+
                 this.$router.push('/')
 
                 //   // this.refreshCode()
@@ -302,6 +305,7 @@ export default {
   align-items: center;
   width: 100%;
   height: 100vh;
+  overflow: hidden;
   position: relative;
   .login-header {
     position: absolute;

@@ -282,7 +282,7 @@
     <el-empty
       v-else
       :style="{
-        height: expand ? 'calc(100vh - 357px)' : 'calc(100vh - 271px)'
+        height: expand ? 'calc(100vh - 405px)' : 'calc(100vh - 319px)'
       }"
     >
     </el-empty>
@@ -306,7 +306,7 @@
 <script>
 import { bizQuery } from '@/api/dynamic/biz'
 import TableSetting from '@/components/TableSetting'
-import { midTransOnline } from '@/assets/typeOptions.json'
+import { midTransOnline } from '@/assets/selectoptions/typeOptions.json'
 export default {
   components: {
     TableSetting
@@ -347,9 +347,9 @@ export default {
       // 搜索项合并
       expand: false,
       // 全屏后的table高度
-      fullFull: 'calc(100vh - 202px)',
+      fullFull: 'calc(100vh - 195px)',
       // 正常table高度
-      normalFull: 'calc(100vh - 323px)',
+      normalFull: 'calc(100vh - 319px)',
       // 表单label
       tableLabel: {},
       queryForm: {
@@ -460,19 +460,19 @@ export default {
     toggle() {
       if (!this.tableParams.full) {
         if (this.tableParams.normalFullFlag) {
-          if (this.normalFull === 'calc(100vh - 323px)') {
-            this.normalFull = 'calc(100vh - 409px)'
+          if (this.normalFull === 'calc(100vh - 319px)') {
+            this.normalFull = 'calc(100vh - 405px)'
           } else {
-            this.normalFull = 'calc(100vh - 323px)'
+            this.normalFull = 'calc(100vh - 319px)'
           }
         }
       }
       if (this.tableParams.full) {
-        if (this.fullFull === 'calc(100vh - 202px)') {
+        if (this.fullFull === 'calc(100vh - 195px)') {
           // this.fullFull = 'calc(100vh - 283px)'
-          this.fullFull = 'calc(100vh - 288px)'
+          this.fullFull = 'calc(100vh - 281px)'
         } else {
-          this.fullFull = 'calc(100vh - 202px)'
+          this.fullFull = 'calc(100vh - 195px)'
         }
       }
       this.expand = !this.expand
@@ -525,10 +525,10 @@ export default {
     // 子组件传来的表格全屏
     changeFull() {
       this.expand = false
-      this.fullFull = 'calc(100vh - 202px)'
+      this.fullFull = 'calc(100vh - 195px)'
       if (this.tableParams.normalFullFlag) {
         console.log(123)
-        this.normalFull = 'calc(100vh - 323px)'
+        this.normalFull = 'calc(100vh - 319px)'
       } else {
         this.normalFull = ''
       }
@@ -543,7 +543,7 @@ export default {
       // console.log(this.tableParams.normalFullFlag)
       if (this.tableParams.normalFullFlag) {
         this.expand = false
-        this.normalFull = 'calc(100vh - 323px)'
+        this.normalFull = 'calc(100vh - 319px)'
       } else {
         this.normalFull = ''
       }

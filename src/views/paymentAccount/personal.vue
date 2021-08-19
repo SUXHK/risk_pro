@@ -391,7 +391,7 @@
 <script>
 import { bizQuery } from '@/api/dynamic/biz'
 import TableSetting from '@/components/TableSetting'
-import { paymentAccountPersonal } from '@/assets/typeOptions.json'
+import { paymentAccountPersonal } from '@/assets/selectoptions/typeOptions.json'
 export default {
   components: {
     TableSetting

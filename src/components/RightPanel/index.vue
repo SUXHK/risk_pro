@@ -1,119 +1,125 @@
 <template>
   <el-drawer
-    title="设置"
+    title="个性化设置"
     :visible.sync="$store.getters.show"
     direction="rtl"
     :before-close="handleClose"
     size="20%"
   >
-    <div>
-      <div class="setting-drawer-content">
-        <div class="setting-drawer-title">
-          页面设置
-        </div>
-        <div class="setting-drawer-block-checbox">
-          <div
-            class="setting-drawer-block-checbox-item"
-            @click="handleTheme('light')"
-          >
-            <img src="@/assets/light.svg" alt="light" />
-            <div
-              v-if="themeStyle === 'light'"
-              class="setting-drawer-block-checbox-selectIcon"
-              style="display: block;"
-            >
-              <i aria-label="图标: check" class="anticon anticon-check">
-                <svg
-                  viewBox="64 64 896 896"
-                  data-icon="check"
-                  width="1em"
-                  height="1em"
-                  :fill="defaultTheme"
-                  aria-hidden="true"
-                  focusable="false"
-                  class=""
-                >
-                  <path
-                    d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"
-                  />
-                </svg>
-              </i>
-            </div>
-          </div>
-          <div
-            class="setting-drawer-block-checbox-item"
-            @click="handleTheme('dark')"
-          >
-            <img src="@/assets/dark.svg" alt="dark" />
-            <div
-              v-if="themeStyle === 'dark'"
-              class="setting-drawer-block-checbox-selectIcon"
-              style="display: block;"
-            >
-              <i aria-label="图标: check" class="anticon anticon-check">
-                <svg
-                  viewBox="64 64 896 896"
-                  data-icon="check"
-                  width="1em"
-                  height="1em"
-                  :fill="defaultTheme"
-                  aria-hidden="true"
-                  focusable="false"
-                  class=""
-                >
-                  <path
-                    d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"
-                  />
-                </svg>
-              </i>
-            </div>
-          </div>
-        </div>
+    <!-- <div> -->
+    <div class="setting-drawer-content">
+      <div class="setting-drawer-title">
+        页面设置
       </div>
-      <el-divider />
-      <div class="cl-theme__container">
-        <div class="cl-theme__color is-card">
-          <p>主题颜色</p>
-          <ul>
-            <el-tooltip
-              v-for="(item, name) in themeList"
-              :key="name"
-              :content="item.label"
-              placement="top"
-            >
-              <li
-                :style="{
-                  backgroundColor: item.color
-                }"
-                @click="setTheme(item)"
+      <div class="setting-drawer-block-checbox">
+        浅色
+        <div
+          class="setting-drawer-block-checbox-item"
+          @click="handleTheme('light')"
+        >
+          <img
+            src="@/assets/light.svg"
+            style="box-shadow: rgb(0 0 0 / 10%) 0px 0px 3px 0px;"
+            alt="light"
+          />
+          <div
+            v-if="themeStyle === 'light'"
+            class="setting-drawer-block-checbox-selectIcon"
+            style="display: block;"
+          >
+            <i aria-label="图标: check" class="anticon anticon-check">
+              <svg
+                viewBox="64 64 896 896"
+                data-icon="check"
+                width="1em"
+                height="1em"
+                :fill="defaultTheme"
+                aria-hidden="true"
+                focusable="false"
+                class=""
               >
-                <i
-                  v-show="item.color == theme"
-                  class="el-icon-check"
-                  style="font-size:25px"
-                ></i>
-              </li>
-            </el-tooltip>
-            <el-color-picker
-              v-model="theme"
-              :predefine="[
-                '#409EFF',
-                '#1890ff',
-                '#304156',
-                '#212121',
-                '#11a983',
-                '#13c2c2',
-                '#6959CD',
-                '#f5222d'
-              ]"
-              class="theme-picker"
-              popper-class="theme-picker-dropdown"
-            />
-          </ul>
+                <path
+                  d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"
+                />
+              </svg>
+            </i>
+          </div>
+        </div>
+        深色
+        <div
+          class="setting-drawer-block-checbox-item"
+          @click="handleTheme('dark')"
+        >
+          <img src="@/assets/dark.svg" alt="dark" />
+          <div
+            v-if="themeStyle === 'dark'"
+            class="setting-drawer-block-checbox-selectIcon"
+            style="display: block;"
+          >
+            <i aria-label="图标: check" class="anticon anticon-check">
+              <svg
+                viewBox="64 64 896 896"
+                data-icon="check"
+                width="1em"
+                height="1em"
+                :fill="defaultTheme"
+                aria-hidden="true"
+                focusable="false"
+                class=""
+              >
+                <path
+                  d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"
+                />
+              </svg>
+            </i>
+          </div>
         </div>
       </div>
-      <el-divider />
-      <!-- <div class="cl-theme__container">
+    </div>
+    <el-divider />
+    <div class="cl-theme__container">
+      <div class="cl-theme__color is-card">
+        <p>主题颜色</p>
+        <ul>
+          <el-tooltip
+            v-for="(item, name) in themeList"
+            :key="name"
+            :content="item.label"
+            placement="top"
+          >
+            <li
+              :style="{
+                backgroundColor: item.color
+              }"
+              @click="setTheme(item)"
+            >
+              <i
+                v-show="item.color == theme"
+                class="el-icon-check"
+                style="font-size:25px"
+              ></i>
+            </li>
+          </el-tooltip>
+          <el-color-picker
+            v-model="theme"
+            :predefine="[
+              '#409EFF',
+              '#1890ff',
+              '#304156',
+              '#212121',
+              '#11a983',
+              '#13c2c2',
+              '#6959CD',
+              '#f5222d'
+            ]"
+            class="theme-picker"
+            popper-class="theme-picker-dropdown"
+          />
+        </ul>
+      </div>
+    </div>
+    <el-divider />
+    <!-- <div class="cl-theme__container">
         <div class="cl-theme__color is-card">
           <p>自定义主题颜色</p>
         </div>
@@ -133,7 +139,7 @@
           popper-class="theme-picker-dropdown"
         />
       </div> -->
-    </div>
+    <!-- </div> -->
   </el-drawer>
 </template>
 

@@ -21,13 +21,8 @@
         "
         :text-color="
           $store.state.settings.themeStyle === 'light'
-            ? '#515a6e'
-            : 'rgba(255, 255, 255, 0.95)'
-        "
-        :active-text-color="
-          $store.state.settings.themeStyle === 'light'
-            ? '#6672fb'
-            : 'rgba(255, 255, 255, 0.95)'
+            ? variables.lightTextColor
+            : variables.darkActiveTextColor
         "
         :default-active="activeMenu"
         :collapse="isCollapse"
@@ -116,6 +111,7 @@
 </template>
 
 <script>
+// import { timeFix } from '@/utils/reminder'
 import { mapGetters } from 'vuex'
 import Logo from '@/layout/components/Logo/index.vue'
 import variables from '@/styles/variables.scss'
@@ -165,6 +161,14 @@ export default {
     this.$store
       .dispatch('user/getInfo')
       .then(result => {
+        // this.$notify({
+        //   title: this.$store.getters.name + '   欢迎回来~ 👏👏👏 ',
+        //   // message: '登录' + retMsg + '   ' + timeFix(),
+        //   message: timeFix(),
+        //   type: 'success',
+        //   duration: 10000,
+        //   offset: 40
+        // })
         setTimeout(() => {
           Loading.close()
         }, 1000)

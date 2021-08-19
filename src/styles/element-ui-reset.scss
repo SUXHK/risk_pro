@@ -120,7 +120,7 @@
 
   .bar {
     // background: $base-color-blue !important;
-    background: linear-gradient(to right, theme, theme) !important; // 自定义颜色
+    background: linear-gradient(to right, $base-color-default, $base-color-red) !important; // 自定义颜色
     height: 3px !important; // 自定义高度
   }
 
@@ -165,8 +165,8 @@
 
 /* 分页开始 */
 .el-pagination {
-  padding: 2px 5px;
-  margin: 15px 0;
+  padding: 20px 5px;
+  // margin: 15px 0;
   font-weight: normal;
   color: $base-color-black;
   text-align: center;
@@ -288,7 +288,7 @@
   }
 }
 .el-menu-item {
-  padding: 0px 30px 0 45px !important;
+  // padding: 0px 30px 0 45px !important;
   @include darkactive;
 }
 .el-submenu__title {
@@ -344,4 +344,9 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+// 主题设置drawer
+.el-drawer__body {
+  padding: 20px;
 }

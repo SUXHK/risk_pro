@@ -363,7 +363,7 @@
 <script>
 import { bizQuery } from '@/api/dynamic/biz'
 import TableSetting from '@/components/TableSetting'
-import { paymentAccountEnterprise } from '@/assets/typeOptions.json'
+import { paymentAccountEnterprise } from '@/assets/selectoptions/typeOptions.json'
 
 export default {
   components: {

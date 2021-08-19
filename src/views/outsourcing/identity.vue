@@ -305,7 +305,7 @@
 <script>
 import { bizQuery } from '@/api/dynamic/biz'
 import TableSetting from '@/components/TableSetting'
-import { outsourcingIdentity } from '@/assets/typeOptions.json'
+import { outsourcingIdentity } from '@/assets/selectoptions/typeOptions.json'
 export default {
   components: {
     TableSetting

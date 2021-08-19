@@ -269,7 +269,7 @@
 <script>
 import { bizQuery } from '@/api/dynamic/biz'
 import TableSetting from '@/components/TableSetting'
-import { provisionsCustomerTransJnl } from '@/assets/typeOptions.json'
+import { provisionsCustomerTransJnl } from '@/assets/selectoptions/typeOptions.json'
 export default {
   components: {
     TableSetting
