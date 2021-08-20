@@ -95,7 +95,7 @@
       </div> -->
       </el-menu>
     </el-scrollbar>
-    <div
+    <!-- <div
       class="sider-trigger"
       :style="{
         width: isCollapse ? '54px' : '256px',
@@ -105,8 +105,8 @@
             : '#fff'
       }"
     >
-      123
-    </div>
+      2021
+    </div> -->
   </el-aside>
 </template>
 
@@ -207,12 +207,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~@/styles/variables.scss';
+// @import '~@/styles/variables.scss';
 .el-aside {
   height: 100%;
   // background-color: $menuBg;
   transition: width 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
-  z-index: 1001;
+  z-index: 2;
   overflow: hidden;
   box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
   .menu-list {
@@ -226,7 +226,7 @@ export default {
     user-select: none;
     position: fixed;
     bottom: 0;
-    z-index: 1;
+    // z-index: 1;
     height: 48px;
     // color: $menuText;
     line-height: 48px;

@@ -179,7 +179,10 @@
       :height="!tableParams.full ? normalFull : fullFull"
       lazy
       highlight-current-row
-      :header-cell-style="{ background: '#e8f4ff', color: '#909399' }"
+      :header-cell-style="{
+        background: tableParams.full ? '#e7eaff' : '',
+        color: '#909399'
+      }"
       v-loading="tableLoading"
       ref="multipleTable"
       class="tables"
@@ -201,7 +204,7 @@
     <el-empty
       v-else
       :style="{
-        height: expand ? 'calc(100vh - 314px)' : 'calc(100vh - 271px)'
+        height: expand ? 'calc(100vh - 362px)' : 'calc(100vh - 319px)'
       }"
     >
     </el-empty>
@@ -263,9 +266,9 @@ export default {
       // 搜索项合并
       expand: false,
       // 全屏后的table高度
-      fullFull: 'calc(100vh - 202px)',
+      fullFull: 'calc(100vh - 190px)',
       // 正常table高度
-      normalFull: 'calc(100vh - 323px)',
+      normalFull: 'calc(100vh - 319px)',
       // 表单label
       tableLabel: {},
       queryForm: {
@@ -378,20 +381,20 @@ export default {
     toggle() {
       if (!this.tableParams.full) {
         if (this.tableParams.normalFullFlag) {
-          if (this.normalFull === 'calc(100vh - 323px)') {
-            this.normalFull = 'calc(100vh - 366px)'
+          if (this.normalFull === 'calc(100vh - 319px)') {
+            this.normalFull = 'calc(100vh - 362px)'
           } else {
-            this.normalFull = 'calc(100vh - 323px)'
+            this.normalFull = 'calc(100vh - 319px)'
           }
         } else {
           this.normalFull = ''
         }
       }
       if (this.tableParams.full) {
-        if (this.fullFull === 'calc(100vh - 202px)') {
-          this.fullFull = 'calc(100vh - 245px)'
+        if (this.fullFull === 'calc(100vh - 195px)') {
+          this.fullFull = 'calc(100vh - 238px)'
         } else {
-          this.fullFull = 'calc(100vh - 202px)'
+          this.fullFull = 'calc(100vh - 195px)'
         }
       }
       this.expand = !this.expand
@@ -458,10 +461,10 @@ export default {
     // 子组件传来的表格全屏
     changeFull() {
       this.expand = false
-      this.fullFull = 'calc(100vh - 202px)'
+      this.fullFull = 'calc(100vh - 195px)'
       // this.normalFull = 'calc(100vh - 323px)'
       if (this.tableParams.normalFullFlag) {
-        this.normalFull = 'calc(100vh - 323px)'
+        this.normalFull = 'calc(100vh - 319px)'
       } else {
         this.normalFull = ''
       }
@@ -477,7 +480,7 @@ export default {
       // console.log(this.tableParams.normalFullFlag)
       if (this.tableParams.normalFullFlag) {
         this.expand = false
-        this.normalFull = 'calc(100vh - 323px)'
+        this.normalFull = 'calc(100vh - 319px)'
       } else {
         this.normalFull = ''
       }

@@ -260,7 +260,10 @@
       :height="!tableParams.full ? normalFull : fullFull"
       lazy
       highlight-current-row
-      :header-cell-style="{ background: '#e8f4ff', color: '#909399' }"
+      :header-cell-style="{
+        background: tableParams.full ? '#e7eaff' : '',
+        color: '#909399'
+      }"
       v-loading="tableLoading"
       ref="multipleTable"
       class="tables"
@@ -287,7 +290,6 @@
     >
     </el-empty>
     <el-pagination
-      v-if="tableData.length > 0"
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"

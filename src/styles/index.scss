@@ -57,16 +57,20 @@ $base: ".index";
   }
 }
 
-#app {
-  height: 100%;
-}
+// #app {
+//   height: 100%;
+// }
 
-html {
-  height: 100%;
-  box-sizing: border-box;
+// html {
+//   height: 100%;
+//   box-sizing: border-box;
+//   background-color: #e9eef3;
+// }
+html,
+body,
+#app {
   background-color: #e9eef3;
-}
-body {
+  position: relative;
   height: 100%;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
@@ -96,7 +100,7 @@ a {
 }
 
 * {
-  // transition: $base-transition;
+  transition: $base-transition;
   // overflow: hidden;
   margin: 0;
   padding: 0;

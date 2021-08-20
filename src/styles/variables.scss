@@ -77,6 +77,7 @@ $sidebarTitle: #ffffff;
 $sidebarLightTitle: #001529;
 $dark-active-text-color: rgba(255, 255, 255, 0.95);
 $light-text-color: #515a6e;
+$base-color-default-thin: #e7eaff;
 :export {
   //菜单文字颜色变量导出
   menu-color: $base-menu-color;
@@ -91,4 +92,5 @@ $light-text-color: #515a6e;
   sidebarLightTitle: $sidebarLightTitle;
   darkActiveTextColor: $dark-active-text-color;
   lightTextColor: $light-text-color;
+  baseColorDefaultThin: $base-color-default-thin;
 }

@@ -7,7 +7,7 @@ export function timeFix() {
     ? '上午好'
     : hour <= 13
     ? '中午好'
-    : hour < 20
+    : hour < 18
     ? '下午好'
     : '晚上好'
 }
