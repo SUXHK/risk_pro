@@ -31,7 +31,11 @@
         <screenfull id="screenfull" class="icon hover-effect" />
       </template>
 
-      <el-dropdown class="avatar-container hover-effect" trigger="click">
+      <el-dropdown
+        class="avatar-container hover-effect"
+        trigger="click"
+        placement="bottom"
+      >
         <div class="avatar-wrapper">
           <img src="@/assets/images/sand.png" class="user-avatar" />
           <span class="username">{{ this.$store.getters.name }}</span>

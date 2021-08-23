@@ -8,78 +8,82 @@
   >
     <!-- <div> -->
     <div class="setting-drawer-content">
-      <div class="setting-drawer-title">
-        页面设置
-      </div>
+      <div class="setting-drawer-title">主题设置<br /><br /></div>
       <div class="setting-drawer-block-checbox">
-        浅色
-        <div
-          class="setting-drawer-block-checbox-item"
-          @click="handleTheme('light')"
-        >
-          <img
-            src="@/assets/light.svg"
-            style="box-shadow: rgb(0 0 0 / 10%) 0px 0px 3px 0px;"
-            alt="light"
-          />
+        浅色：
+        <el-tooltip content="浅色更适合白天使用" placement="bottom">
           <div
-            v-if="themeStyle === 'light'"
-            class="setting-drawer-block-checbox-selectIcon"
-            style="display: block;"
+            class="setting-drawer-block-checbox-item"
+            @click="handleTheme('light')"
           >
-            <i aria-label="图标: check" class="anticon anticon-check">
-              <svg
-                viewBox="64 64 896 896"
-                data-icon="check"
-                width="1em"
-                height="1em"
-                :fill="defaultTheme"
-                aria-hidden="true"
-                focusable="false"
-                class=""
-              >
-                <path
-                  d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"
-                />
-              </svg>
-            </i>
+            <img
+              src="@/assets/light.svg"
+              style="box-shadow: rgb(0 0 0 / 10%) 0px 0px 3px 0px;"
+              alt="light"
+            />
+            <div
+              v-if="themeStyle === 'light'"
+              class="setting-drawer-block-checbox-selectIcon"
+              style="display: block;"
+            >
+              <i aria-label="图标: check" class="anticon anticon-check">
+                <svg
+                  viewBox="64 64 896 896"
+                  data-icon="check"
+                  width="1em"
+                  height="1em"
+                  :fill="defaultTheme"
+                  aria-hidden="true"
+                  focusable="false"
+                  class=""
+                >
+                  <path
+                    d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"
+                  />
+                </svg>
+              </i>
+            </div>
           </div>
-        </div>
-        深色
-        <div
-          class="setting-drawer-block-checbox-item"
-          @click="handleTheme('dark')"
-        >
-          <img src="@/assets/dark.svg" alt="dark" />
+        </el-tooltip>
+
+        深色：
+        <el-tooltip content="深色更护眼" placement="bottom">
           <div
-            v-if="themeStyle === 'dark'"
-            class="setting-drawer-block-checbox-selectIcon"
-            style="display: block;"
+            class="setting-drawer-block-checbox-item"
+            @click="handleTheme('dark')"
           >
-            <i aria-label="图标: check" class="anticon anticon-check">
-              <svg
-                viewBox="64 64 896 896"
-                data-icon="check"
-                width="1em"
-                height="1em"
-                :fill="defaultTheme"
-                aria-hidden="true"
-                focusable="false"
-                class=""
-              >
-                <path
-                  d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"
-                />
-              </svg>
-            </i>
+            <img src="@/assets/dark.svg" alt="dark" />
+
+            <div
+              v-if="themeStyle === 'dark'"
+              class="setting-drawer-block-checbox-selectIcon"
+              style="display: block;"
+            >
+              <i aria-label="图标: check" class="anticon anticon-check">
+                <svg
+                  viewBox="64 64 896 896"
+                  data-icon="check"
+                  width="1em"
+                  height="1em"
+                  :fill="defaultTheme"
+                  aria-hidden="true"
+                  focusable="false"
+                  class=""
+                >
+                  <path
+                    d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"
+                  />
+                </svg>
+              </i>
+            </div>
           </div>
-        </div>
+        </el-tooltip>
       </div>
     </div>
     <el-divider />
     <div class="cl-theme__container">
       <div class="cl-theme__color is-card">
-        <p>主题颜色</p>
+        <p>颜色设置</p>
         <ul>
           <el-tooltip
             v-for="(item, name) in themeList"
@@ -102,6 +106,7 @@
           </el-tooltip>
           <el-color-picker
             v-model="theme"
+            size="small"
             :predefine="[
               '#409EFF',
               '#1890ff',

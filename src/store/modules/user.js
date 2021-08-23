@@ -8,7 +8,8 @@ const state = {
   token: getToken(),
   menuList: [],
   breadcrumb: [],
-  name: ''
+  name: '',
+  rememberMe: false
 }
 
 const mutations = {
@@ -21,10 +22,13 @@ const mutations = {
   },
   SET_BREADCRUMB: (state, obj) => {
     state.breadcrumb = obj
+  },
+  SET_REMEMBERME: (state, boolean) => {
+    state.rememberMe = boolean
   }
 }
 const actions = {
-  login({ commit }, form) {
+  login({ commit, state }, form) {
     return new Promise((resolve, reject) => {
       login(form)
         .then(response => {
@@ -32,14 +36,22 @@ const actions = {
           console.log('🚀 ~ login', response)
           const { data, retCode } = response.data
           if (retCode === '000000') {
-            var millisecond = new Date().getTime()
-            var expiresTime = new Date(millisecond + 60 * 1000 * 60)
-            const conf = {
-              expires: expiresTime
+            console.warn(
+              '是否下次登录：',
+              state.rememberMe ? '自动登录' : '不自动登录，token_1小时后失效'
+            )
+            if (state.rememberMe) {
+              setToken(data)
+            } else {
+              var millisecond = new Date().getTime()
+              var expiresTime = new Date(millisecond + 60 * 1000 * 60)
+              const conf = {
+                expires: expiresTime
+              }
+              console.warn('Token过期时间：', expiresTime)
+              setToken(data, conf)
             }
-            console.warn('Token过期时间：', expiresTime)
             commit('SET_TOKEN', data)
-            setToken(data, conf)
           }
           resolve(response)
         })
@@ -88,6 +100,9 @@ const actions = {
       removeToken()
       resolve()
     })
+  },
+  rememberMe({ commit }, boolean) {
+    commit('SET_REMEMBERME', boolean)
   }
 }
 // console.log(login)

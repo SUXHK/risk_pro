@@ -2,7 +2,8 @@
 
 import axios from 'axios'
 import { Notification, MessageBox } from 'element-ui'
-import store from '@/store' // get token from cookie
+import store from '@/store'
+// import { getToken } from '@/utils/auth' // get token from cookie
 // import Vue from 'vue'
 
 const service = axios.create({
@@ -24,7 +25,7 @@ service.interceptors.request.use(
   },
   function(error) {
     Notification.error({
-      title: '网络错误，请求超时',
+      title: '请求超时，网络错误',
       message: 'Network error, request timeout',
       duration: 5000
     })
@@ -37,30 +38,43 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   function(response) {
     // Do something with response data
+    // const hasToken = getToken()
     const { retMsg, retCode } = response.data
-    const invalidWhitelist = ['999997', '000006', '000010', '000011']
-
-    if (invalidWhitelist.indexOf(retCode) !== -1) {
-      console.log('拦截了')
-      store.dispatch('user/resetToken')
+    if (
+      retCode === '999997' ||
+      retCode === '000006' ||
+      retCode === '000010' ||
+      retCode === '000011'
+    ) {
+      store
+        .dispatch('user/resetToken')
+        .then(() => {
+          console.log(123)
+        })
+        .catch(() => {
+          console.log(456)
+        })
       MessageBox.alert(retMsg, '提示', {
         confirmButtonText: '确定',
         type: 'warning',
         closeOnPressEscape: false,
         showClose: false
       }).then(() => {
-        window.location.reload()
-        //  window.location.reload()
-        // return router.push({ path: '/' }).catch(() => {})
-        // console.log(Vue.route)
+        location.reload()
       })
+      // return
+    } else {
+      console.log('正常响应')
+      return response
     }
-    console.log('响应了')
-    return response
+    // if (hasToken) {
+    //   return response
+    // }
+    // console.log(1423)
   },
   function(error) {
     Notification.error({
-      title: '网络错误，响应超时',
+      title: '响应超时，网络错误',
       message: 'Network error, response timeout',
       duration: 5000
     })

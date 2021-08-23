@@ -180,9 +180,6 @@ export default {
           type: 'error',
           duration: 0
         })
-        // setTimeout(() => {
-        //   Loading.close()
-        // }, 3000)
       })
   },
   computed: {

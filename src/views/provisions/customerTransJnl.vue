@@ -236,6 +236,8 @@
       <af-table-column
         :fixed="tableSettings.fixedChecked"
         type="index"
+        :index="indexMethod"
+        label="#"
       ></af-table-column>
       <af-table-column
         :key="index"
@@ -471,7 +473,7 @@ export default {
       this.tableParams.queryExcel = false
       this.queryParams = {
         // 分页偏移量
-        offset: 0,
+        offset: 1,
         // 分页大小
         limit: 20
       }

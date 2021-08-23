@@ -388,6 +388,8 @@
       <af-table-column
         :fixed="tableSettings.fixedChecked"
         type="index"
+        label="#"
+        :index="indexMethod"
       ></af-table-column>
       <af-table-column
         :key="index"
@@ -455,9 +457,9 @@ export default {
       total: 0,
       // 查询参数
       queryParams: {
-        // 分页偏移量
+        // 分页偏移量 pageNum
         offset: 1,
-        // 分页大小
+        // 分页大小 pageSize
         limit: 20
       },
 
@@ -564,7 +566,6 @@ export default {
     },
     // 监听pagesize改变的事件
     handleSizeChange(val) {
-      console.log('🚀 ~ handleSizeChange ~ val', val)
       this.queryParams.limit = val
       this.queryParams.offset = 1
       this.bizQuery()
@@ -572,7 +573,6 @@ export default {
     // 监听页码值改变的事件
     handleCurrentChange(val) {
       this.queryParams.offset = val
-      console.log(this.queryParams.offset)
       this.bizQuery()
     },
     // 序号
@@ -646,9 +646,9 @@ export default {
     resetQueryForm(formName) {
       this.tableParams.queryExcel = false
       this.queryParams = {
-        // 分页偏移量
-        offset: 0,
-        // 分页大小
+        // 分页偏移量 pageNum
+        offset: 1,
+        // 分页大小 pageSize
         limit: 20
       }
       this.$refs[formName].resetFields()

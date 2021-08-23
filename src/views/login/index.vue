@@ -119,7 +119,10 @@
               <span v-else>登 录 中...</span>
             </el-button>
 
-            <el-checkbox v-model="rememberMe" class="checkbox"
+            <el-checkbox
+              :value="rememberMe"
+              @change="rememberMeChange($event)"
+              class="checkbox"
               >下次自动登录</el-checkbox
             >
           </div>
@@ -200,8 +203,7 @@ export default {
       // 失败时的禁用
       disabled: null,
       // 销毁时间
-      timer: null,
-      rememberMe: false
+      timer: null
     }
   },
   created() {
@@ -215,6 +217,11 @@ export default {
       this.$refs.password.focus()
     } else {
       this.$refs.kaptcha.focus()
+    }
+  },
+  computed: {
+    rememberMe() {
+      return this.$store.getters.rememberMe
     }
   },
   methods: {
@@ -294,6 +301,9 @@ export default {
           return false
         }
       })
+    },
+    rememberMeChange(e) {
+      this.$store.dispatch('user/rememberMe', e)
     }
   }
 }
@@ -434,7 +444,7 @@ export default {
   }
 }
 
-@media only screen and (max-width: 470px) {
+@media only screen and (max-width: 850px) {
   .login-box {
     width: 100% !important;
     padding: 0 30px !important;

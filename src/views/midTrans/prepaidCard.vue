@@ -186,6 +186,8 @@
       <af-table-column
         :fixed="tableSettings.fixedChecked"
         type="index"
+        :index="indexMethod"
+        label="#"
       ></af-table-column>
       <af-table-column
         :key="index"
@@ -203,7 +205,6 @@
     >
     </el-empty>
     <el-pagination
-      v-if="tableData.length > 0"
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -405,7 +406,7 @@ export default {
       this.tableParams.queryExcel = false
       this.queryParams = {
         // 分页偏移量
-        offset: 0,
+        offset: 1,
         // 分页大小
         limit: 20
       }
