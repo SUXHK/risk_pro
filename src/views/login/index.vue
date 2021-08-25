@@ -385,7 +385,7 @@ export default {
         width: 100%;
         min-height: 500px;
         .right-title {
-          color: #6773fb;
+          color: $base-color-default;
           font-weight: 600;
           font-size: 30px;
           text-align: center;
