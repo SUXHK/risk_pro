@@ -26,7 +26,7 @@ service.interceptors.request.use(
     Notification.error({
       title: '网络错误，请求超时',
       message: 'Network error, request timeout',
-      duration: 5000
+      duration: 0
     })
     // Do something with request error
     return Promise.reject(error)
@@ -62,7 +62,7 @@ service.interceptors.response.use(
     Notification.error({
       title: '网络错误，响应超时',
       message: 'Network error, response timeout',
-      duration: 5000
+      duration: 0
     })
     // Do something with response error
     return Promise.reject(error)

@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+// Passive Event Listeners
+import 'default-passive-events'
+
 import '@/plugins'
 import '@/styles/index.scss'
 

@@ -207,6 +207,13 @@ export default {
     }
   },
   created() {
+    // eslint-disable-next-line no-console
+    console.log(
+      `%c © 2021 %c Sand %c`,
+      'background:#35495e ;font-size:16px ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+      'background:#41b883 ;font-size:16px; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+      'background:transparent'
+    )
     this.random()
     this.refreshCode()
   },

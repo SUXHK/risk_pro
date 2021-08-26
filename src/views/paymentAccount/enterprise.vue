@@ -309,7 +309,6 @@
     </el-row>
 
     <el-table
-      v-if="tableData.length > 0"
       :data="tableData"
       :size="tableSettings.tableSize"
       :border="tableSettings.borderChecked"
@@ -321,17 +320,21 @@
         background: tableParams.full ? '#e7eaff' : '',
         color: '#909399'
       }"
-      v-loading="tableLoading"
+      v-loading="tableLoadings"
+      element-loading-text="表格加载中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="#fff"
       ref="multipleTable"
       class="tables"
       style="width: 100%;box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%)"
       fit
     >
       <af-table-column
+        v-if="total > 0"
         :fixed="tableSettings.fixedChecked"
         type="index"
-        :index="indexMethod"
         label="#"
+        :index="indexMethod"
       ></af-table-column>
       <af-table-column
         :key="index"
@@ -341,13 +344,6 @@
         align="center"
       ></af-table-column>
     </el-table>
-    <el-empty
-      v-else
-      :style="{
-        height: expand ? 'calc(100vh - 448px)' : 'calc(100vh - 319px)'
-      }"
-    >
-    </el-empty>
     <el-pagination
       background
       @size-change="handleSizeChange"
@@ -366,7 +362,7 @@
 <script>
 import { bizQuery } from '@/api/dynamic/biz'
 import TableSetting from '@/components/TableSetting'
-import { paymentAccountEnterprise } from '@/assets/selectoptions/typeOptions.json'
+import { paymentAccountEnterprise } from '@/assets/selectoptions/paymentAccount/enterprise'
 
 export default {
   components: {
@@ -392,7 +388,7 @@ export default {
       },
 
       // 表格加载
-      tableLoading: true,
+      tableLoadings: true,
       // 表格数据
       tableData: [],
       // 分页默认值
@@ -461,23 +457,21 @@ export default {
   methods: {
     // 表格初始化查询
     async bizQuery() {
-      this.tableLoading = true
+      this.tableLoadings = true
       await bizQuery(this.tableParams.bizAlias, this.queryParams)
         .then(result => {
           const { data, retCode, retMsg } = result.data
 
           if (retCode === '000000') {
             this.timerLoading = setTimeout(() => {
-              this.tableLoading = false
+              this.tableLoadings = false
             }, 500)
             this.$once('hook:beforeDestroy', () => {
               window.clearTimeout(this.timerLoading)
             })
             this.tableParams.isExportDisabled = false
             this.tableData = data.rows
-            this.tableData.forEach(row => {
-              this.tableLabel = row
-            })
+            this.tableLabel = this.tableData[0]
             this.total = data.total
             this.$message.success(
               '加载：' + this.queryParams.limit + '条/页，' + retMsg

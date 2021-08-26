@@ -365,9 +365,8 @@
       >
       </el-table-column>
     </el-table> -->
-
+    <!-- v-if="tableData.length > 0" -->
     <el-table
-      v-if="tableData.length > 0"
       :data="tableData"
       :size="tableSettings.tableSize"
       :border="tableSettings.borderChecked"
@@ -380,12 +379,16 @@
         color: '#909399'
       }"
       v-loading="tableLoading"
+      element-loading-text="表格加载中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="#fff"
       ref="multipleTable"
       class="tables"
       style="width: 100%;box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%)"
       fit
     >
       <af-table-column
+        v-if="total > 0"
         :fixed="tableSettings.fixedChecked"
         type="index"
         label="#"
@@ -399,19 +402,19 @@
         align="center"
       ></af-table-column>
     </el-table>
-    <el-empty
+    <!-- <el-empty
       v-else
       :style="{
         height: expand ? 'calc(100vh - 405px)' : 'calc(100vh - 319px)'
       }"
     >
-    </el-empty>
+    </el-empty> -->
     <el-pagination
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page.sync="queryParams.offset"
-      :page-sizes="[10, 20, 30, 100]"
+      :page-sizes="[20, 50, 100, 200]"
       :page-size="queryParams.limit"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
@@ -424,7 +427,8 @@
 
 <script>
 import { bizQuery } from '@/api/dynamic/biz'
-import { midIdentity } from '@/assets/selectoptions/typeOptions.json'
+// import { midIdentity } from '@/assets/selectoptions/typeOptions.json'
+import { midIdentity } from '@/assets/selectoptions/mid/identity'
 import TableSetting from '@/components/TableSetting'
 export default {
   components: {
@@ -536,9 +540,12 @@ export default {
               window.clearTimeout(this.timerLoading)
             })
             this.tableData = data.rows
-            this.tableData.forEach(row => {
-              this.tableLabel = row
-            })
+            // console.log(this.tableData)
+            this.tableLabel = this.tableData[0]
+            // this.tableData.forEach(row => {
+            //   console.log(row)
+            //   this.tableLabel = row
+            // })
             this.total = data.total
             this.$message.success(
               '加载：' + this.queryParams.limit + '条/页，' + retMsg

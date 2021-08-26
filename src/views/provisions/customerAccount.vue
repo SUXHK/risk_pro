@@ -162,7 +162,6 @@
     </el-row>
 
     <el-table
-      v-if="tableData.length > 0"
       :data="tableData"
       :size="tableSettings.tableSize"
       :border="tableSettings.borderChecked"
@@ -181,10 +180,11 @@
       fit
     >
       <af-table-column
+        v-if="total > 0"
         :fixed="tableSettings.fixedChecked"
         type="index"
-        :index="indexMethod"
         label="#"
+        :index="indexMethod"
       ></af-table-column>
       <af-table-column
         :key="index"
@@ -194,13 +194,6 @@
         align="center"
       ></af-table-column>
     </el-table>
-    <el-empty
-      v-else
-      :style="{
-        height: expand ? 'calc(100vh - 362px)' : 'calc(100vh - 319px)'
-      }"
-    >
-    </el-empty>
     <el-pagination
       background
       @size-change="handleSizeChange"
@@ -219,7 +212,7 @@
 <script>
 import { bizQuery } from '@/api/dynamic/biz'
 import TableSetting from '@/components/TableSetting'
-import { provisionsCustomerAccount } from '@/assets/selectoptions/typeOptions.json'
+import { provisionsCustomerAccount } from '@/assets/selectoptions/provisions/customerAccount'
 export default {
   components: {
     TableSetting
@@ -311,9 +304,7 @@ export default {
             })
             this.tableParams.isExportDisabled = false
             this.tableData = data.rows
-            this.tableData.forEach(row => {
-              this.tableLabel = row
-            })
+            this.tableLabel = this.tableData[0]
             this.total = data.total
             this.$message.success(
               '加载：' + this.queryParams.limit + '条/页，' + retMsg
