@@ -88,7 +88,6 @@
 
       <el-button
         type="primary"
-        plain
         class="exportquery"
         size="mini"
         @click="exportExcel"
@@ -123,7 +122,10 @@
         size="mini"
         @click="changeFull"
         :plain="!tableParams.full"
-        icon="el-icon-full-screen"
+        :type="tableParams.full ? 'primary' : ''"
+        :icon="
+          tableParams.full ? 'el-icon-switch-button' : 'el-icon-full-screen'
+        "
       >
         {{ tableParams.full ? '退出全屏' : '表格全屏' }}
       </el-button>
@@ -263,22 +265,19 @@ export default {
 </script>
 
 <style lang="scss">
-.el-card__header {
-  padding: 0 20px !important;
-  .clearfix {
-    display: flex;
-    height: 50px;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: space-between;
-    align-items: center;
-    .header-name {
-      font-size: 20px;
-      font-weight: 600;
-      color: #000;
-      overflow: hidden;
-    }
+.clearfix {
+  display: flex;
+  height: 50px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: space-between;
+  align-items: center;
+  .header-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    overflow: hidden;
   }
 }
 

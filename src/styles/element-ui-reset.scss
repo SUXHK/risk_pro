@@ -166,6 +166,7 @@
 /* 分页开始 */
 .el-pagination {
   padding: 20px 5px !important;
+  // padding: 20px 5px 0px 5px !important;
   // margin: 15px 0;
   font-weight: normal;
   color: $base-color-black;
@@ -190,6 +191,19 @@
 /* 卡片开始 */
 .cards {
   // margin-bottom: 15px;
+  .el-card__header {
+    padding: 0 20px !important;
+  }
+  .el-card__body {
+    padding: 20px 20px 0 20px !important;
+  }
+}
+
+.card-sys {
+  // margin-bottom: 15px;
+  .el-card__header {
+    padding: 0 20px !important;
+  }
   .el-card__body {
     padding: 20px 20px 0 20px !important;
   }
@@ -366,7 +380,27 @@
   background-color: rgba(0, 0, 0, 0.45);
 }
 
+// header的dropdown
+.headerAction {
+  box-shadow: rgb(0 0 0 / 30%) 0px 0px 20px 0px;
+}
 // el-dropdown-menu
 .el-dropdown-menu {
-  box-shadow: rgb(0 0 0 / 30%) 0px 0px 20px 0px;
+  box-shadow: rgb(0 0 0 / 20%) 0px 5px 5px 0px;
+}
+
+.el-table__expand-icon {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+// .tabs {
+//   .el-tabs__header {
+//     margin: 0 0 20px;
+//   }
+// }
+.table-tree:focus,
+.table-tree:hover {
+  transition: all 0.3s;
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
 }

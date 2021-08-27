@@ -32,7 +32,7 @@
       </template>
 
       <el-dropdown
-        class="avatar-container hover-effect"
+        class="avatar-container hover-effect "
         trigger="click"
         placement="bottom"
       >
@@ -43,7 +43,7 @@
           <i class="el-icon-caret-bottom" />
         </div>
 
-        <el-dropdown-menu slot="dropdown">
+        <el-dropdown-menu slot="dropdown" class="headerAction">
           <el-dropdown-item @click.native="$router.push('/')"
             ><svg-icon
               icon-class="home-smile-fill"

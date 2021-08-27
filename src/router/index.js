@@ -32,7 +32,7 @@ export const constantRoutes = [
       {
         path: '/index',
         name: 'index',
-        redirect: '/mid/identity',
+        redirect: '/system',
         component: () =>
           import(
             /* webpackChunkName: "Risk-User" */ '@/layout/EmptyLayout.vue'
@@ -239,91 +239,91 @@ export const constantRoutes = [
               )
           }
         ]
+      },
+      {
+        path: '/system',
+        name: 'system',
+        redirect: '/system/mgr',
+        component: () =>
+          import(
+            /* webpackChunkName: "Risk-Home" */ '@/layout/EmptyLayout.vue'
+          ),
+        meta: { title: '系统管理' },
+        children: [
+          {
+            path: 'mgr',
+            meta: { title: '用户管理', affix: true },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-mgr" */ '@/views/system/mgr.vue'
+              )
+          },
+          {
+            path: 'role',
+            meta: { title: '角色管理' },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-role" */ '@/views/system/role.vue'
+              )
+          },
+          {
+            path: 'dept',
+            meta: { title: '部门管理' },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-dept" */ '@/views/system/dept.vue'
+              )
+          },
+          {
+            path: 'menu',
+            meta: { title: '菜单管理' },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-menu" */ '@/views/system/menu.vue'
+              )
+          },
+          {
+            path: 'dict',
+            meta: { title: '字典管理' },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-dict" */ '@/views/system/dict.vue'
+              )
+          },
+          {
+            path: 'log',
+            meta: { title: '业务日志' },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-log" */ '@/views/system/log.vue'
+              )
+          },
+          {
+            path: 'loginLog',
+            meta: { title: '登录日志' },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-loginLog" */ '@/views/system/loginLog.vue'
+              )
+          },
+          // {
+          //   path: 'druid',
+          //   meta: { title: '监控管理' },
+          //   component: () =>
+          //     import(
+          //       /* webpackChunkName: "Risk-system-druid" */ '@/views/system/druid.vue'
+          //     )
+          // },
+          {
+            path: 'notice',
+            meta: { title: '通知管理' },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-notice" */ '@/views/system/notice.vue'
+              )
+          }
+        ]
       }
-      // {
-      //   path: '/system',
-      //   name: 'system',
-      //   redirect: '/system/mgr',
-      //   component: () =>
-      //     import(
-      //       /* webpackChunkName: "Risk-Home" */ '@/layout/EmptyLayout.vue'
-      //     ),
-      //   meta: { title: '系统管理' },
-      //   children: [
-      //     {
-      //       path: 'mgr',
-      //       meta: { title: '用户管理', affix: true },
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "Risk-Mgr" */ '@/views/system/mgr.vue'
-      //         )
-      //     },
-      //     {
-      //       path: 'role',
-      //       meta: { title: '角色管理' },
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "Risk-Mgr" */ '@/views/system/role.vue'
-      //         )
-      //     },
-      //     {
-      //       path: 'dept',
-      //       meta: { title: '部门管理' },
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "Risk-Mgr" */ '@/views/system/dept.vue'
-      //         )
-      //     },
-      //     {
-      //       path: 'menu',
-      //       meta: { title: '菜单管理' },
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "Risk-Mgr" */ '@/views/system/menu.vue'
-      //         )
-      //     },
-      //     {
-      //       path: 'dict',
-      //       meta: { title: '字典管理' },
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "Risk-Mgr" */ '@/views/system/dict.vue'
-      //         )
-      //     },
-      //     {
-      //       path: 'log',
-      //       meta: { title: '业务日志' },
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "Risk-Mgr" */ '@/views/system/log.vue'
-      //         )
-      //     },
-      //     {
-      //       path: 'loginLog',
-      //       meta: { title: '登录日志' },
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "Risk-Mgr" */ '@/views/system/loginLog.vue'
-      //         )
-      //     },
-      //     {
-      //       path: 'druid',
-      //       meta: { title: '监控管理' },
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "Risk-Mgr" */ '@/views/system/druid.vue'
-      //         )
-      //     },
-      //     {
-      //       path: 'notice',
-      //       meta: { title: '通知管理' },
-      //       component: () =>
-      //         import(
-      //           /* webpackChunkName: "Risk-Mgr" */ '@/views/system/notice.vue'
-      //         )
-      //     }
-      //   ]
-      // },
     ]
   },
   {

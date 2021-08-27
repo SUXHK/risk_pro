@@ -17,7 +17,57 @@ const mutations = {
     state.token = token
   },
   SET_MENULIST: (state, array) => {
+    // 临时效果
+    // const dashboard = {
+    //   children: [
+    //     {
+    //       children: '',
+    //       code: 'dashboard',
+    //       icon: 'dashboard-2-fill',
+    //       id: 101,
+    //       ismenu: 1,
+    //       levels: 2,
+    //       name: '组织架构管理',
+    //       num: 1,
+    //       parentId: 104,
+    //       url: '/dashboard'
+    //     },
+    //     {
+    //       children: '',
+    //       code: 'dashboard',
+    //       icon: 'dashboard-2-fill',
+    //       id: 101,
+    //       ismenu: 1,
+    //       levels: 2,
+    //       name: '组织架构管理',
+    //       num: 1,
+    //       parentId: 104,
+    //       url: '/dashboard'
+    //     }
+    //   ],
+    //   code: 'index',
+    //   icon: 'home-smile-fill',
+    //   id: 104,
+    //   ismenu: 1,
+    //   levels: 1,
+    //   name: '系统设置',
+    //   num: 3,
+    //   parentId: 0,
+    //   url: 'index'
+    // }
+    // array.menus.unshift(dashboard)
+    // array.menus[1].icon = 'stack-fill'
+    // array.menus[1].children.forEach(element => {
+    //   element.icon = 'notification-badge-fill'
+    // })
+    // 删除即可
+    // array.menus.sort(a => {
+    //   console.log(a.id)
+    // })
     state.menuList = array.menus
+    // state.menuList[0].children.forEach(e => {
+    //   console.log(e.url, e.name)
+    // })
     state.name = array.name
   },
   SET_BREADCRUMB: (state, obj) => {
@@ -32,8 +82,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(form)
         .then(response => {
-          console.log(form)
-          console.log('🚀 ~ login', response)
+          // console.log(form)
+          // console.log('🚀 ~ login', response)
           const { data, retCode } = response.data
           if (retCode === '000000') {
             console.warn(
@@ -64,7 +114,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo()
         .then(result => {
-          console.log('🚀 ~ getInfo', result.data.data)
+          // console.log('🚀 ~ getInfo', result.data.data)
           const { data, retCode } = result.data
           if (retCode === '000000') {
             commit('SET_BREADCRUMB', data)

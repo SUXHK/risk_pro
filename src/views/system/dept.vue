@@ -1,0 +1,240 @@
+<template>
+  <el-card class="card-sys" :class="pageParams.full ? 'fullScreen' : ''">
+    <div slot="header" class="clearfix">
+      <div class="header-name">{{ pageParams.headerTitle }}</div>
+      <div class="header-action">
+        <el-button
+          size="mini"
+          @click="changeFull"
+          :plain="!pageParams.full"
+          :icon="
+            pageParams.full ? 'el-icon-switch-button' : 'el-icon-full-screen'
+          "
+          :type="pageParams.full ? 'primary' : ''"
+        >
+          {{ pageParams.full ? '退出全屏' : '表格全屏' }}
+        </el-button>
+      </div>
+    </div>
+    <el-row :gutter="0" style="margin-bottom:10px">
+      <el-form
+        ref="queryForm"
+        :model="queryForm"
+        :rules="queryFormRules"
+        size="small"
+        label-position="right"
+        class="queryForm"
+        label-width="80px"
+      >
+        <!-- 部门名称 -->
+        <el-col :span="6" style="display:inline-block">
+          <el-form-item label="部门名称:" prop="industryTitle">
+            <el-input
+              v-model="queryForm.industryTitle"
+              placeholder="请输入部门名称"
+              clearable
+              :style="{ width: '80%' }"
+            >
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <!-- 状态 -->
+        <el-col :span="6" style="display:inline-block">
+          <el-form-item label="状态:" prop="state">
+            <el-select
+              v-model="queryForm.state"
+              placeholder="请选择状态"
+              clearable
+              :style="{ width: '80%' }"
+            >
+              <el-option
+                v-for="(item, index) in stateOptions"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+                :disabled="item.disabled"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" style="display:inline-block;">
+          <el-form-item label-width="0px">
+            <div :style="{ width: '100%' }">
+              <el-button
+                type="primary"
+                icon="el-icon-search"
+                size="small"
+                @click="submitQueryForm"
+              >
+                查 询
+              </el-button>
+              <el-button
+                type="warning"
+                icon="el-icon-refresh-right"
+                size="small"
+                @click="resetQueryForm('queryForm')"
+              >
+                重 置
+              </el-button>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-form>
+    </el-row>
+    <el-table
+      :data="treeTableData"
+      size="small"
+      :border="false"
+      :stripe="true"
+      highlight-current-row
+      :header-cell-style="{
+        background: pageParams.full ? '#e7eaff' : '',
+        color: '#909399'
+      }"
+      v-loading="tableLoading"
+      row-key="id"
+      class="table-tree"
+      default-expand-all
+      :tree-props="{ children: 'children' }"
+      :height="!pageParams.full ? pageParams.normalFull : pageParams.fullFull"
+    >
+      <el-table-column prop="name" label="name" align="center">
+      </el-table-column>
+      <el-table-column prop="id" label="id" align="center"> </el-table-column>
+      <el-table-column prop="checked" label="checked" align="center">
+      </el-table-column>
+      <el-table-column prop="open" label="open" align="center">
+        <!-- <template slot-scope="scope">
+              {{ scope.row }}
+            </template> -->
+      </el-table-column>
+      <el-table-column prop="pId" label="pId" align="center"> </el-table-column>
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="editRow(scope.row.id)"
+            >编辑</el-button
+          ><el-divider direction="vertical"></el-divider>
+          <el-dropdown trigger="click" size="medium">
+            <el-button type="text" size="small">
+              更多<i style="margin-left: 3px;" class="el-icon-arrow-down"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>新建下级部门</el-dropdown-item>
+              <el-dropdown-item>新建平级部门</el-dropdown-item>
+              <el-dropdown-item>停用</el-dropdown-item>
+              <el-dropdown-item>删除</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+      </el-table-column>
+    </el-table>
+    <app-footer class="footer" v-if="!pageParams.full"></app-footer>
+  </el-card>
+</template>
+
+<script>
+import { getDeptTree } from '@/api/system/dept'
+export default {
+  data() {
+    return {
+      pageParams: {
+        // 表Title
+        headerTitle: this.$route.meta.title,
+        // 全屏
+        full: false,
+        // 全屏后的table高度
+        fullFull: 'calc(100vh - 150px)',
+        // 正常table高度
+        normalFull: 'calc(100vh - 251px)'
+      },
+
+      // 表格加载
+      tableLoading: true,
+      // 查询表单
+      queryForm: {
+        industryTitle: '',
+        state: ''
+      },
+      // 查询表单规则
+      queryFormRules: {
+        industryTitle: [],
+        state: []
+      },
+      // treeData
+      treeTableData: [],
+      // 表单label
+      treeTableLabel: {},
+      // stateops
+      stateOptions: []
+    }
+  },
+  created() {
+    this.getTree()
+  },
+  mounted() {},
+  completed: {},
+  methods: {
+    // 获取树
+    async getTree() {
+      this.tableLoading = true
+      await getDeptTree()
+        .then(result => {
+          console.log('🚀', result.data)
+          const { data, retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            this.timerLoading = setTimeout(() => {
+              this.tableLoading = false
+            }, 500)
+            this.treeTableData = data.children
+            this.treeTableLabel = this.treeTableData[0]
+            console.log(this.treeTableLabel)
+          } else {
+            this.$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.error('getDeptTree')
+        })
+    },
+
+    // 查询按钮
+    submitQueryForm() {
+      const submitForm = this.$lodash.cloneDeep(this.queryForm)
+      console.log(submitForm)
+    },
+    // 重置查询条件
+    resetQueryForm(formName) {
+      this.$refs[formName].resetFields()
+    },
+    // 全屏
+    changeFull() {
+      this.pageParams.full = !this.pageParams.full
+    },
+    // 编辑
+    editRow(id) {
+      console.log(id)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.card-sys {
+  width: 100%;
+  .clearfix {
+    display: flex;
+    height: 50px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: space-between;
+    align-items: center;
+    .header-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #000;
+      overflow: hidden;
+    }
+  }
+}
+</style>

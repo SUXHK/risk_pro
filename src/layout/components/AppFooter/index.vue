@@ -19,7 +19,7 @@ export default {
 
 <style>
 .el-footer {
-  /* margin-top: 20px; */
+  /* margin-top: 20px !important; */
   width: 100%;
   display: flex;
   align-items: center;
