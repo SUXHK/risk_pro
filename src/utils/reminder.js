@@ -11,3 +11,7 @@ export function timeFix() {
     ? '下午好'
     : '晚上好'
 }
+
+export function indexMethod(offset, limit, index) {
+  return 'No:' + (index + 1 + (offset - 1) * limit)
+}

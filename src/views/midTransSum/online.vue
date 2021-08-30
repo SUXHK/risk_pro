@@ -176,32 +176,36 @@
       :border="tableSettings.borderChecked"
       :stripe="tableSettings.stripeChecked"
       :height="!tableParams.full ? normalFull : fullFull"
-      lazy
       highlight-current-row
       :header-cell-style="{
         background: tableParams.full ? '#e7eaff' : '',
         color: '#909399'
       }"
       v-loading="tableLoading"
+      element-loading-text="表格加载中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="#fff"
       ref="multipleTable"
       class="tables"
       style="width: 100%;box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%)"
-      fit
     >
       <af-table-column
         v-if="total > 0"
         :fixed="tableSettings.fixedChecked"
         type="index"
-        label="#"
+        label="No."
+        align="center"
         :index="indexMethod"
+        width="100%"
       ></af-table-column>
       <af-table-column
-        :key="index"
-        v-for="(item, index) in tableLabel"
-        :prop="index"
-        :label="index"
+        v-for="item in tableLabel"
+        :key="item"
+        :prop="item"
+        :label="item"
         align="center"
-      ></af-table-column>
+      >
+      </af-table-column>
     </el-table>
     <el-pagination
       background
@@ -330,7 +334,7 @@ export default {
             })
             this.tableParams.isExportDisabled = false
             this.tableData = data.rows
-            this.tableLabel = this.tableData[0]
+            this.tableLabel = Object.keys(this.tableData[0])
             this.total = data.total
             this.$message.success(
               '加载：' + this.queryParams.limit + '条/页，' + retMsg

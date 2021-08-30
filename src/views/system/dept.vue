@@ -4,6 +4,14 @@
       <div class="header-name">{{ pageParams.headerTitle }}</div>
       <div class="header-action">
         <el-button
+          plain
+          icon="el-icon-refresh"
+          size="mini"
+          @click="refreshTable"
+        >
+          刷新表格
+        </el-button>
+        <el-button
           size="mini"
           @click="changeFull"
           :plain="!pageParams.full"
@@ -114,29 +122,49 @@
           <el-button type="text" size="small" @click="editRow(scope.row.id)"
             >编辑</el-button
           ><el-divider direction="vertical"></el-divider>
-          <el-dropdown trigger="click" size="medium">
+          <el-dropdown trigger="click" size="medium" placement="bottom">
             <el-button type="text" size="small">
               更多<i style="margin-left: 3px;" class="el-icon-arrow-down"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>新建下级部门</el-dropdown-item>
-              <el-dropdown-item>新建平级部门</el-dropdown-item>
-              <el-dropdown-item>停用</el-dropdown-item>
-              <el-dropdown-item>删除</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-circle-plus"
+                >新建下级部门</el-dropdown-item
+              >
+              <el-dropdown-item icon="el-icon-circle-plus-outline"
+                >新建平级部门</el-dropdown-item
+              >
+              <el-dropdown-item divided icon="el-icon-remove"
+                >停用</el-dropdown-item
+              >
+              <el-dropdown-item icon="el-icon-delete-solid"
+                >删除</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
     <app-footer class="footer" v-if="!pageParams.full"></app-footer>
+
+    <Dialog ref="globaldialog" @fetch="fetch" :dialogParams="dialogParams">
+    </Dialog>
   </el-card>
 </template>
 
 <script>
 import { getDeptTree } from '@/api/system/dept'
+import Dialog from '@/components/Dialog/index.vue'
 export default {
+  components: {
+    Dialog
+  },
+  inject: ['reload'],
   data() {
     return {
+      // headerTitle: 'Header'
+      dialogParams: {
+        headerTitle: '编辑'
+      },
       pageParams: {
         // 表Title
         headerTitle: this.$route.meta.title,
@@ -174,6 +202,19 @@ export default {
   mounted() {},
   completed: {},
   methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          alert('submit!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+    },
     // 获取树
     async getTree() {
       this.tableLoading = true
@@ -210,9 +251,19 @@ export default {
     changeFull() {
       this.pageParams.full = !this.pageParams.full
     },
+    // 刷新表格
+    refreshTable() {
+      // this.changeTableSettings(true, 'normalFullFlag')
+
+      this.reload()
+    },
     // 编辑
     editRow(id) {
-      console.log(id)
+      this.$refs.globaldialog.showDialog()
+    },
+    // 点击确定
+    fetch() {
+      this.$message.success('OK')
     }
   }
 }

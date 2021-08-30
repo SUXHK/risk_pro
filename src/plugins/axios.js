@@ -37,11 +37,12 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   function(response) {
     // Do something with response data
+    console.log(response)
     const { retMsg, retCode } = response.data
     const invalidWhitelist = ['999997', '000006', '000010', '000011']
 
     if (invalidWhitelist.indexOf(retCode) !== -1) {
-      console.log('拦截了')
+      // console.log('拦截了')
       store.dispatch('user/resetToken')
       MessageBox.alert(retMsg, '提示', {
         confirmButtonText: '确定',
@@ -55,7 +56,7 @@ service.interceptors.response.use(
         // console.log(Vue.route)
       })
     }
-    console.log('响应了')
+    // console.log('响应了')
     return response
   },
   function(error) {

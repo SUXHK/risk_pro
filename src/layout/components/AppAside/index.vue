@@ -157,7 +157,7 @@ export default {
     //     console.log('🛸🛸🛸🛸🛸🛸🛸')
     //   })
 
-    const Loading = this.$baseLoading(6, '资源加载中...')
+    const Loading = this.$baseLoading(9, '资源加载中...')
     this.$store
       .dispatch('user/getInfo')
       .then(result => {

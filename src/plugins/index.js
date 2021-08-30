@@ -5,6 +5,7 @@ import '@/plugins/dayjs'
 import '@/plugins/lodash'
 import '@/assets/icons/index.js'
 import '@/plugins/af-table-column'
+// import '@/plugins/v-fit-columns'
 import 'normalize.css/normalize.css'
 
 import '@/config/permission'

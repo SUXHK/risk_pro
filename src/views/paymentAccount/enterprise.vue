@@ -314,35 +314,36 @@
       :border="tableSettings.borderChecked"
       :stripe="tableSettings.stripeChecked"
       :height="!tableParams.full ? normalFull : fullFull"
-      lazy
       highlight-current-row
       :header-cell-style="{
         background: tableParams.full ? '#e7eaff' : '',
         color: '#909399'
       }"
-      v-loading="tableLoadings"
+      v-loading="tableLoading"
       element-loading-text="表格加载中"
       element-loading-spinner="el-icon-loading"
       element-loading-background="#fff"
       ref="multipleTable"
       class="tables"
       style="width: 100%;box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%)"
-      fit
     >
       <af-table-column
         v-if="total > 0"
         :fixed="tableSettings.fixedChecked"
         type="index"
-        label="#"
+        label="No."
+        align="center"
         :index="indexMethod"
+        width="100%"
       ></af-table-column>
       <af-table-column
-        :key="index"
-        v-for="(item, index) in tableLabel"
-        :prop="index"
-        :label="index"
+        v-for="item in tableLabel"
+        :key="item"
+        :prop="item"
+        :label="item"
         align="center"
-      ></af-table-column>
+      >
+      </af-table-column>
     </el-table>
     <el-pagination
       background
@@ -388,7 +389,7 @@ export default {
       },
 
       // 表格加载
-      tableLoadings: true,
+      tableLoading: true,
       // 表格数据
       tableData: [],
       // 分页默认值
@@ -457,21 +458,21 @@ export default {
   methods: {
     // 表格初始化查询
     async bizQuery() {
-      this.tableLoadings = true
+      this.tableLoading = true
       await bizQuery(this.tableParams.bizAlias, this.queryParams)
         .then(result => {
           const { data, retCode, retMsg } = result.data
 
           if (retCode === '000000') {
             this.timerLoading = setTimeout(() => {
-              this.tableLoadings = false
+              this.tableLoading = false
             }, 500)
             this.$once('hook:beforeDestroy', () => {
               window.clearTimeout(this.timerLoading)
             })
             this.tableParams.isExportDisabled = false
             this.tableData = data.rows
-            this.tableLabel = this.tableData[0]
+            this.tableLabel = Object.keys(this.tableData[0])
             this.total = data.total
             this.$message.success(
               '加载：' + this.queryParams.limit + '条/页，' + retMsg

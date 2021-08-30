@@ -288,91 +288,12 @@
       </el-form>
     </el-row>
 
-    <!-- <el-row
-      :gutter="0"
-      type="flex"
-      justify="space-between"
-      align="middle"
-      style="margin:10px 0 10px"
-      disabled
-    >
-      <div>
-        <el-button
-          type="primary"
-          size="mini"
-          @click="exportExcel"
-          v-if="queryExcel"
-          :disabled="isExportDisabled"
-          ><svg-icon
-            icon-class="Excel"
-            class="svg"
-            style="margin-right:5px"
-          ></svg-icon>
-          导出Excel - 查询</el-button
-        >
-        <span v-else style="margin-left:10px">
-          <el-popconfirm
-            confirm-button-text="好的"
-            cancel-button-text="不用了"
-            icon="el-icon-info"
-            icon-color="red"
-            title="导出全部数据，这可能会有一段漫长的等待，是否继续？"
-            @confirm="exportExcelConfirm"
-          >
-            <el-button
-              size="mini"
-              slot="reference"
-              type="primary"
-              :disabled="isExportDisabled"
-              ><svg-icon
-                icon-class="Excel"
-                class="svg"
-                style="margin-right:5px"
-              ></svg-icon>
-              导出Excel - 全部</el-button
-            >
-          </el-popconfirm>
-        </span>
-      </div>
-    </el-row> -->
-    <!-- 没加 -->
     <!-- <el-table
-      v-loading="tableLoading"
-      ref="multipleTable"
-      class="tables"
-      style="width: 100%;"
-      :height="!full ? normalFull : fullFull"
-      :data="tableData"
-      highlight-current-row
-      :header-cell-style="{ background: '#f5f7fa', color: '#909399' }"
-      border
-      fit
-      stripe
-      lazy
-    >
-      <el-table-column
-        v-if="total > 0"
-        type="index"
-        :index="indexMethod"
-      ></el-table-column>
-      <el-table-column
-        :key="index"
-        v-for="(item, index) in tableLabel"
-        :prop="index"
-        :label="index"
-        width="100%"
-        align="center"
-      >
-      </el-table-column>
-    </el-table> -->
-    <!-- v-if="tableData.length > 0" -->
-    <el-table
       :data="tableData"
       :size="tableSettings.tableSize"
       :border="tableSettings.borderChecked"
       :stripe="tableSettings.stripeChecked"
       :height="!tableParams.full ? normalFull : fullFull"
-      lazy
       highlight-current-row
       :header-cell-style="{
         background: tableParams.full ? '#e7eaff' : '',
@@ -385,7 +306,6 @@
       ref="multipleTable"
       class="tables"
       style="width: 100%;box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%)"
-      fit
     >
       <af-table-column
         v-if="total > 0"
@@ -395,20 +315,53 @@
         :index="indexMethod"
       ></af-table-column>
       <af-table-column
-        :key="index"
-        v-for="(item, index) in tableLabel"
-        :prop="index"
-        :label="index"
+        v-for="item in tableLabel"
+        :key="item"
+        :prop="item"
+        :label="item"
         align="center"
-      ></af-table-column>
-    </el-table>
-    <!-- <el-empty
-      v-else
-      :style="{
-        height: expand ? 'calc(100vh - 405px)' : 'calc(100vh - 319px)'
+      >
+      </af-table-column>
+    </el-table> -->
+
+    <el-table
+      :data="tableData"
+      :size="tableSettings.tableSize"
+      :border="tableSettings.borderChecked"
+      :stripe="tableSettings.stripeChecked"
+      :height="!tableParams.full ? normalFull : fullFull"
+      highlight-current-row
+      :header-cell-style="{
+        background: tableParams.full ? '#e7eaff' : '',
+        color: '#909399'
       }"
+      v-loading="tableLoading"
+      element-loading-text="表格加载中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="#fff"
+      ref="multipleTable"
+      class="tables"
+      style="width: 100%;box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%)"
     >
-    </el-empty> -->
+      <af-table-column
+        v-if="total > 0"
+        :fixed="tableSettings.fixedChecked"
+        type="index"
+        align="center"
+        label="No."
+        :index="indexMethod"
+        width="100%"
+      >
+      </af-table-column>
+      <af-table-column
+        v-for="item in tableLabel"
+        :key="item"
+        :prop="item"
+        :label="item"
+        align="center"
+      >
+      </af-table-column>
+    </el-table>
     <el-pagination
       background
       @size-change="handleSizeChange"
@@ -430,6 +383,7 @@ import { bizQuery } from '@/api/dynamic/biz'
 // import { midIdentity } from '@/assets/selectoptions/typeOptions.json'
 import { midIdentity } from '@/assets/selectoptions/mid/identity'
 import TableSetting from '@/components/TableSetting'
+// import { indexMethod } from '@/utils/reminder'
 export default {
   components: {
     TableSetting
@@ -540,10 +494,11 @@ export default {
               window.clearTimeout(this.timerLoading)
             })
             this.tableData = data.rows
-            // console.log(this.tableData)
-            this.tableLabel = this.tableData[0]
+
+            // this.tableLabel = this.tableData[0]
+            this.tableLabel = Object.keys(this.tableData[0])
+
             // this.tableData.forEach(row => {
-            //   console.log(row)
             //   this.tableLabel = row
             // })
             this.total = data.total
