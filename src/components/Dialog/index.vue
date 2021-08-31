@@ -15,6 +15,22 @@
         class="demo-ruleForm"
         size="small"
       >
+        <el-form-item label="上级部门：" prop="profType">
+          <el-select
+            v-model="ruleForm.profType"
+            placeholder="请选择外包服务业务种类"
+            clearable
+            :style="{ width: '100%' }"
+          >
+            <el-option
+              v-for="(item, index) in profTypeOptions"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="密码1" prop="pass">
           <el-input
             type="password"
@@ -98,19 +114,42 @@ export default {
     return {
       dialogVisible: false,
       ruleForm: {
+        profType: '',
         pass: '',
         checkPass: '',
         age: ''
       },
       rules: {
-        pass: [{ validator: validatePass, trigger: 'blur' }],
-        checkPass: [{ validator: validatePass2, trigger: 'blur' }],
+        profType: [{ required: true, message: '请选择', trigger: 'blur' }],
+        pass: [{ required: true, validator: validatePass, trigger: 'blur' }],
+        checkPass: [
+          { required: true, validator: validatePass2, trigger: 'blur' }
+        ],
         age: [{ validator: checkAge, trigger: 'blur' }]
-      }
+      },
+      profTypeOptions: [
+        {
+          label: '银行卡线下收单',
+          value: 10
+        },
+        {
+          label: '线下扫码支付',
+          value: 11
+        },
+        {
+          label: '网络支付业务（不含线下扫码）',
+          value: 12
+        },
+        {
+          label: '预付卡业务',
+          value: 13
+        }
+      ]
     }
   },
   methods: {
-    showDialog() {
+    showDialog(id) {
+      this.$message.success(id)
       this.dialogVisible = true
     },
     close(formName) {

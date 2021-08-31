@@ -117,27 +117,78 @@
             </template> -->
       </el-table-column>
       <el-table-column prop="pId" label="pId" align="center"> </el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="420" fixed="right">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="editRow(scope.row.id)"
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-edit"
+            @click="editDialog(scope.row, 'edit')"
             >编辑</el-button
-          ><el-divider direction="vertical"></el-divider>
+          >
+          <el-divider direction="vertical"></el-divider>
+
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-circle-plus"
+            @click="editDialog(scope.row, 'newSubDep')"
+            >新建下级部门</el-button
+          >
+          <el-divider direction="vertical"></el-divider>
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-plus"
+            @click="editDialog(scope.row, 'newLevelDep')"
+            >新建平级部门</el-button
+          >
+          <el-divider direction="vertical"></el-divider>
+
           <el-dropdown trigger="click" size="medium" placement="bottom">
-            <el-button type="text" size="small">
-              更多<i style="margin-left: 3px;" class="el-icon-arrow-down"></i>
-            </el-button>
+            <el-button type="text" size="small" icon="el-icon-remove"
+              >停用</el-button
+            >
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-circle-plus"
-                >新建下级部门</el-dropdown-item
+              <el-dropdown-item
+                @click.native="removeAndDel(scope.row, 'disable')"
+                ><svg-icon
+                  icon-class="person-off"
+                  style="font-size:16px;margin-right:5px"
+                ></svg-icon
+                >停用一部门不包含员工</el-dropdown-item
               >
-              <el-dropdown-item icon="el-icon-circle-plus-outline"
-                >新建平级部门</el-dropdown-item
+              <el-dropdown-item
+                @click.native="removeAndDel(scope.row, 'disableAll')"
+                ><svg-icon
+                  icon-class="group_off"
+                  style="font-size:16px; margin-right:5px"
+                ></svg-icon
+                >停用一部门包含员工</el-dropdown-item
               >
-              <el-dropdown-item divided icon="el-icon-remove"
-                >停用</el-dropdown-item
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-divider direction="vertical"></el-divider>
+
+          <el-dropdown trigger="click" size="medium" placement="bottom">
+            <el-button type="text" size="small" icon="el-icon-delete-solid"
+              >删除</el-button
+            >
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="removeAndDel(scope.row, 'del')"
+                ><svg-icon
+                  icon-class="remove_person"
+                  style="font-size:16px; margin-right:5px"
+                ></svg-icon
+                >删除一部门不包含员工</el-dropdown-item
               >
-              <el-dropdown-item icon="el-icon-delete-solid"
-                >删除</el-dropdown-item
+              <el-dropdown-item
+                @click.native="removeAndDel(scope.row, 'delAll')"
+                ><svg-icon
+                  icon-class="remove_group"
+                  style="font-size:16px; margin-right:5px"
+                ></svg-icon
+                >删除一部门包含员工</el-dropdown-item
               >
             </el-dropdown-menu>
           </el-dropdown>
@@ -146,14 +197,14 @@
     </el-table>
     <app-footer class="footer" v-if="!pageParams.full"></app-footer>
 
-    <Dialog ref="globaldialog" @fetch="fetch" :dialogParams="dialogParams">
+    <Dialog ref="deptdialog" @fetch="fetch" :dialogParams="dialogParams">
     </Dialog>
   </el-card>
 </template>
 
 <script>
 import { getDeptTree } from '@/api/system/dept'
-import Dialog from '@/components/Dialog/index.vue'
+import Dialog from './dialog.vue'
 export default {
   components: {
     Dialog
@@ -163,8 +214,9 @@ export default {
     return {
       // headerTitle: 'Header'
       dialogParams: {
-        headerTitle: '编辑'
+        headerTitle: '编辑部门'
       },
+      // 页面参数
       pageParams: {
         // 表Title
         headerTitle: this.$route.meta.title,
@@ -178,6 +230,10 @@ export default {
 
       // 表格加载
       tableLoading: true,
+      // 树treeData
+      treeTableData: [],
+      // 表单label对象
+      treeTableLabel: {},
       // 查询表单
       queryForm: {
         industryTitle: '',
@@ -188,11 +244,8 @@ export default {
         industryTitle: [],
         state: []
       },
-      // treeData
-      treeTableData: [],
-      // 表单label
-      treeTableLabel: {},
-      // stateops
+
+      // 状态选项
       stateOptions: []
     }
   },
@@ -254,16 +307,42 @@ export default {
     // 刷新表格
     refreshTable() {
       // this.changeTableSettings(true, 'normalFullFlag')
-
       this.reload()
     },
-    // 编辑
-    editRow(id) {
-      this.$refs.globaldialog.showDialog()
-    },
-    // 点击确定
-    fetch() {
+    // 点击确定传来的值
+    fetch(formData) {
       this.$message.success('OK')
+      console.log(formData)
+    },
+    editDialog(row, name) {
+      if (name === 'edit') {
+        // 编辑部门
+        this.dialogParams.headerTitle = '编辑部门 - ' + row.name
+        this.$refs.deptdialog.showDialog(row.id, name)
+      } else if (name === 'newSubDep') {
+        // 新建下级部门
+        this.dialogParams.headerTitle = '新建下级部门 - ' + row.name
+        this.$refs.deptdialog.showDialog(row.id, name)
+      } else if (name === 'newLevelDep') {
+        // 新建平级部门
+        this.dialogParams.headerTitle = '新建平级部门 - ' + row.name
+        this.$refs.deptdialog.showDialog(row.id, name)
+      } else {
+        this.$message.error('调用失败...')
+      }
+    },
+    removeAndDel(row, name) {
+      if (name === 'disable') {
+        this.$message.success('ID：' + row.id + '； Name：' + name)
+      } else if (name === 'disableAll') {
+        this.$message.success('ID：' + row.id + '； Name：' + name)
+      } else if (name === 'del') {
+        this.$message.success('ID：' + row.id + '； Name：' + name)
+      } else if (name === 'delAll') {
+        this.$message.success('ID：' + row.id + '； Name：' + name)
+      } else {
+        this.$message.error('调用失败...')
+      }
     }
   }
 }

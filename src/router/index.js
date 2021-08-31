@@ -255,7 +255,7 @@ export const constantRoutes = [
             meta: { title: '用户管理', affix: true },
             component: () =>
               import(
-                /* webpackChunkName: "Risk-system-mgr" */ '@/views/system/mgr.vue'
+                /* webpackChunkName: "Risk-system-mgr" */ '@/views/system/mgr/index.vue'
               )
           },
           {
@@ -271,7 +271,7 @@ export const constantRoutes = [
             meta: { title: '部门管理' },
             component: () =>
               import(
-                /* webpackChunkName: "Risk-system-dept" */ '@/views/system/dept.vue'
+                /* webpackChunkName: "Risk-system-dept" */ '@/views/system/dept/index.vue'
               )
           },
           {

@@ -65,6 +65,20 @@
       color: #999;
     }
   }
+  min-width: auto;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 0;
+  padding: 12px 20px 12px 15px;
+
+  .el-icon-loading {
+    font-size: 16px;
+    padding: 0 5px;
+  }
+
+  .el-message__content {
+    color: #999;
+  }
 }
 
 // 登录表单样式重置
@@ -201,11 +215,30 @@
 
 .card-sys {
   // margin-bottom: 15px;
+
   .el-card__header {
     padding: 0 20px !important;
   }
   .el-card__body {
     padding: 20px 20px 0 20px !important;
+
+    .top-footer {
+      margin-top: 20px !important;
+    }
+  }
+}
+
+// 用户管理 组织机构树
+.tree-card {
+  width: 30%;
+  float: left;
+  // margin-bottom: 20px;
+  // margin-bottom: 15px;
+  .el-card__header {
+    padding: 0 20px !important;
+  }
+  .el-card__body {
+    padding: 20px !important;
   }
 }
 
@@ -391,7 +424,7 @@
 
 .el-table__expand-icon {
   font-weight: bold;
-  font-size: 16px;
+  // font-size: 16px;
 }
 
 // .tabs {
