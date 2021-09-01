@@ -106,18 +106,16 @@
       :tree-props="{ children: 'children' }"
       :height="!pageParams.full ? pageParams.normalFull : pageParams.fullFull"
     >
-      <el-table-column prop="name" label="name" align="center">
+      <el-table-column prop="name" label="组织机构层级" align="center">
       </el-table-column>
-      <el-table-column prop="id" label="id" align="center"> </el-table-column>
-      <el-table-column prop="checked" label="checked" align="center">
+      <el-table-column prop="id" label="ID" align="center"> </el-table-column>
+      <el-table-column prop="pId" label="PID" align="center"> </el-table-column>
+      <!--<el-table-column prop="checked" label="checked" align="center">
       </el-table-column>
       <el-table-column prop="open" label="open" align="center">
-        <!-- <template slot-scope="scope">
-              {{ scope.row }}
-            </template> -->
       </el-table-column>
-      <el-table-column prop="pId" label="pId" align="center"> </el-table-column>
-      <el-table-column label="操作" align="center" width="420" fixed="right">
+      <el-table-column prop="pId" label="pId" align="center"> </el-table-column> -->
+      <el-table-column label="操作" align="center" width="500">
         <template slot-scope="scope">
           <el-button
             type="text"
@@ -146,7 +144,7 @@
           <el-divider direction="vertical"></el-divider>
 
           <el-dropdown trigger="click" size="medium" placement="bottom">
-            <el-button type="text" size="small" icon="el-icon-remove"
+            <el-button type="text" size="small" icon="el-icon-remove" disabled
               >停用</el-button
             >
             <el-dropdown-menu slot="dropdown">
@@ -171,7 +169,11 @@
           <el-divider direction="vertical"></el-divider>
 
           <el-dropdown trigger="click" size="medium" placement="bottom">
-            <el-button type="text" size="small" icon="el-icon-delete-solid"
+            <el-button
+              type="text"
+              size="small"
+              icon="el-icon-delete-solid"
+              disabled
               >删除</el-button
             >
             <el-dropdown-menu slot="dropdown">
@@ -192,6 +194,24 @@
               >
             </el-dropdown-menu>
           </el-dropdown>
+          <el-divider direction="vertical"></el-divider>
+
+          <el-popconfirm
+            confirm-button-text="是的"
+            cancel-button-text="取消"
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定删除整个部门？"
+            @confirm="removeAndDel(scope.row, 'del')"
+          >
+            <el-button
+              slot="reference"
+              type="text"
+              size="small"
+              icon="el-icon-delete-solid"
+              >删除</el-button
+            >
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -203,7 +223,7 @@
 </template>
 
 <script>
-import { getDeptTree } from '@/api/system/dept'
+import { getDeptTree, deptDelete } from '@/api/system/dept'
 import Dialog from './dialog.vue'
 export default {
   components: {
@@ -232,8 +252,7 @@ export default {
       tableLoading: true,
       // 树treeData
       treeTableData: [],
-      // 表单label对象
-      treeTableLabel: {},
+
       // 查询表单
       queryForm: {
         industryTitle: '',
@@ -273,15 +292,13 @@ export default {
       this.tableLoading = true
       await getDeptTree()
         .then(result => {
-          console.log('🚀', result.data)
+          // console.log('🚀', result.data)
           const { data, retCode, retMsg } = result.data
           if (retCode === '000000') {
             this.timerLoading = setTimeout(() => {
               this.tableLoading = false
             }, 500)
             this.treeTableData = data.children
-            this.treeTableLabel = this.treeTableData[0]
-            console.log(this.treeTableLabel)
           } else {
             this.$message.error(retMsg)
           }
@@ -311,33 +328,47 @@ export default {
     },
     // 点击确定传来的值
     fetch(formData) {
-      this.$message.success('OK')
-      console.log(formData)
+      // this.$message.success('OK')
+      // console.log(formData)
+      this.getTree()
     },
     editDialog(row, name) {
       if (name === 'edit') {
         // 编辑部门
         this.dialogParams.headerTitle = '编辑部门 - ' + row.name
-        this.$refs.deptdialog.showDialog(row.id, name)
+        this.$refs.deptdialog.showDialog(row, name)
       } else if (name === 'newSubDep') {
         // 新建下级部门
         this.dialogParams.headerTitle = '新建下级部门 - ' + row.name
-        this.$refs.deptdialog.showDialog(row.id, name)
+        this.$refs.deptdialog.showDialog(row, name)
       } else if (name === 'newLevelDep') {
         // 新建平级部门
         this.dialogParams.headerTitle = '新建平级部门 - ' + row.name
-        this.$refs.deptdialog.showDialog(row.id, name)
+        this.$refs.deptdialog.showDialog(row, name)
       } else {
         this.$message.error('调用失败...')
       }
     },
-    removeAndDel(row, name) {
+    async removeAndDel(row, name) {
       if (name === 'disable') {
         this.$message.success('ID：' + row.id + '； Name：' + name)
       } else if (name === 'disableAll') {
         this.$message.success('ID：' + row.id + '； Name：' + name)
       } else if (name === 'del') {
-        this.$message.success('ID：' + row.id + '； Name：' + name)
+        await deptDelete(row.id)
+          .then(result => {
+            console.log('🚀', result.data)
+            const { retCode, retMsg } = result.data
+            if (retCode !== '000000') {
+              this.$message.error(retMsg)
+            } else {
+              this.getTree()
+              this.$message.success('部门：' + row.name + '  删除成功')
+            }
+          })
+          .catch(() => {
+            console.log('🛸🛸🛸🛸🛸🛸🛸')
+          })
       } else if (name === 'delAll') {
         this.$message.success('ID：' + row.id + '； Name：' + name)
       } else {

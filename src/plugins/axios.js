@@ -13,7 +13,7 @@ const service = axios.create({
   //   ? process.env.VUE_APP_BASE_API
   //   : '/api',
   withCredentials: true, // send cookies when cross-domain requests
-  timeout: 10000 // request timeout
+  timeout: 15000 // request timeout
 })
 console.log(process.env.NODE_ENV)
 service.interceptors.request.use(

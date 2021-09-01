@@ -308,11 +308,13 @@ export default {
             })
             this.tableParams.isExportDisabled = false
             this.tableData = data.rows
-            this.tableLabel = Object.keys(this.tableData[0])
+            if (data.rows.length > 0) {
+              this.tableLabel = Object.keys(this.tableData[0])
+              this.$message.success(
+                '加载：' + this.queryParams.limit + '条/页，' + retMsg
+              )
+            }
             this.total = data.total
-            this.$message.success(
-              '加载：' + this.queryParams.limit + '条/页，' + retMsg
-            )
           } else {
             this.$message.error(retMsg)
             this.tableParams.isExportDisabled = true

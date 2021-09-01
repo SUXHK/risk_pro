@@ -24,23 +24,44 @@
         </el-button>
       </div>
     </div>
-    <el-card class="tree-card clear">
-      <div slot="header" class="clearfix">
-        <span style="font-weight: bold;">组织机构</span>
-        <el-button
-          style="float: right; padding: 3px 0"
-          type="text"
-          icon="el-icon-refresh"
-          >刷新组织机构</el-button
-        >
-      </div>
-      <el-tree
-        :data="data"
-        :props="defaultProps"
-        @node-click="handleNodeClick"
-        default-expand-all
-      ></el-tree>
-    </el-card>
+
+    <el-row :gutter="20">
+      <el-col :span="5">
+        <el-card class="tree-card clear">
+          <div slot="header" class="clearfix">
+            <span style="font-weight: bold;">组织机构</span>
+            <el-button
+              style="float: right; padding: 3px 0"
+              type="text"
+              icon="el-icon-refresh"
+              @click="getTree"
+              >刷新</el-button
+            >
+          </div>
+          <el-skeleton v-if="treeTableLoading" />
+          <el-tree
+            v-else
+            :data="treeTableData"
+            :props="defaultProps"
+            @node-click="handleNodeClick"
+            default-expand-all
+          ></el-tree>
+        </el-card>
+      </el-col>
+      <el-col :span="19">
+        <el-card class="table-card" shadow="always">
+          <div slot="header" class="clearfix">
+            <span>卡片名称</span>
+            <el-button style="float: right; padding: 3px 0" type="text"
+              >操作按钮</el-button
+            >
+          </div>
+          <div v-for="o in 4" :key="o" class="text item">
+            {{ '列表内容 ' + o }}
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
 
     <app-footer class="top-footer" v-if="!pageParams.full"></app-footer>
 
@@ -51,6 +72,7 @@
 
 <script>
 // import { getDeptTree } from '@/api/system/mgr'
+import { getDeptTree } from '@/api/system/dept'
 import Dialog from './dialog.vue'
 export default {
   components: {
@@ -59,6 +81,8 @@ export default {
   inject: ['reload'],
   data() {
     return {
+      // loading效果
+      treeTableLoading: true,
       // headerTitle: 'Header'
       dialogParams: {
         headerTitle: '编辑部门'
@@ -133,13 +157,16 @@ export default {
           label: '人行总部'
         }
       ],
+      treeTableData: [],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'name'
       }
     }
   },
-  created() {},
+  created() {
+    this.getTree()
+  },
   mounted() {},
   completed: {},
   methods: {
@@ -182,6 +209,27 @@ export default {
     fetch(formData) {
       this.$message.success('OK')
       console.log(formData)
+    },
+    // 获取树
+    async getTree() {
+      this.treeTableLoading = true
+      await getDeptTree()
+        .then(result => {
+          console.log('🚀', result.data)
+          const { data, retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            this.timerLoading = setTimeout(() => {
+              this.treeTableLoading = false
+            }, 500)
+            this.treeTableData = data.children
+          } else {
+            this.treeTableLoading = false
+            this.$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.error('getDeptTree')
+        })
     }
   }
 }

@@ -496,15 +496,17 @@ export default {
             this.tableData = data.rows
 
             // this.tableLabel = this.tableData[0]
-            this.tableLabel = Object.keys(this.tableData[0])
+            if (data.rows.length > 0) {
+              this.tableLabel = Object.keys(this.tableData[0])
+              this.$message.success(
+                '加载：' + this.queryParams.limit + '条/页，' + retMsg
+              )
+            }
 
             // this.tableData.forEach(row => {
             //   this.tableLabel = row
             // })
             this.total = data.total
-            this.$message.success(
-              '加载：' + this.queryParams.limit + '条/页，' + retMsg
-            )
             if (this.total > 0) {
               this.tableParams.isExportDisabled = false
             } else {

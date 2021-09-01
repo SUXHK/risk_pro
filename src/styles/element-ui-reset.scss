@@ -229,11 +229,8 @@
 }
 
 // 用户管理 组织机构树
-.tree-card {
-  width: 30%;
-  float: left;
-  // margin-bottom: 20px;
-  // margin-bottom: 15px;
+.tree-card,
+.table-card {
   .el-card__header {
     padding: 0 20px !important;
   }

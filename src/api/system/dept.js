@@ -1,6 +1,6 @@
 import request from '@/plugins/axios'
 
-// 导出业务数据
+// 获取部门的tree列表
 export function getDeptTree() {
   return request({
     url: `/dept/tree`,
@@ -17,10 +17,11 @@ export function getDeptDetail() {
 }
 
 // 获取所有部门列表
-export function getDeptList() {
+export function getDeptList(name) {
   return request({
     url: `/dept/list`,
-    method: 'get'
+    method: 'get',
+    params: { deptName: name }
   })
 }
 
@@ -30,5 +31,22 @@ export function deptUpdate(data) {
     url: `/dept/update`,
     method: 'post',
     data
+  })
+}
+
+// 添加部门
+export function deptAdd(data) {
+  return request({
+    url: `/dept/add`,
+    method: 'post',
+    data
+  })
+}
+
+// 删除部门
+export function deptDelete(data) {
+  return request({
+    url: `/dept/delete?deptId=${data}`,
+    method: 'post'
   })
 }
