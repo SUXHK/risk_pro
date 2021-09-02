@@ -49,26 +49,26 @@ export const constantRoutes = [
           }
         ]
       },
-      {
-        path: '/system',
-        name: 'system',
-        redirect: '/system',
-        component: () =>
-          import(
-            /* webpackChunkName: "Risk-User" */ '@/layout/EmptyLayout.vue'
-          ),
-        // meta: { title: '首页' },
-        children: [
-          {
-            path: 'dashboard',
-            meta: { title: '仪表盘' },
-            component: () =>
-              import(
-                /* webpackChunkName: "Risk-User" */ '@/views/dashboard/dashboard.vue'
-              )
-          }
-        ]
-      },
+      // {
+      //   path: '/system',
+      //   name: 'system',
+      //   redirect: '/system',
+      //   component: () =>
+      //     import(
+      //       /* webpackChunkName: "Risk-User" */ '@/layout/EmptyLayout.vue'
+      //     ),
+      //   // meta: { title: '首页' },
+      //   children: [
+      //     {
+      //       path: 'dashboard',
+      //       meta: { title: '仪表盘' },
+      //       component: () =>
+      //         import(
+      //           /* webpackChunkName: "Risk-User" */ '@/views/dashboard/dashboard.vue'
+      //         )
+      //     }
+      //   ]
+      // },
       // 特约商户信息
       {
         path: '/mid',

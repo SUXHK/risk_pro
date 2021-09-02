@@ -177,6 +177,10 @@
   }
 }
 
+.el-tree-node__content {
+  height: 35px;
+}
+
 /* 分页开始 */
 .el-pagination {
   padding: 20px 5px !important;
@@ -215,7 +219,6 @@
 
 .card-sys {
   // margin-bottom: 15px;
-
   .el-card__header {
     padding: 0 20px !important;
   }
@@ -229,14 +232,32 @@
 }
 
 // 用户管理 组织机构树
-.tree-card,
-.table-card {
-  .el-card__header {
-    padding: 0 20px !important;
+// .tree-card,
+// .table-card {
+//   .el-card__header {
+//     // padding: 0 20px !important;
+//   }
+//   .el-card__body {
+//     // padding: 20px !important;
+//   }
+// }
+
+// system/mgr 表单
+.mgrform {
+  .el-form-item--small {
+    margin: 0 !important;
+    padding: 15px 0;
   }
-  .el-card__body {
-    padding: 20px !important;
-  }
+}
+
+// .mgr-dialog {
+//   .el-dialog__body {
+//     padding: 10px 20px 20px !important;
+//   }
+// }
+
+.el-form--label-top .el-form-item__label {
+  padding: 0 !important;
 }
 
 /* 弹窗开始 */
@@ -248,7 +269,8 @@
     border-top: 1px solid $base-border-color;
 
     .el-form {
-      padding-right: 30px;
+      // padding-right: 30px;
+      padding-left: 50px;
     }
   }
 

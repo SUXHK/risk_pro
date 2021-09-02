@@ -1,34 +1,18 @@
 import request from '@/plugins/axios'
 
-// 导出业务数据
-export function getDeptTree() {
+// 查询用户列表
+export function getUserMgrList(bTime, eTime, name, id) {
   return request({
-    url: `/dept/tree`,
-    method: 'get'
+    url: `/userMgr/list`,
+    method: 'get',
+    params: { beginTime: bTime, endTime: eTime, username: name, deptId: id }
   })
 }
 
-// 查询部门详情
-export function getDeptDetail() {
+export function getUserMgrView(id) {
   return request({
-    url: `/dept/detail`,
-    method: 'get'
-  })
-}
-
-// 获取所有部门列表
-export function getDeptList() {
-  return request({
-    url: `/dept/list`,
-    method: 'get'
-  })
-}
-
-// 修改部门
-export function deptUpdate(data) {
-  return request({
-    url: `/dept/update`,
-    method: 'post',
-    data
+    url: `/userMgr/view`,
+    method: 'get',
+    params: { userId: id }
   })
 }

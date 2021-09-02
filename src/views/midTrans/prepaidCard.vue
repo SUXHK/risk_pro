@@ -310,15 +310,29 @@ export default {
             this.$once('hook:beforeDestroy', () => {
               window.clearTimeout(this.timerLoading)
             })
-            this.tableParams.isExportDisabled = false
             this.tableData = data.rows
+
+            // this.tableLabel = this.tableData[0]
             if (data.rows.length > 0) {
               this.tableLabel = Object.keys(this.tableData[0])
               this.$message.success(
                 '加载：' + this.queryParams.limit + '条/页，' + retMsg
               )
+
+              this.tableParams.isExportDisabled = false
+            } else {
+              this.tableParams.isExportDisabled = true
             }
+
+            // this.tableData.forEach(row => {
+            //   this.tableLabel = row
+            // })
             this.total = data.total
+            // if (this.total > 0) {
+            //   this.tableParams.isExportDisabled = false
+            // } else {
+            //   this.tableParams.isExportDisabled = true
+            // }
           } else {
             this.$message.error(retMsg)
             this.tableParams.isExportDisabled = true

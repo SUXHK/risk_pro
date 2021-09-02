@@ -90,6 +90,7 @@
       </el-form>
     </el-row>
     <el-table
+      :indent="30"
       :data="treeTableData"
       size="small"
       :border="false"
