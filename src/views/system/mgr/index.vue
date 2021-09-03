@@ -247,21 +247,31 @@
                     type="primary"
                     icon="el-icon-circle-plus"
                     size="small"
-                    @click="addUser('add')"
+                    @click="userControl('add')"
                   >
                     新建用户
                   </el-button></el-form-item
                 >
-                <el-form-item label-width="10px"
-                  ><el-button type="danger" icon="el-icon-error" size="small">
-                    删除用户
+                <!-- <el-form-item label-width="10px"
+                  ><el-button
+                    type="danger"
+                    icon="el-icon-error"
+                    size="small"
+                    disabled
+                  >
+                    批量删除
                   </el-button></el-form-item
                 >
                 <el-form-item label-width="10px"
-                  ><el-button icon="el-icon-remove" type="warning" size="small">
-                    停用用户
+                  ><el-button
+                    icon="el-icon-remove"
+                    type="warning"
+                    size="small"
+                    disabled
+                  >
+                    批量停用
                   </el-button></el-form-item
-                >
+                > -->
               </div>
             </el-form>
           </div>
@@ -336,21 +346,45 @@
                 <el-button
                   type="text"
                   size="small"
-                  @click="addUser('edit', scope.row)"
+                  @click="userControl('edit', scope.row)"
                 >
                   编辑
                 </el-button>
+                <template v-if="scope.row.status === 1">
+                  <el-divider direction="vertical"></el-divider>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="userControl('freeze', scope.row)"
+                  >
+                    停用
+                  </el-button>
+                </template>
+                <template v-else>
+                  <el-divider direction="vertical"></el-divider>
+                  <el-button
+                    type="text"
+                    size="small"
+                    @click="userControl('unfreeze', scope.row)"
+                  >
+                    启用
+                  </el-button>
+                </template>
                 <el-divider direction="vertical"></el-divider>
-                <el-button type="text" size="small">
-                  停用
-                </el-button>
-                <el-divider direction="vertical"></el-divider>
-                <el-button type="text" size="small">
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="userControl('delete', scope.row)"
+                >
                   删除
                 </el-button>
                 <el-divider direction="vertical"></el-divider>
-                <el-button type="text" size="small">
-                  更改密码
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="userControl('resetPassword', scope.row)"
+                >
+                  重置密码
                 </el-button>
               </template>
             </af-table-column>
@@ -369,7 +403,13 @@
 </template>
 
 <script>
-import { getUserMgrList } from '@/api/system/mgr'
+import {
+  getUserMgrList,
+  resetPassword,
+  deleteUser,
+  freezeUser,
+  unfreezeUser
+} from '@/api/system/mgr'
 import { getDeptTree } from '@/api/system/dept'
 import Dialog from './dialog.vue'
 export default {
@@ -487,9 +527,8 @@ export default {
       this.reload()
     },
     // 点击确定传来的值
-    fetch(formData) {
-      this.$message.success('OK')
-      console.log(formData)
+    fetch() {
+      this.getUserList()
     },
     // 获取树
     async getTree() {
@@ -533,13 +572,126 @@ export default {
           console.log('🛸🛸🛸🛸🛸🛸🛸')
         })
     },
-    addUser(name, row) {
+    // userControl
+    userControl(name, row) {
       if (name === 'add') {
         this.dialogParams.headerTitle = '新建用户'
         this.$refs.mgrdialog.showDialog(name)
       } else if (name === 'edit') {
         this.dialogParams.headerTitle = '编辑用户信息 - ' + row.account
         this.$refs.mgrdialog.showDialog(name, row)
+      } else if (name === 'resetPassword') {
+        this.$confirm(
+          '重置此账号密码，默认密码为：111111, 是否继续?',
+          ` 🔓 密码重置 - ${row.account}`,
+          {
+            confirmButtonText: '重 置',
+            cancelButtonText: '取 消',
+            type: 'warning',
+            closeOnClickModal: false
+            // async beforeClose(action, instance, done) {
+            //   if (action === 'confirm') {
+            //     await resetPassword(row.id)
+            //       .then(result => {
+            //         console.log('🚀', result.data)
+            //         const { retCode, retMsg } = result.data
+            //         if (retCode === '000000') {
+            //           this.$message.success('密码重置成功！')
+            //           done()
+            //         } else {
+            //           this.$message.error(retMsg)
+            //         }
+            //       })
+            //       .catch(() => {})
+            //   } else {
+            //     done()
+            //   }
+            // }
+          }
+        )
+          .then(async () => {
+            await resetPassword(row.id)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('密码重置成功！')
+                  this.getUserList()
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {})
+          })
+          .catch(() => {})
+      } else if (name === 'freeze') {
+        this.$confirm('停用此账号, 是否继续?', ` 🚫 停用 - ${row.account}`, {
+          confirmButtonText: '停 用',
+          cancelButtonText: '取 消',
+          type: 'warning',
+          closeOnClickModal: false
+        })
+          .then(async () => {
+            await freezeUser(row.id)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('停用成功！')
+                  this.getUserList()
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {})
+          })
+          .catch(() => {})
+      } else if (name === 'unfreeze') {
+        this.$confirm('启用此账号, 是否继续?', ` ✅ 启用 - ${row.account}`, {
+          confirmButtonText: '启 用',
+          cancelButtonText: '取 消',
+          type: 'warning',
+          closeOnClickModal: false
+        })
+          .then(async () => {
+            await unfreezeUser(row.id)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('启用成功！')
+
+                  this.getUserList()
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {})
+          })
+          .catch(() => {})
+      } else if (name === 'delete') {
+        this.$confirm('删除此账号, 是否继续?', ` ❌ 删除 - ${row.account}`, {
+          confirmButtonText: '重 置',
+          cancelButtonText: '取 消',
+          type: 'warning',
+          closeOnClickModal: false
+        })
+          .then(async () => {
+            await deleteUser(row.id)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('删除成功！')
+
+                  this.getUserList()
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {})
+          })
+          .catch(() => {})
       } else {
         this.$message.error('请尝试刷新后再试')
       }

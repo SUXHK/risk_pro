@@ -6,6 +6,8 @@
     @close="close('elForm')"
     class="mgr-dialog"
     top="10vh"
+    :append-to-body="true"
+    :close-on-click-modal="false"
   >
     <template>
       <el-form
@@ -95,8 +97,9 @@
             ><el-form-item label="出生日期：" prop="birthday">
               <el-date-picker
                 v-model="formData.birthday"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd HH:mm:ss"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
                 :style="{ width: '100%' }"
                 placeholder="请选择出生日"
                 clearable
@@ -119,14 +122,30 @@
           </el-col>
         </el-row>
         <el-row :gutter="0">
-          <el-col :span="12"
+          <!-- <el-col :span="12"
             ><el-form-item
-              :label="callName === 'add' ? '初始密码：' : '设置新密码：'"
+              :label="callName === 'add' ? '设置初始密码：' : '设置新密码：'"
               prop="password"
             >
               <el-input
                 v-model="formData.password"
-                placeholder="请输入初始密码"
+                :placeholder="
+                  callName === 'add' ? '请设置初始密码' : '请设置新密码'
+                "
+                :maxlength="6"
+                clearable
+                prefix-icon="el-icon-lock"
+                show-password
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+          </el-col> -->
+
+          <el-col :span="12" v-if="callName === 'add'"
+            ><el-form-item label="设置初始密码：" prop="password">
+              <el-input
+                v-model="formData.password"
+                placeholder="请设置初始密码"
                 :maxlength="6"
                 clearable
                 prefix-icon="el-icon-lock"
@@ -168,16 +187,21 @@
         <!-- <h3 style="padding:20px 0">组织关系</h3> -->
       </el-form>
     </template>
+
     <span slot="footer" class="dialog-footer">
       <el-button @click="close('elForm')" size="small">取 消</el-button>
       <el-button
         type="warning"
         size="small"
         @click="resetForm('elForm')"
-        v-if="callName == 'add'"
+        v-if="callName === 'add'"
         >重 置</el-button
       >
-      <el-button type="primary" size="small" @click="sure('elForm')"
+      <el-button
+        type="primary"
+        :loading="sureLoading"
+        size="small"
+        @click="sure('elForm')"
         >确 定</el-button
       >
     </span>
@@ -185,7 +209,7 @@
 </template>
 
 <script>
-import { getUserMgrView } from '@/api/system/mgr'
+import { getUserMgrView, userMgrEdit, userMgrAdd } from '@/api/system/mgr'
 import { getDeptList } from '@/api/system/dept'
 export default {
   name: 'Dialog',
@@ -204,6 +228,7 @@ export default {
   },
   data() {
     return {
+      sureLoading: false,
       // dialog状态
       dialogVisible: false,
       // 部门显示状态
@@ -218,7 +243,7 @@ export default {
         name: '', // 名字
         password: '', // 密码
         phone: '', // 手机
-        sex: '', // 性别
+        sex: 1, // 性别
         status: 1 // 状态
       },
       rules: {
@@ -328,9 +353,11 @@ export default {
     showDialog(name, row) {
       this.callName = name
       if (name === 'add') {
+        this.isEditPassword = false
         this.getgetList()
         this.dialogVisible = true
       } else if (name === 'edit') {
+        this.isEditPassword = false
         this.getgetList(row.deptName)
         this.getUserView(row.id)
         // console.log(row)
@@ -339,6 +366,7 @@ export default {
       } else {
         this.$message.error('调用失败...')
         this.dialogVisible = false
+        this.isEditPassword = false
       }
     },
     close(formName) {
@@ -355,11 +383,56 @@ export default {
     sure(formName) {
       // this.$emit('fetch')
       // this.dialogVisible = false
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
-          this.dialogVisible = false
-          this.$emit('fetch', this.formData)
-          console.log(Object.keys(this.formData).length)
+          this.sureLoading = true
+          if (this.callName === 'edit') {
+            delete this.formData.password
+            await userMgrEdit(this.formData)
+              .then(result => {
+                console.log('🚀', result.data)
+                this.sureLoading = false
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('修改成功')
+                  this.dialogVisible = false
+                  this.$emit('fetch')
+                } else {
+                  setTimeout(() => {
+                    this.sureLoading = false
+                  }, 500)
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {
+                console.log('🛸🛸🛸🛸🛸🛸🛸')
+                this.sureLoading = false
+              })
+          } else {
+            await userMgrAdd(this.formData)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('修改成功')
+                  this.dialogVisible = false
+                  this.$emit('fetch')
+                } else {
+                  setTimeout(() => {
+                    this.sureLoading = false
+                  }, 500)
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {
+                console.log('🛸🛸🛸🛸🛸🛸🛸')
+                this.sureLoading = false
+              })
+          }
+
+          // this.dialogVisible = false
+          // this.$emit('fetch', this.formData)
+          // console.log(Object.keys(this.formData).length)
         } else {
           this.$message.error('error submit!!')
           return false

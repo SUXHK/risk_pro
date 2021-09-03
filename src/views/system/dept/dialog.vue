@@ -4,9 +4,10 @@
     :visible.sync="dialogVisible"
     width="35%"
     @close="close('elForm')"
+    :append-to-body="true"
+    :close-on-click-modal="false"
   >
     <template>
-      隐藏ID：{{ this.formData.id }}
       <el-form
         ref="elForm"
         :model="formData"
@@ -229,6 +230,7 @@ export default {
                 }
               })
               .catch(() => {
+                this.sureLoading = false
                 console.log('deptUpdate')
               })
           } else {
@@ -249,6 +251,7 @@ export default {
                 }
               })
               .catch(() => {
+                this.sureLoading = false
                 console.log('🛸🛸🛸🛸🛸🛸🛸')
               })
           }

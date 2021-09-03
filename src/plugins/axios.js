@@ -19,7 +19,7 @@ console.log(process.env.NODE_ENV)
 service.interceptors.request.use(
   function(config) {
     // Do something before request is sent
-    config.headers['Content-Type'] = 'application/json'
+    config.headers['Content-Type'] = 'application/json;charset=UTF-8'
     return config
   },
   function(error) {
@@ -37,7 +37,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   function(response) {
     // Do something with response data
-    console.log(response)
+    // console.log(response)
     const { retMsg, retCode } = response.data
     const invalidWhitelist = ['999997', '000006', '000010', '000011']
 

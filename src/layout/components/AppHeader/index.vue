@@ -17,7 +17,7 @@
       <template v-if="this.$store.getters.device === 'desktop'">
         <!-- style="font-size:13px" -->
 
-        <div class="icon hover-effect theme " @click="help">
+        <div class="icon hover-effect theme " @click="help('help')">
           <svg-icon
             title="帮助"
             icon-class="question-fill"
@@ -34,7 +34,7 @@
       <el-dropdown
         class="avatar-container hover-effect "
         trigger="click"
-        placement="bottom"
+        placement="bottom-start"
       >
         <div class="avatar-wrapper">
           <img src="@/assets/images/sand.png" class="user-avatar" />
@@ -44,6 +44,15 @@
         </div>
 
         <el-dropdown-menu slot="dropdown" class="headerAction">
+          <el-dropdown-item @click.native="editPassword('edit')">
+            <svg-icon
+              icon-class="lock-unlock-fill"
+              style="font-size:16px;vertical-align: middle;"
+            ></svg-icon>
+            <span style="vertical-align: middle;padding-left:5px">
+              修改密码</span
+            >
+          </el-dropdown-item>
           <el-dropdown-item @click.native="$router.push('/')"
             ><svg-icon
               icon-class="home-smile-fill"
@@ -140,11 +149,16 @@ export default {
           this.$message('用户取消')
         })
     },
+    editPassword(name) {
+      this.dialogParams.headerTitle = '帮助中心 - 修改密码'
+      this.$refs.dialogheader.showDialog(name)
+    },
     fetch() {
       console.log(123)
     },
-    help() {
-      this.$refs.dialogheader.showDialog()
+    help(name) {
+      this.dialogParams.headerTitle = '帮助中心 - 测试'
+      this.$refs.dialogheader.showDialog(name)
     }
   }
 }
