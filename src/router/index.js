@@ -283,7 +283,7 @@ export const constantRoutes = [
             meta: { title: '角色管理' },
             component: () =>
               import(
-                /* webpackChunkName: "Risk-system-role" */ '@/views/system/role.vue'
+                /* webpackChunkName: "Risk-system-role" */ '@/views/system/role/index.vue'
               )
           },
           {

@@ -508,15 +508,15 @@ export default {
       this.getUserList()
     },
 
-    // 查询按钮
-    submitQueryForm() {
-      const submitForm = this.$lodash.cloneDeep(this.queryForm)
-      console.log(submitForm)
-    },
-    // 重置查询条件
-    resetQueryForm(formName) {
-      this.$refs[formName].resetFields()
-    },
+    // // 查询按钮
+    // submitQueryForm() {
+    //   const submitForm = this.$lodash.cloneDeep(this.queryForm)
+    //   console.log(submitForm)
+    // },
+    // // 重置查询条件
+    // resetQueryForm(formName) {
+    //   this.$refs[formName].resetFields()
+    // },
     // 全屏
     changeFull() {
       this.pageParams.full = !this.pageParams.full
@@ -564,7 +564,7 @@ export default {
             }, 500)
             this.tableData = data
           } else {
-            this.treeTableLoading = false
+            this.tableLoading = false
             this.$message.error(retMsg)
           }
         })
@@ -572,7 +572,7 @@ export default {
           console.log('🛸🛸🛸🛸🛸🛸🛸')
         })
     },
-    // userControl
+    // 表格按钮功能
     userControl(name, row) {
       if (name === 'add') {
         this.dialogParams.headerTitle = '新建用户'
@@ -703,20 +703,20 @@ export default {
 <style lang="scss" scoped>
 .card-sys {
   width: 100%;
-  .clearfix {
-    display: flex;
-    height: 50px;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: space-between;
-    align-items: center;
-    .header-name {
-      font-size: 20px;
-      font-weight: 600;
-      color: #000;
-      overflow: hidden;
-    }
-  }
+  // .clearfix {
+  //   display: flex;
+  //   height: 50px;
+  //   flex-direction: row;
+  //   flex-wrap: nowrap;
+  //   align-content: center;
+  //   justify-content: space-between;
+  //   align-items: center;
+  // .header-name {
+  //   font-size: 20px;
+  //   font-weight: 600;
+  //   color: #000;
+  //   overflow: hidden;
+  // }
+  // }
 }
 </style>

@@ -12,7 +12,7 @@
     <logo :collapse="isCollapse" class="logo" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
-        class="menu-list"
+        class="dark-menu"
         :class="{ light: $store.state.settings.themeStyle === 'light' }"
         :background-color="
           $store.state.settings.themeStyle === 'light'
@@ -212,7 +212,7 @@ export default {
   z-index: 2;
   overflow: hidden;
   box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
-  .menu-list {
+  .dark-menu {
     border-right: none;
     user-select: none;
     // .authName {

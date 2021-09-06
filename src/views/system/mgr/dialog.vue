@@ -18,6 +18,7 @@
         :inline="true"
         label-position="top"
         class="mar-add-form"
+        style="padding: 0 0 0 50px;"
       >
         <!-- <h3 style="padding:20px 0">账号信息</h3> -->
         <el-row :gutter="0">

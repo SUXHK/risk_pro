@@ -55,7 +55,7 @@ const actions = {
     commit('CHANGE_SETTING', data)
   },
   getName({ commit, dispatch }, userName) {
-    console.log(userName)
+    // console.log(userName)
 
     const a = Cookies.get('Theme')
     if (a) {

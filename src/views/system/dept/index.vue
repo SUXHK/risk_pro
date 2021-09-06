@@ -102,7 +102,7 @@
       }"
       v-loading="tableLoading"
       row-key="id"
-      class="table-tree"
+      class="table-shadow"
       default-expand-all
       :tree-props="{ children: 'children' }"
       :height="!pageParams.full ? pageParams.normalFull : pageParams.fullFull"
@@ -383,20 +383,20 @@ export default {
 <style lang="scss" scoped>
 .card-sys {
   width: 100%;
-  .clearfix {
-    display: flex;
-    height: 50px;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: space-between;
-    align-items: center;
-    .header-name {
-      font-size: 20px;
-      font-weight: 600;
-      color: #000;
-      overflow: hidden;
-    }
-  }
+  // .clearfix {
+  //   display: flex;
+  //   height: 50px;
+  //   flex-direction: row;
+  //   flex-wrap: nowrap;
+  //   align-content: center;
+  //   justify-content: space-between;
+  //   align-items: center;
+  //   .header-name {
+  //     font-size: 20px;
+  //     font-weight: 600;
+  //     color: #000;
+  //     overflow: hidden;
+  //   }
+  // }
 }
 </style>
