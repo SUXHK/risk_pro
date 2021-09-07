@@ -31,48 +31,201 @@
     >
       <el-tab-pane label="员工角色分配" name="staff">
         <el-row :gutter="0">
-          <el-col :span="5">
+          <el-col :span="6">
             <el-card class="tree-card clear" shadow="never">
               <div slot="header" style="padding:23px 0">
                 <span style="font-weight: bold;">角色列表</span>
+
                 <el-button
                   style="float: right; padding: 3px 0"
                   type="text"
-                  icon="el-icon-refresh"
+                  icon="el-icon-refresh "
                   @click="getTree"
                   >刷新</el-button
                 >
+                <el-button
+                  v-if="roleTreeList.length <= 0"
+                  style="float: right; padding: 3px 10px"
+                  type="text"
+                  icon="el-icon-circle-plus-outline"
+                  @click="appendNoData"
+                  >添加角色</el-button
+                >
               </div>
+              <el-input
+                style="margin-bottom:20px"
+                placeholder="搜索角色"
+                v-model="filterText"
+                size="middle"
+                prefix-icon="el-icon-search"
+                clearable
+              >
+              </el-input>
+
               <el-skeleton
                 :loading="treeTableLoading"
                 animated
+                :rows="7"
                 :style="{
                   height: !pageParams.full
-                    ? 'calc(100vh - 352px)'
-                    : 'calc(100vh - 230px)'
+                    ? 'calc(100vh - 412px)'
+                    : 'calc(100vh - 290px)'
                 }"
               >
+                <template slot="template">
+                  <div style="padding: 15px 0;">
+                    <el-skeleton-item variant="h1" style="width: 50%;" />
+                  </div>
+                  <div style="padding: 15px 0;">
+                    <el-skeleton-item variant="h1" />
+                  </div>
+                  <div style="padding: 15px 0;">
+                    <el-skeleton-item variant="h1" />
+                  </div>
+                  <div style="padding: 15px 0;">
+                    <el-skeleton-item variant="h1" />
+                  </div>
+                  <div style="padding: 15px 0;">
+                    <el-skeleton-item variant="h1" />
+                  </div>
+                  <div style="padding: 15px 0;">
+                    <el-skeleton-item variant="h1" style="width: 50%;" />
+                  </div>
+                </template>
                 <template>
-                  <el-tree
-                    node-key="id"
-                    :current-node-key="1"
-                    :expand-on-click-node="false"
-                    highlight-current
-                    :data="roleTreeList"
-                    :props="defaultProps"
-                    @node-click="handleNodeClick"
-                    default-expand-all
-                    :style="{
-                      height: !pageParams.full
-                        ? 'calc(100vh - 352px)'
-                        : 'calc(100vh - 230px)'
-                    }"
-                  ></el-tree>
+                  <el-scrollbar wrap-class="scrollbar-wrapper-tree">
+                    <!-- <div style="overflow-x: hidden"> -->
+                    <el-tree
+                      node-key="id"
+                      :current-node-key="1"
+                      :expand-on-click-node="false"
+                      highlight-current
+                      :data="roleTreeList"
+                      :props="defaultProps"
+                      @node-click="handleNodeClick"
+                      :filter-node-method="filterNode"
+                      ref="roletree"
+                      default-expand-all
+                      :style="{
+                        height: !pageParams.full
+                          ? 'calc(100vh - 412px)'
+                          : 'calc(100vh - 290px) '
+                      }"
+                    >
+                      <!-- :render-content="renderContent" -->
+                      <span
+                        class="custom-tree-node"
+                        slot-scope="{ node, data }"
+                      >
+                        <span
+                          v-if="
+                            !treeControl.isEditTreeNode ||
+                              node.id !== treeControl.nodeId
+                          "
+                          >{{ node.label | ellipsis(15) }}</span
+                        >
+
+                        <el-input
+                          @keyup.enter.native="confirm(node, data)"
+                          clearable
+                          :placeholder="data.name"
+                          @click.stop.native
+                          v-if="
+                            treeControl.isEditTreeNode &&
+                              node.id === treeControl.nodeId
+                          "
+                          v-model.trim="treeControl.content"
+                          size="medium"
+                          ><i
+                            slot="prefix"
+                            class="el-input__icon el-icon-edit"
+                          ></i
+                        ></el-input>
+                        <span>
+                          <svg-icon
+                            v-if="
+                              !treeControl.isEditTreeNode ||
+                                node.id !== treeControl.nodeId
+                            "
+                            title="添加下级"
+                            icon-class="queue_black_24dp"
+                            style="font-size:18px;margin:0 5px;vertical-align:text-bottom;"
+                            @click.stop="() => append(data)"
+                          ></svg-icon>
+
+                          <svg-icon
+                            v-if="
+                              !treeControl.isEditTreeNode ||
+                                node.id !== treeControl.nodeId
+                            "
+                            title="编辑"
+                            icon-class="edit-2-fill"
+                            style="font-size:18px;margin:0 5px;vertical-align:text-bottom;"
+                            @click.stop="() => edit(node, data)"
+                          ></svg-icon>
+                          <svg-icon
+                            v-if="
+                              !treeControl.isEditTreeNode ||
+                                node.id !== treeControl.nodeId
+                            "
+                            title="删除"
+                            icon-class="delete_black_24dp"
+                            style="font-size:18px;margin:0 5px;vertical-align:text-bottom;"
+                            @click.stop="() => remove(node, data)"
+                          ></svg-icon>
+                          <svg-icon
+                            v-if="
+                              treeControl.isEditTreeNode &&
+                                node.id === treeControl.nodeId
+                            "
+                            title="确定"
+                            icon-class="check_circle_black_24dp"
+                            class="el-button--text"
+                            style="font-size:20px;color: $base-color-default;margin:0 5px 0 10px;vertical-align:text-bottom;"
+                            @click.stop="() => editConfirm(node, data)"
+                          ></svg-icon>
+                          <svg-icon
+                            v-if="
+                              treeControl.isEditTreeNode &&
+                                node.id === treeControl.nodeId
+                            "
+                            title="取消"
+                            icon-class="cancel_black_24dp"
+                            style="font-size:20px;color: red; margin:0 5px;vertical-align:text-bottom;"
+                            @click.stop="() => editCancel(node, data)"
+                          ></svg-icon>
+                          <!-- icon-class="close_black_24dp" -->
+                          <!-- <el-button
+                          type="text"
+                          size="mini"
+                          @click.stop="() => append(data)"
+                        >
+                          添加下级
+                        </el-button>
+                        <el-button
+                          type="text"
+                          size="mini"
+                          @click.stop="() => edit(data)"
+                        >
+                          编辑
+                        </el-button>
+                        <el-button
+                          type="text"
+                          size="mini"
+                          @click.stop="() => remove(node, data)"
+                        >
+                          删除
+                        </el-button> -->
+                        </span>
+                      </span>
+                    </el-tree>
+                    <!-- </div> -->
+                  </el-scrollbar>
                 </template>
               </el-skeleton>
             </el-card>
           </el-col>
-          <el-col :span="19">
+          <el-col :span="18">
             <el-card class="table-card" shadow="never">
               <div slot="header">
                 <el-form
@@ -143,7 +296,7 @@
                         size="small"
                         @click="userControl('add')"
                       >
-                        新建用户
+                        添加员工
                       </el-button></el-form-item
                     >
                   </div>
@@ -246,7 +399,7 @@
 </template>
 
 <script>
-import { getRoleTree, roleList } from '@/api/system/role'
+import { getRoleTree, roleAdd, roleEdit, roleDelete } from '@/api/system/role'
 import Dialog from './dialog.vue'
 export default {
   components: {
@@ -288,7 +441,20 @@ export default {
         children: 'children',
         label: 'name'
       },
-      openeds: ['3']
+      openeds: ['3'],
+      // 是否编辑
+      treeControl: {
+        isEditTreeNode: false,
+        content: '',
+        nodeId: '',
+        // 添加
+        addSubPopover: false,
+        // 添加输入框
+        addSubInput: ''
+      },
+      addSubPopover: false,
+      // 搜索项
+      filterText: ''
     }
   },
   created() {
@@ -298,6 +464,12 @@ export default {
   computed: {
     tableSettings() {
       return this.$store.getters.tableSettings
+    }
+  },
+  watch: {
+    filterText(val) {
+      // console.log(val)
+      this.$refs.roletree.filter(val)
     }
   },
   methods: {
@@ -359,17 +531,129 @@ export default {
     // 获取用户列表
     async getRoleList(name) {
       this.tableLoading = true
-      await roleList(name)
+    },
+    // el-tree点击项
+    handleNodeClick(data) {
+      console.log(data)
+      this.getRoleList(data.name)
+    },
+    // 搜索过滤
+    filterNode(value, data) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
+    appendNoData() {
+      const data = {
+        id: 0
+      }
+      this.$prompt('添加下级角色名称', '添加角色', {
+        confirmButtonText: '确 定',
+        cancelButtonText: '取 消',
+        // eslint-disable-next-line no-useless-escape
+        inputPattern: /^[a-zA-Z0-9\u4e00-\u9fa5\,，]+$/,
+        inputErrorMessage: '角色名称格式不正确',
+        inputPlaceholder: '请输入部门名称',
+        closeOnClickModal: false,
+        beforeClose: async (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true
+            instance.confirmButtonText = '添加中...'
+            const dataBody = {
+              pid: data.id,
+              name: instance.$refs.input.value
+            }
+            await roleAdd(dataBody)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  setTimeout(() => {
+                    this.getTree()
+                    instance.confirmButtonLoading = false
+                    done()
+                  }, 500)
+                } else {
+                  this.$message.error(retMsg)
+                  setTimeout(() => {
+                    instance.confirmButtonLoading = false
+                    instance.confirmButtonText = '确 定'
+                  }, 500)
+                }
+              })
+              .catch(() => {
+                instance.confirmButtonLoading = false
+                instance.confirmButtonText = '确 定'
+              })
+          } else {
+            done()
+          }
+        }
+      })
+        .then(({ value }) => {})
+        .catch(() => {})
+    },
+    // 添加
+    append(data) {
+      console.log(data)
+      console.log(data.pId)
+      this.$prompt('添加 ' + data.name + ' 的下级角色名称', '添加角色', {
+        confirmButtonText: '确 定',
+        cancelButtonText: '取 消',
+        // eslint-disable-next-line no-useless-escape
+        inputPattern: /^[a-zA-Z0-9\u4e00-\u9fa5\,，]+$/,
+        inputErrorMessage: '角色名称格式不正确',
+        inputPlaceholder: '请输入部门名称',
+        closeOnClickModal: false,
+        beforeClose: async (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true
+            instance.confirmButtonText = '添加中...'
+            const dataBody = {
+              pid: data.id,
+              name: instance.$refs.input.value
+            }
+            await roleAdd(dataBody)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  setTimeout(() => {
+                    this.getTree()
+                    instance.confirmButtonLoading = false
+                    done()
+                  }, 500)
+                } else {
+                  this.$message.error(retMsg)
+                  setTimeout(() => {
+                    instance.confirmButtonLoading = false
+                    instance.confirmButtonText = '确 定'
+                  }, 500)
+                }
+              })
+              .catch(() => {
+                instance.confirmButtonLoading = false
+                instance.confirmButtonText = '确 定'
+              })
+          } else {
+            done()
+          }
+        }
+      })
+        .then(({ value }) => {})
+        .catch(() => {})
+    },
+
+    // 删除
+    async remove(node, data) {
+      console.log(data.id)
+      await roleDelete(data.id)
         .then(result => {
           console.log('🚀', result.data)
-          const { retCode, data, retMsg } = result.data
+          const { retCode, retMsg } = result.data
           if (retCode === '000000') {
-            this.tableData = data
-            setTimeout(() => {
-              this.tableLoading = false
-            }, 500)
+            this.$message.success(retMsg)
+            this.getTree()
           } else {
-            this.tableLoading = false
             this.$message.error(retMsg)
           }
         })
@@ -377,10 +661,46 @@ export default {
           console.log('🛸🛸🛸🛸🛸🛸🛸')
         })
     },
-    // el-tree点击项
-    handleNodeClick(data) {
+    // 编辑
+    edit(node, data) {
+      this.treeControl.nodeId = node.id
+      this.treeControl.isEditTreeNode = true
+      this.treeControl.content = data.name
+    },
+    // 编辑确定
+    async editConfirm(node, data) {
       console.log(data)
-      this.getRoleList(data.name)
+      console.log(data.id)
+      console.log(this.treeControl.content)
+      if (this.treeControl.content) {
+        const dataBodyEdit = {
+          id: data.id,
+          name: this.treeControl.content
+        }
+        await roleEdit(dataBodyEdit)
+          .then(result => {
+            console.log('🚀', result.data)
+            const { retCode, retMsg } = result.data
+            if (retCode === '000000') {
+              this.$message.success(retMsg)
+              this.editCancel(node, data)
+              this.getTree()
+            } else {
+              this.$message.error(retMsg)
+            }
+          })
+          .catch(() => {
+            console.log('🛸🛸🛸🛸🛸🛸🛸')
+          })
+      } else {
+        this.editCancel(node, data)
+      }
+    },
+    // 编辑取消
+    editCancel(node, data) {
+      this.treeControl.nodeId = ''
+      this.treeControl.isEditTreeNode = false
+      this.treeControl.content = ''
     }
   }
 }

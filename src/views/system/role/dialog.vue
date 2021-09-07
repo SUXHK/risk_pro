@@ -16,7 +16,7 @@
         :rules="rules"
         size="medium"
         label-position="right"
-        label-width="100px"
+        label-width="120px"
       >
         <el-form-item label="选择员工：" prop="field101">
           <el-cascader
