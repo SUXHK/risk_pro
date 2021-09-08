@@ -1,11 +1,11 @@
 import request from '@/plugins/axios'
 
 // 查询用户列表
-export function getUserMgrList(bTime, eTime, name, id) {
+export function getUserMgrList(name, id) {
   return request({
     url: `/userMgr/list`,
     method: 'get',
-    params: { beginTime: bTime, endTime: eTime, username: name, deptId: id }
+    params: { username: name, deptId: id }
   })
 }
 

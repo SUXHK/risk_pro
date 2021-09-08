@@ -60,7 +60,7 @@ module.exports = {
         return args
       })
       // 修复HMR
-      // config.resolve.symlinks(true)
+      config.resolve.symlinks(true)
     })
 
     // 开发模式 main-dev.js

@@ -308,6 +308,8 @@ export default {
       this.callName = name
       if (name === 'add') {
         this.dialogVisible = true
+      } else if (name === 'edit') {
+        this.dialogVisible = true
       } else {
         this.$message.error('调用失败...')
         this.dialogVisible = false

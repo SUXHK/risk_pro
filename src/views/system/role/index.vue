@@ -33,7 +33,7 @@
         <el-row :gutter="0">
           <el-col :span="6">
             <el-card class="tree-card clear" shadow="never">
-              <div slot="header" style="padding:23px 0">
+              <div slot="header" style="padding:23px 0px 24px 0">
                 <span style="font-weight: bold;">角色列表</span>
 
                 <el-button
@@ -97,7 +97,7 @@
                     <!-- <div style="overflow-x: hidden"> -->
                     <el-tree
                       node-key="id"
-                      :current-node-key="1"
+                      :current-node-key="treeControl.currentNodeKey"
                       :expand-on-click-node="false"
                       highlight-current
                       :data="roleTreeList"
@@ -118,6 +118,7 @@
                         slot-scope="{ node, data }"
                       >
                         <span
+                          class="queryForm-one-txt-cut"
                           v-if="
                             !treeControl.isEditTreeNode ||
                               node.id !== treeControl.nodeId
@@ -126,7 +127,7 @@
                         >
 
                         <el-input
-                          @keyup.enter.native="confirm(node, data)"
+                          @keyup.enter.native="editConfirm(node, data)"
                           clearable
                           :placeholder="data.name"
                           @click.stop.native
@@ -248,7 +249,7 @@
                       </el-input>
                     </el-form-item>
                     <!-- style="width: 35%" -->
-                    <el-form-item
+                    <!-- <el-form-item
                       label="日期："
                       prop="time"
                       label-width="90px"
@@ -266,8 +267,8 @@
                         clearable
                       >
                       </el-date-picker>
-                    </el-form-item>
-                    <el-form-item label-width="10px">
+                    </el-form-item> -->
+                    <el-form-item label-width="20px">
                       <el-button
                         type="primary"
                         icon="el-icon-search"
@@ -277,7 +278,9 @@
                         查 询
                       </el-button>
                     </el-form-item>
-                    <el-form-item label-width="10px">
+                    <!-- </el-col>
+                  <el-col :span="4"> -->
+                    <el-form-item label-width="20px">
                       <el-button
                         type="warning"
                         icon="el-icon-refresh-right"
@@ -334,52 +337,57 @@
                 </af-table-column>
                 <af-table-column prop="account" label="account" align="center">
                 </af-table-column>
-
+                <af-table-column prop="avatar" label="avatar" align="center">
+                </af-table-column>
+                <af-table-column
+                  prop="birthday"
+                  label="birthday"
+                  align="center"
+                >
+                </af-table-column>
+                <af-table-column
+                  prop="deptName"
+                  label="deptName"
+                  align="center"
+                >
+                </af-table-column>
+                <af-table-column prop="deptid" label="deptid" align="center">
+                </af-table-column>
+                <af-table-column prop="email" label="email" align="center">
+                </af-table-column>
+                <af-table-column prop="name" label="name" align="center">
+                </af-table-column>
+                <af-table-column prop="phone" label="phone" align="center">
+                </af-table-column>
+                <af-table-column
+                  prop="roleName"
+                  label="roleName"
+                  align="center"
+                >
+                </af-table-column>
+                <af-table-column prop="roleid" label="roleid" align="center">
+                </af-table-column>
+                <af-table-column prop="sex" label="sex" align="center">
+                </af-table-column>
+                <af-table-column prop="sexName" label="sexName" align="center">
+                </af-table-column>
+                <af-table-column prop="status" label="status" align="center">
+                </af-table-column>
+                <af-table-column
+                  prop="statusName"
+                  label="statusName"
+                  align="center"
+                >
+                </af-table-column>
                 <af-table-column label="操作" align="center" fixed="right">
                   <!-- slot-scope="scope" -->
                   <template slot-scope="scope">
                     <el-button
                       type="text"
                       size="small"
-                      @click="userControl('edit', scope.row)"
-                    >
-                      编辑
-                    </el-button>
-                    <template v-if="scope.row.status === 1">
-                      <el-divider direction="vertical"></el-divider>
-                      <el-button
-                        type="text"
-                        size="small"
-                        @click="userControl('freeze', scope.row)"
-                      >
-                        停用
-                      </el-button>
-                    </template>
-                    <template v-else>
-                      <el-divider direction="vertical"></el-divider>
-                      <el-button
-                        type="text"
-                        size="small"
-                        @click="userControl('unfreeze', scope.row)"
-                      >
-                        启用
-                      </el-button>
-                    </template>
-                    <el-divider direction="vertical"></el-divider>
-                    <el-button
-                      type="text"
-                      size="small"
                       @click="userControl('delete', scope.row)"
                     >
                       删除
-                    </el-button>
-                    <el-divider direction="vertical"></el-divider>
-                    <el-button
-                      type="text"
-                      size="small"
-                      @click="userControl('resetPassword', scope.row)"
-                    >
-                      重置密码
                     </el-button>
                   </template>
                 </af-table-column>
@@ -399,6 +407,7 @@
 </template>
 
 <script>
+import { getUserMgrList, deleteUser } from '@/api/system/mgr'
 import { getRoleTree, roleAdd, roleEdit, roleDelete } from '@/api/system/role'
 import Dialog from './dialog.vue'
 export default {
@@ -426,8 +435,13 @@ export default {
         activeTabs: 'staff'
       },
       // 查询表单
-      formData: {},
-      rules: {},
+      formData: {
+        id: '',
+        username: ''
+      },
+      rules: {
+        username: []
+      },
       // 表格数据
       tableData: [],
       // 表格加载
@@ -450,7 +464,8 @@ export default {
         // 添加
         addSubPopover: false,
         // 添加输入框
-        addSubInput: ''
+        addSubInput: '',
+        currentNodeKey: 1
       },
       addSubPopover: false,
       // 搜索项
@@ -459,6 +474,8 @@ export default {
   },
   created() {
     this.getTree()
+    this.getUserList()
+    this.handleNodeClick({ id: 1 })
   },
   mounted() {},
   computed: {
@@ -467,6 +484,7 @@ export default {
     }
   },
   watch: {
+    // 监视角色列表的输入框
     filterText(val) {
       // console.log(val)
       this.$refs.roletree.filter(val)
@@ -482,30 +500,32 @@ export default {
       this.pageParams.full = !this.pageParams.full
     },
     // 提交搜索
-    submitForm() {},
+    submitForm() {
+      console.log(this.formData)
+      this.getUserList(this.formData.username, this.formData.id)
+    },
     // 重置搜索
     resetForm(formName) {
+      // !是否重置为''
+      this.formData.id = ''
+      this.getTree()
       this.$refs[formName].resetFields()
+      this.getUserList()
     },
-    // 点击确定传来的值
+    // dialog点击确定传来的值
     fetch() {
       this.getUserList()
     },
     // 表格按钮功能
-    userControl(name, row) {
-      if (name === 'add') {
-        this.dialogParams.headerTitle = '新建用户'
-        this.$refs.roledialog.showDialog(name)
-      }
-    },
+    // userControl(name, row) {
+    //   if (name === 'add') {
+    //     this.dialogParams.headerTitle = '新建用户'
+    //     this.$refs.roledialog.showDialog(name)
+    //   }
+    // },
+    // el-tabs切换点击
     tabsClick(tab, event) {
       console.log(tab, event)
-    },
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath)
     },
     // 获取角色树状列表
     async getTree() {
@@ -515,6 +535,13 @@ export default {
           console.log('🚀', result.data)
           const { retCode, data, retMsg } = result.data
           if (retCode === '000000') {
+            const arrSort = []
+            data.children.forEach(item => {
+              arrSort.push(item.id)
+            })
+            arrSort.sort()
+            this.treeControl.currentNodeKey = arrSort[0]
+
             this.roleTreeList = data.children
             this.timerLoading = setTimeout(() => {
               this.treeTableLoading = false
@@ -529,13 +556,37 @@ export default {
         })
     },
     // 获取用户列表
-    async getRoleList(name) {
+    async getUserList(name, id) {
       this.tableLoading = true
+      await getUserMgrList(name, id)
+        .then(result => {
+          console.log('🚀', result.data)
+          const { data, retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            this.timerLoading = setTimeout(() => {
+              this.tableLoading = false
+            }, 500)
+            this.tableData = data
+          } else {
+            this.tableLoading = false
+            this.$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
     },
     // el-tree点击项
     handleNodeClick(data) {
-      console.log(data)
-      this.getRoleList(data.name)
+      console.log('handleNodeClick', data)
+      this.formData.id = data.id
+      this.treeControl.currentNodeKey = data.id
+      console.log(
+        'this.treeControl.currentNodeKey',
+        this.treeControl.currentNodeKey
+      )
+      console.log('this.formData.id', this.formData.id)
+      this.getUserList(this.formData.username, this.formData.id)
     },
     // 搜索过滤
     filterNode(value, data) {
@@ -701,6 +752,38 @@ export default {
       this.treeControl.nodeId = ''
       this.treeControl.isEditTreeNode = false
       this.treeControl.content = ''
+    },
+    // 表格按钮功能
+    userControl(name, row) {
+      if (name === 'add') {
+        this.dialogParams.headerTitle = '新建用户'
+        this.$refs.roledialog.showDialog(name)
+      } else if (name === 'delete') {
+        this.$confirm('删除此账号, 是否继续?', ` ❌ 删除 - ${row.account}`, {
+          confirmButtonText: '重 置',
+          cancelButtonText: '取 消',
+          type: 'warning',
+          closeOnClickModal: false
+        })
+          .then(async () => {
+            await deleteUser(row.id)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('删除成功！')
+
+                  this.getUserList()
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {})
+          })
+          .catch(() => {})
+      } else {
+        this.$message.error('请尝试刷新后再试')
+      }
     }
   }
 }

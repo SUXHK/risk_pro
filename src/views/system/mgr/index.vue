@@ -47,6 +47,7 @@
                 : pageParams.fullFull
             }"
           />
+
           <el-tree
             node-key="id"
             :current-node-key="1"
@@ -185,7 +186,7 @@
                   </el-input>
                 </el-form-item>
                 <!-- style="width: 35%" -->
-                <el-form-item
+                <!-- <el-form-item
                   label="日期："
                   prop="time"
                   label-width="90px"
@@ -203,7 +204,7 @@
                     clearable
                   >
                   </el-date-picker>
-                </el-form-item>
+                </el-form-item> -->
                 <!-- <el-form-item label="结束时间：" prop="field109">
                   <el-date-picker
                     type="daterange"
@@ -218,7 +219,7 @@
                   >
                   </el-date-picker>
                 </el-form-item> -->
-                <el-form-item label-width="10px">
+                <el-form-item label-width="20px">
                   <el-button
                     type="primary"
                     icon="el-icon-search"
@@ -230,7 +231,7 @@
                 </el-form-item>
                 <!-- </el-col>
                   <el-col :span="4"> -->
-                <el-form-item label-width="10px">
+                <el-form-item label-width="20px">
                   <el-button
                     type="warning"
                     icon="el-icon-refresh-right"
@@ -296,7 +297,6 @@
             highlight-current-row
             tooltip-effect="dark"
             style="width: 100%"
-            @selection-change="handleSelectionChange"
           >
             <!-- <div v-if="tableData.length > 0"> -->
             <!-- <af-table-column type="selection" width="55" align="center">
@@ -447,12 +447,10 @@ export default {
       // 查询表单
       formData: {
         id: '',
-        username: '',
-        time: []
+        username: ''
       },
       rules: {
-        username: [],
-        time: []
+        username: []
       },
       // 表格数据
       tableData: [],
@@ -474,31 +472,21 @@ export default {
   },
   methods: {
     // 选中项
-    handleSelectionChange(val) {
-      console.log(val)
-      this.multipleSelection = val
-    },
+    // handleSelectionChange(val) {
+    //   console.log(val)
+    //   this.multipleSelection = val
+    // },
     // el-tree点击项
     handleNodeClick(data) {
       console.log(data)
       // this.formData = this.$options.data().formData
       this.formData.id = data.id
-      this.getUserList(
-        this.formData.time,
-        this.formData.time,
-        this.formData.username,
-        this.formData.id
-      )
+      this.getUserList(this.formData.username, this.formData.id)
     },
     // 提交搜索
     submitForm() {
       console.log(this.formData)
-      this.getUserList(
-        this.formData.time,
-        this.formData.time,
-        this.formData.username,
-        this.formData.id
-      )
+      this.getUserList(this.formData.username, this.formData.id)
     },
     // 重置搜索
     resetForm(formName) {
@@ -552,9 +540,9 @@ export default {
         })
     },
     // 获取用户列表
-    async getUserList(bTime, eTime, name, id) {
+    async getUserList(name, id) {
       this.tableLoading = true
-      await getUserMgrList(bTime, eTime, name, id)
+      await getUserMgrList(name, id)
         .then(result => {
           const { data, retCode, retMsg } = result.data
           console.log(data)
