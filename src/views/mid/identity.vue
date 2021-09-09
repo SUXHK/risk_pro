@@ -355,9 +355,9 @@
       </af-table-column>
       <af-table-column
         v-for="item in tableLabel"
-        :key="item"
-        :prop="item"
-        :label="item"
+        :key="item.orderNo"
+        :prop="item.alisa"
+        :label="item.displayName"
         align="center"
       >
       </af-table-column>
@@ -428,7 +428,7 @@ export default {
       // 正常table高度
       normalFull: 'calc(100vh - 319px)',
       // 表单label
-      tableLabel: {},
+      tableLabel: [],
       queryForm: {
         profType: '', // 业务种类
         joinCode1: '', // 收单机构系统内部商户编码
@@ -485,7 +485,7 @@ export default {
       await bizQuery(this.tableParams.bizAlias, this.queryParams)
         .then(result => {
           const { data, retCode, retMsg } = result.data
-
+          // console.log(data)
           if (retCode === '000000') {
             this.timerLoading = setTimeout(() => {
               this.tableLoading = false
@@ -494,28 +494,16 @@ export default {
               window.clearTimeout(this.timerLoading)
             })
             this.tableData = data.rows
-
-            // this.tableLabel = this.tableData[0]
+            this.tableLabel = data.header
+            this.total = data.total
             if (data.rows.length > 0) {
-              this.tableLabel = Object.keys(this.tableData[0])
               this.$message.success(
                 '加载：' + this.queryParams.limit + '条/页，' + retMsg
               )
-
               this.tableParams.isExportDisabled = false
             } else {
               this.tableParams.isExportDisabled = true
             }
-
-            // this.tableData.forEach(row => {
-            //   this.tableLabel = row
-            // })
-            this.total = data.total
-            // if (this.total > 0) {
-            //   this.tableParams.isExportDisabled = false
-            // } else {
-            //   this.tableParams.isExportDisabled = true
-            // }
           } else {
             this.$message.error(retMsg)
             this.tableParams.isExportDisabled = true

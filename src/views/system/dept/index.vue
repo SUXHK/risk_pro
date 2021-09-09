@@ -90,7 +90,7 @@
       </el-form>
     </el-row>
     <el-table
-      :indent="30"
+      :indent="20"
       :data="treeTableData"
       size="small"
       :border="false"
@@ -106,11 +106,10 @@
       default-expand-all
       :tree-props="{ children: 'children' }"
       :height="!pageParams.full ? pageParams.normalFull : pageParams.fullFull"
-    >
-      <el-table-column prop="name" label="组织机构层级" align="center">
-      </el-table-column>
-      <el-table-column prop="id" label="ID" align="center"> </el-table-column>
-      <el-table-column prop="pId" label="PID" align="center"> </el-table-column>
+      ><el-table-column type="index" label="No." width="60"> </el-table-column>
+      <el-table-column prop="name" label="组织机构层级"> </el-table-column>
+      <!-- <el-table-column prop="id" label="ID" align="center"> </el-table-column>
+      <el-table-column prop="pId" label="PID" align="center"> </el-table-column> -->
       <!--<el-table-column prop="checked" label="checked" align="center">
       </el-table-column>
       <el-table-column prop="open" label="open" align="center">
@@ -144,7 +143,7 @@
           >
           <el-divider direction="vertical"></el-divider>
 
-          <el-dropdown trigger="click" size="medium" placement="bottom">
+          <!-- <el-dropdown trigger="click" size="medium" placement="bottom">
             <el-button type="text" size="small" icon="el-icon-remove" disabled
               >停用</el-button
             >
@@ -195,7 +194,7 @@
               >
             </el-dropdown-menu>
           </el-dropdown>
-          <el-divider direction="vertical"></el-divider>
+          <el-divider direction="vertical"></el-divider> -->
 
           <el-popconfirm
             confirm-button-text="是的"
@@ -293,13 +292,13 @@ export default {
       this.tableLoading = true
       await getDeptTree()
         .then(result => {
-          // console.log('🚀', result.data)
+          console.log('🚀', result.data)
           const { data, retCode, retMsg } = result.data
           if (retCode === '000000') {
             this.timerLoading = setTimeout(() => {
               this.tableLoading = false
             }, 500)
-            this.treeTableData = data.children
+            this.treeTableData = data[0].children
           } else {
             this.$message.error(retMsg)
           }

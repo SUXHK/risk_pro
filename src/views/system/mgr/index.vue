@@ -47,10 +47,10 @@
                 : pageParams.fullFull
             }"
           />
-
+          <!-- :current-node-key="1" -->
           <el-tree
             node-key="id"
-            :current-node-key="1"
+            :current-node-key="0"
             :expand-on-click-node="false"
             highlight-current
             v-else
@@ -304,13 +304,20 @@
             <!-- </div> -->
 
             <!-- <div v-if="tableData.length > 0"> -->
-            <af-table-column type="selection" width="55" align="center">
-            </af-table-column>
             <af-table-column type="index" label="No." width="55" align="center">
             </af-table-column>
             <af-table-column prop="account" label="account" align="center">
             </af-table-column>
             <af-table-column prop="avatar" label="avatar" align="center">
+              <template slot-scope="scope">
+                <img
+                  class="el-image"
+                  v-if="scope.row.avatar === 'avatar.gif'"
+                  src="~@/assets/images/sand.png"
+                  alt=""
+                />
+                <span v-else>{{ scope.row.avatar }}</span>
+              </template>
             </af-table-column>
             <af-table-column prop="birthday" label="birthday" align="center">
             </af-table-column>
@@ -349,6 +356,14 @@
                   @click="userControl('edit', scope.row)"
                 >
                   编辑
+                </el-button>
+
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="userControl('editRole', scope.row)"
+                >
+                  角色分配
                 </el-button>
                 <template v-if="scope.row.status === 1">
                   <el-divider direction="vertical"></el-divider>
@@ -399,6 +414,12 @@
 
     <Dialog ref="mgrdialog" @fetch="fetch" :dialogParams="dialogParams">
     </Dialog>
+    <setRoleDialog
+      ref="setRoleDialog"
+      @fetch="fetch"
+      :dialogParams="dialogParams"
+    >
+    </setRoleDialog>
   </el-card>
 </template>
 
@@ -412,9 +433,11 @@ import {
 } from '@/api/system/mgr'
 import { getDeptTree } from '@/api/system/dept'
 import Dialog from './dialog.vue'
+import setRoleDialog from './setRoleDialog.vue'
 export default {
   components: {
-    Dialog
+    Dialog,
+    setRoleDialog
   },
   inject: ['reload'],
   data() {
@@ -529,7 +552,7 @@ export default {
             this.timerLoading = setTimeout(() => {
               this.treeTableLoading = false
             }, 500)
-            this.treeTableData = data.children
+            this.treeTableData = data
           } else {
             this.treeTableLoading = false
             this.$message.error(retMsg)
@@ -568,6 +591,9 @@ export default {
       } else if (name === 'edit') {
         this.dialogParams.headerTitle = '编辑用户信息 - ' + row.account
         this.$refs.mgrdialog.showDialog(name, row)
+      } else if (name === 'editRole') {
+        this.dialogParams.headerTitle = '角色分配 - ' + row.account
+        this.$refs.setRoleDialog.showDialog(name, row)
       } else if (name === 'resetPassword') {
         this.$confirm(
           '重置此账号密码，默认密码为：111111, 是否继续?',

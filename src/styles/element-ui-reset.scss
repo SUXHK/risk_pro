@@ -169,8 +169,8 @@
       color: #606266;
 
       .el-image {
-        width: 50px;
-        height: 50px;
+        width: 30px;
+        vertical-align: middle;
         border-radius: $base-border-radius;
       }
     }
@@ -189,7 +189,8 @@
   padding-right: 8px;
   // color: $base-color-default;
 }
-.el-tree-node__expand-icon {
+.el-tree-node__expand-icon,
+.el-icon-arrow-right {
   font-size: 18px;
   color: $base-color-default;
 }
