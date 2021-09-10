@@ -298,6 +298,7 @@ export default {
             this.timerLoading = setTimeout(() => {
               this.tableLoading = false
             }, 500)
+            // todo: 待优化
             this.treeTableData = data[0].children
           } else {
             this.$message.error(retMsg)

@@ -39,31 +39,68 @@
               >刷新</el-button
             >
           </div>
+          <el-input
+            style="margin-bottom:20px"
+            placeholder="搜索角色"
+            v-model="filterText"
+            size="middle"
+            prefix-icon="el-icon-search"
+            clearable
+          >
+          </el-input>
+
           <el-skeleton
-            v-if="treeTableLoading"
+            :loading="treeTableLoading"
+            :rows="7"
             :style="{
               height: !pageParams.full
-                ? pageParams.normalFull
-                : pageParams.fullFull
+                ? 'calc(100vh - 382px)'
+                : 'calc(100vh - 268px)'
             }"
-          />
+          >
+            <template slot="template">
+              <div style="padding: 15px 0;">
+                <el-skeleton-item variant="h1" style="width: 50%;" />
+              </div>
+              <div style="padding: 15px 0;">
+                <el-skeleton-item variant="h1" />
+              </div>
+              <div style="padding: 15px 0;">
+                <el-skeleton-item variant="h1" />
+              </div>
+              <div style="padding: 15px 0;">
+                <el-skeleton-item variant="h1" />
+              </div>
+              <div style="padding: 15px 0;">
+                <el-skeleton-item variant="h1" />
+              </div>
+              <div style="padding: 15px 0;">
+                <el-skeleton-item variant="h1" style="width: 50%;" />
+              </div>
+            </template>
+            <template>
+              <div style="overflow-x: hidden">
+                <el-tree
+                  node-key="id"
+                  :current-node-key="0"
+                  :expand-on-click-node="false"
+                  highlight-current
+                  ref="mgrtree"
+                  :data="treeTableData"
+                  :props="defaultProps"
+                  @node-click="handleNodeClick"
+                  :filter-node-method="filterNode"
+                  default-expand-all
+                  :style="{
+                    height: !pageParams.full
+                      ? 'calc(100vh - 382px)'
+                      : 'calc(100vh - 270px)'
+                  }"
+                ></el-tree>
+              </div>
+            </template>
+          </el-skeleton>
           <!-- :current-node-key="1" -->
-          <el-tree
-            node-key="id"
-            :current-node-key="0"
-            :expand-on-click-node="false"
-            highlight-current
-            v-else
-            :data="treeTableData"
-            :props="defaultProps"
-            @node-click="handleNodeClick"
-            default-expand-all
-            :style="{
-              height: !pageParams.full
-                ? pageParams.normalFull
-                : pageParams.fullFull
-            }"
-          ></el-tree>
         </el-card>
       </el-col>
       <el-col :span="19">
@@ -480,7 +517,9 @@ export default {
       // 表格加载
       tableLoading: true,
       // 选中的项
-      multipleSelection: []
+      multipleSelection: [],
+      // 搜索项
+      filterText: ''
     }
   },
   created() {
@@ -491,6 +530,13 @@ export default {
   computed: {
     tableSettings() {
       return this.$store.getters.tableSettings
+    }
+  },
+  watch: {
+    // 监视角色列表的输入框
+    filterText(val) {
+      // console.log(val)
+      this.$refs.mgrtree.filter(val)
     }
   },
   methods: {
@@ -505,6 +551,11 @@ export default {
       // this.formData = this.$options.data().formData
       this.formData.id = data.id
       this.getUserList(this.formData.username, this.formData.id)
+    },
+    // 搜索过滤
+    filterNode(value, data) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
     },
     // 提交搜索
     submitForm() {

@@ -21,6 +21,18 @@
         <el-form-item label="选择员工：" prop="field101">
           123
         </el-form-item>
+        <el-form-item label="选择员工：" prop="field101">
+          <el-cascader
+            v-model="formData.field101"
+            :options="field101Options"
+            :props="field101Props"
+            :style="{ width: '100%' }"
+            placeholder="请选择员工"
+            separator=" / "
+            filterable
+            clearable
+          ></el-cascader>
+        </el-form-item>
       </el-form>
     </template>
 
@@ -64,16 +76,51 @@ export default {
       // 部门显示状态
       showDepState: false,
       // 表单
-      formData: {},
+      formData: {
+        field101: ['']
+      },
       rules: {
         field101: [
           {
             required: true,
             type: 'array',
-            message: '请至少选择一个选择员工：',
+            message: '请至少选择一个级联选择',
             trigger: 'change'
           }
         ]
+      },
+      field101Options: [
+        {
+          id: 1,
+          value: 1,
+          label: '部门1',
+          children: [
+            {
+              id: 2,
+              value: 2,
+              label: '用户1'
+            }
+          ]
+        },
+        {
+          id: 3,
+          value: 3,
+          label: '部门2',
+          children: [
+            {
+              id: 4,
+              value: 4,
+              label: '用户2'
+            }
+          ]
+        }
+      ],
+      field101Props: {
+        multiple: true,
+        label: 'label',
+        value: 'value',
+        children: 'children',
+        checkStrictly: true
       },
       // 部门列表
       deptList: [],

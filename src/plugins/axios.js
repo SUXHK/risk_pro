@@ -23,10 +23,11 @@ service.interceptors.request.use(
     return config
   },
   function(error) {
+    Notification.closeAll()
     Notification.error({
-      title: '网络错误，请求超时',
-      message: 'Network error, request timeout',
-      duration: 0
+      title: '请求超时，网络错误',
+      message: 'Request timeout, network error',
+      duration: 15000
     })
     // Do something with request error
     return Promise.reject(error)
@@ -60,10 +61,11 @@ service.interceptors.response.use(
     return response
   },
   function(error) {
+    Notification.closeAll()
     Notification.error({
-      title: '网络错误，响应超时',
-      message: 'Network error, response timeout',
-      duration: 0
+      title: '响应超时，网络错误',
+      message: 'Response timeout, network error',
+      duration: 15000
     })
     // Do something with response error
     return Promise.reject(error)

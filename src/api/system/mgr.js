@@ -84,3 +84,12 @@ export function unfreezeUser(id) {
     params: { userId: id }
   })
 }
+
+// 分配角色
+export function setRole(rId, uId) {
+  return request({
+    url: `/userMgr/setRole`,
+    method: 'get',
+    params: { roleIds: rId, userId: uId }
+  })
+}

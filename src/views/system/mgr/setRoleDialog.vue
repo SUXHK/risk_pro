@@ -2,10 +2,9 @@
   <el-dialog
     :title="dialogParams.headerTitle"
     :visible.sync="dialogVisible"
-    width="35%"
+    width="30%"
     @close="close('elForm')"
     class="mgr-dialog"
-    top="10vh"
     :append-to-body="true"
     :close-on-click-modal="false"
   >
@@ -16,10 +15,35 @@
         :rules="rules"
         size="medium"
         label-position="right"
-        label-width="120px"
+        label-width="100px"
       >
-        <el-form-item label="选择员工：" prop="field101">
-          123
+        <el-form-item label="员工：" prop="name">
+          <el-input
+            v-model="formData.name"
+            placeholder="员工"
+            readonly
+            clearable
+            prefix-icon="el-icon-user-solid"
+            :style="{ width: '100%' }"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="选择角色：" prop="roleIds">
+          <el-cascader
+            v-model="formData.roleIds"
+            :options="roleIdOptions"
+            :props="roleIdProps"
+            :style="{ width: '100%' }"
+            placeholder="请选择角色或点击搜索，支持多选角色"
+            separator=" / "
+            filterable
+            :show-all-levels="false"
+            clearable
+            ref="myCascader"
+            ><template slot-scope="{ node, data }">
+              <span>{{ data.name }}</span>
+              <span v-if="!node.isLeaf"> ({{ data.children.length }}) </span>
+            </template></el-cascader
+          >
         </el-form-item>
       </el-form>
     </template>
@@ -41,6 +65,8 @@
 </template>
 
 <script>
+import { setRole } from '@/api/system/mgr'
+import { getRoleTree } from '@/api/system/role'
 export default {
   name: 'Dialog',
   props: {
@@ -64,28 +90,61 @@ export default {
       // 部门显示状态
       showDepState: false,
       // 表单
-      formData: {},
+      formData: {
+        userId: '',
+        name: '',
+        roleIds: []
+      },
       rules: {
-        field101: [
+        userId: [],
+        name: [],
+        roleIds: [
           {
             required: true,
             type: 'array',
-            message: '请至少选择一个选择员工：',
+            message: '请至少选择一个角色',
             trigger: 'change'
           }
         ]
       },
       // 部门列表
-      deptList: [],
-      // 调用名字
-      callName: ''
+      roleIdOptions: [],
+      roleIdProps: {
+        multiple: true,
+        label: 'name',
+        value: 'id',
+        children: 'children',
+        checkStrictly: true,
+        emitPath: false
+      }
     }
   },
   methods: {
+    // 选中的cascader
+    // handleAreaChange(val) {
+    //   console.log(val)
+    //    this.$refs.myCascader.getCheckedNodes()[0].pathLabels
+    //    // 选中的lable文字
+    // },
     showDialog(name, row) {
-      this.callName = name
+      console.log('row', row.roleIds)
+      this.getRoleList()
       if (name === 'editRole') {
         this.dialogVisible = true
+        this.formData.userId = row.id
+        this.formData.name = row.account
+
+        console.log(row.roleIds.indexOf(',') > -1)
+        if (row.roleIds.indexOf(',') > -1) {
+          const arr = []
+          const roleIdList = row.roleIds.split(',')
+          for (var i = 0; i < roleIdList.length; i++) {
+            arr.push(roleIdList[i])
+          }
+          this.formData.roleIds = arr
+        } else {
+          this.formData.roleIds.push(row.roleIds)
+        }
       } else {
         this.$message.error('调用失败...')
         this.dialogVisible = false
@@ -105,7 +164,29 @@ export default {
     sure(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          this.sureLoading = true
+          // this.sureLoading = true
+          // const newFormData = this.$lodash.cloneDeep(this.formData)
+          // console.log(...newFormData.roleIds)
+          // console.log(this.formData.roleIds + '')
+          // console.log(setRole)
+          await setRole(this.formData.roleIds + '', this.formData.userId)
+            .then(result => {
+              console.log(result.data)
+              const { retCode, retMsg } = result.data
+              if (retCode === '000000') {
+                this.$message.success('角色分配成功')
+                this.sureLoading = false
+                this.dialogVisible = false
+                this.$emit('fetch')
+              } else {
+                this.$message.error(retMsg)
+                this.sureLoading = false
+              }
+            })
+            .catch(() => {
+              console.log('🛸🛸🛸🛸🛸🛸🛸')
+              this.sureLoading = false
+            })
         } else {
           this.$message.error('error submit!!')
           return false
@@ -115,6 +196,23 @@ export default {
     // 重置
     resetForm(formName) {
       this.$refs[formName].resetFields()
+      this.formData.roleIds = []
+    },
+    // 获取角色列表
+    async getRoleList() {
+      await getRoleTree()
+        .then(result => {
+          console.log('🚀', result.data)
+          const { retCode, data, retMsg } = result.data
+          if (retCode === '000000') {
+            this.roleIdOptions = data[0].children
+          } else {
+            this.$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
     }
   }
 }

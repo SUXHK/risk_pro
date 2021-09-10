@@ -93,8 +93,7 @@
                   </div>
                 </template>
                 <template>
-                  <el-scrollbar wrap-class="scrollbar-wrapper-tree">
-                    <!-- <div style="overflow-x: hidden"> -->
+                  <div style="overflow-x: hidden">
                     <el-tree
                       node-key="id"
                       :current-node-key="0"
@@ -109,7 +108,7 @@
                       :style="{
                         height: !pageParams.full
                           ? 'calc(100vh - 412px)'
-                          : 'calc(100vh - 290px) '
+                          : 'calc(100vh - 290px)'
                       }"
                     >
                       <!-- :render-content="renderContent" -->
@@ -220,8 +219,7 @@
                         </span>
                       </span>
                     </el-tree>
-                    <!-- </div> -->
-                  </el-scrollbar>
+                  </div>
                 </template>
               </el-skeleton>
             </el-card>
@@ -242,7 +240,7 @@
                     <el-form-item label="员工名称：" prop="username">
                       <el-input
                         v-model="formData.username"
-                        placeholder="请输入员工名称"
+                        placeholder="请输入员工名称或账户"
                         clearable
                         :style="{ width: '100%' }"
                       >
@@ -333,58 +331,69 @@
                   align="center"
                 >
                 </af-table-column>
-                <af-table-column prop="account" label="account" align="center">
+                <af-table-column prop="account" label="账号" align="center">
                 </af-table-column>
-                <af-table-column prop="avatar" label="avatar" align="center">
+                <af-table-column prop="name" label="用户名" align="center">
+                </af-table-column>
+
+                <af-table-column prop="deptName" label="部门" align="center">
+                </af-table-column>
+                <!-- <af-table-column prop="deptid" label="deptid" align="center">
+                </af-table-column> -->
+                <af-table-column prop="sexName" label="性别" align="center">
                   <template slot-scope="scope">
-                    <img
-                      class="el-image"
-                      v-if="scope.row.avatar === 'avatar.gif'"
-                      src="~@/assets/images/sand.png"
-                      alt=""
-                    />
-                    <span v-else>{{ scope.row.avatar }}</span>
+                    <svg-icon
+                      title="男"
+                      style="color:#1890FF"
+                      icon-class="men-line"
+                      v-if="scope.row.sex === 1"
+                    ></svg-icon>
+                    <svg-icon
+                      title="女"
+                      style="color:#F5222D"
+                      icon-class="women-line"
+                      v-else-if="scope.row.sex === 2"
+                    ></svg-icon>
+                    <svg-icon
+                      title="未知"
+                      icon-class="question-mark"
+                      v-else
+                    ></svg-icon>
                   </template>
                 </af-table-column>
-                <af-table-column
-                  prop="birthday"
-                  label="birthday"
-                  align="center"
-                >
+                <af-table-column prop="email" label="e-Mail" align="center">
                 </af-table-column>
-                <af-table-column
-                  prop="deptName"
-                  label="deptName"
-                  align="center"
-                >
+
+                <af-table-column prop="phone" label="手机号" align="center">
                 </af-table-column>
-                <af-table-column prop="deptid" label="deptid" align="center">
-                </af-table-column>
-                <af-table-column prop="email" label="email" align="center">
-                </af-table-column>
-                <af-table-column prop="name" label="name" align="center">
-                </af-table-column>
-                <af-table-column prop="phone" label="phone" align="center">
-                </af-table-column>
-                <af-table-column
+                <!-- <af-table-column
                   prop="roleName"
                   label="roleName"
                   align="center"
                 >
+                </af-table-column> -->
+                <af-table-column prop="roleIds" label="roleIds" align="center">
                 </af-table-column>
-                <af-table-column prop="roleid" label="roleid" align="center">
+                <af-table-column prop="birthday" label="生日" align="center">
                 </af-table-column>
-                <af-table-column prop="sex" label="sex" align="center">
-                </af-table-column>
-                <af-table-column prop="sexName" label="sexName" align="center">
-                </af-table-column>
-                <af-table-column prop="status" label="status" align="center">
-                </af-table-column>
+
                 <af-table-column
                   prop="statusName"
-                  label="statusName"
+                  label="状态"
                   align="center"
+                  fixed="right"
                 >
+                  <template slot-scope="scope">
+                    <el-tag size="small" v-if="scope.row.status === 1">{{
+                      scope.row.statusName
+                    }}</el-tag>
+                    <el-tag
+                      type="danger"
+                      size="small"
+                      v-if="scope.row.status === 2"
+                      >{{ scope.row.statusName }}</el-tag
+                    >
+                  </template>
                 </af-table-column>
                 <!-- <af-table-column label="操作" align="center" fixed="right">
                   <template slot-scope="scope">
@@ -465,7 +474,7 @@
                   </div>
                 </template>
                 <template>
-                  <el-scrollbar wrap-class="scrollbar-wrapper-tree">
+                  <div style="overflow-x: hidden">
                     <!-- <div style="overflow-x: hidden"> -->
                     <el-tree
                       node-key="id"
@@ -481,7 +490,7 @@
                       :style="{
                         height: !pageParams.full
                           ? 'calc(100vh - 412px)'
-                          : 'calc(100vh - 290px) '
+                          : 'calc(100vh - 290px)'
                       }"
                     >
                       <!-- :render-content="renderContent" -->
@@ -592,8 +601,8 @@
                         </span>
                       </span>
                     </el-tree>
-                    <!-- </div> -->
-                  </el-scrollbar>
+                  </div>
+                  <!-- </el-scrollbar> -->
                 </template>
               </el-skeleton>
             </el-card>
@@ -612,6 +621,7 @@
                   treeControl.currentRoleName
                 }}</span>
               </div>
+              123
             </el-card>
           </el-col>
         </el-row>
@@ -633,6 +643,7 @@
 
 <script>
 import { getUserMgrList } from '@/api/system/mgr'
+// import { getUserMgrList } from '@/api/user'
 import { getRoleTree, roleAdd, roleEdit, roleDelete } from '@/api/system/role'
 import Dialog from './dialog.vue'
 import RoleDialog from './roleDialog.vue'
@@ -660,7 +671,7 @@ export default {
         // 正常table高度
         normalFull: 'calc(100vh - 312px)',
         // tabs标签页默认项
-        activeTabs: 'role'
+        activeTabs: 'role' // staff role
       },
       // 查询表单
       formData: {
@@ -734,7 +745,6 @@ export default {
     },
     // 重置搜索
     resetForm(formName) {
-      // !是否重置为''
       this.formData.id = ''
       this.getTree()
       this.$refs[formName].resetFields()
@@ -1021,6 +1031,7 @@ export default {
         this.$message.error('调用失败')
       }
     }
+    // 获取Menus
   }
 }
 </script>

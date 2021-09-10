@@ -299,7 +299,7 @@ export const constantRoutes = [
             meta: { title: '菜单管理' },
             component: () =>
               import(
-                /* webpackChunkName: "Risk-system-menu" */ '@/views/system/menu.vue'
+                /* webpackChunkName: "Risk-system-menu" */ '@/views/system/menu/index.vue'
               )
           },
           {
