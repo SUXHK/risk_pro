@@ -107,27 +107,56 @@
       :tree-props="{ children: 'children' }"
       :height="!pageParams.full ? pageParams.normalFull : pageParams.fullFull"
     >
-      <el-table-column type="index" label="No." width="60"> </el-table-column>
-      <el-table-column label="操作" align="center" width="500">
+      <af-table-column type="index" label="No."> </af-table-column>
+      <af-table-column label="菜单名称" prop="name" align="left">
+      </af-table-column>
+      <af-table-column label="请求地址" prop="url" align="left">
+      </af-table-column>
+      <af-table-column label="代码" prop="code" align="left"> </af-table-column>
+      <af-table-column label="图标" prop="icon" align="left"> </af-table-column>
+      <!-- <af-table-column label="id" prop="id" align="center"> </af-table-column> -->
+      <af-table-column label="是否菜单" prop="ismenu" align="left">
+      </af-table-column>
+      <af-table-column label="层级" prop="levels" align="left">
+      </af-table-column>
+      <af-table-column label="排序" prop="num" align="left"> </af-table-column>
+      <!-- <af-table-column label="parentId" prop="parentId" align="center">
+      </af-table-column> -->
+      <af-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button
             type="text"
             size="small"
             icon="el-icon-edit"
-            @click="action('name', scope.row)"
-            >XXX</el-button
+            @click="action('edit', scope.row)"
+            >编辑</el-button
           >
           <el-divider direction="vertical"></el-divider>
-
           <el-button
             type="text"
             size="small"
             icon="el-icon-circle-plus"
-            @click="action('name', scope.row)"
-            >XXX</el-button
+            @click="action('newSubDep', scope.row)"
+            >新建下级菜单</el-button
+          >
+          <el-divider direction="vertical"></el-divider>
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-plus"
+            @click="action('newLevelDep', scope.row)"
+            >新建平级菜单</el-button
+          >
+          <el-divider direction="vertical"></el-divider>
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-delete-solid"
+            @click="action('del', scope.row)"
+            >删除</el-button
           >
         </template>
-      </el-table-column>
+      </af-table-column>
     </el-table>
     <app-footer class="footer" v-if="!pageParams.full"></app-footer>
 
@@ -136,6 +165,7 @@
 </template>
 
 <script>
+import { menuMgrTree } from '@/api/system/menu'
 import Dialog from './dialog.vue'
 export default {
   components: {
@@ -180,7 +210,9 @@ export default {
       stateOptions: []
     }
   },
-  created() {},
+  created() {
+    this.getMenuTree()
+  },
   mounted() {},
   completed: {},
   methods: {
@@ -210,11 +242,42 @@ export default {
     action(name, row) {
       if (name === 'edit') {
         // 编辑部门
-        this.dialogParams.headerTitle = '编辑部门 - ' + row.name
-        this.$refs.dialog.showDialog(row, name)
+        this.dialogParams.headerTitle = row.name + ' - 编辑部门'
+        this.$refs.dialog.showDialog(name, row)
+      } else if (name === 'newSubDep') {
+        // 新建下级菜单
+        this.dialogParams.headerTitle = row.name + ' - 新建下级菜单'
+        this.$refs.dialog.showDialog(name, row)
+      } else if (name === 'newLevelDep') {
+        // 新建平级菜单
+        this.dialogParams.headerTitle = row.name + ' - 新建平级菜单'
+        this.$refs.dialog.showDialog(name, row)
+      } else if (name === 'del') {
+        // 删除
+        this.$message.success('ID：' + row.id + '； Name：' + name)
       } else {
         this.$message.error('调用失败...')
       }
+    },
+    // 获取菜单树状列表
+    async getMenuTree() {
+      this.tableLoading = true
+      await menuMgrTree()
+        .then(result => {
+          const { data, retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            setTimeout(() => {
+              this.tableLoading = false
+            }, 500)
+            this.treeTableData = data[0].children
+            console.log(this.treeTableData)
+          } else {
+            this.$$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
     }
   }
 }

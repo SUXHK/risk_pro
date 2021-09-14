@@ -15,92 +15,15 @@
         size="small"
         label-width="100px"
       >
-        <el-form-item label="上级部门：" prop="pid">
-          <el-select
-            v-if="callName === 'newSubDep'"
-            v-model="formData.pid"
-            placeholder="点击输入搜索或选择上级部门"
-            filterable
-            clearable
-            :style="{ width: '100%' }"
-          >
-            <el-option
-              v-for="(item, index) in deptList"
-              :key="index"
-              :label="item.simplename"
-              :value="item.id"
-              :disabled="item.disabled"
-            ></el-option>
-          </el-select>
-          <el-select
-            v-else
-            v-model="formData.pid"
-            placeholder="点击输入搜索或选择上级部门"
-            filterable
-            clearable
-            :style="{ width: '100%' }"
-          >
-            <el-option
-              v-for="(item, index) in deptList"
-              :key="index"
-              :label="item.pName"
-              :value="item.pid"
-              :disabled="item.disabled"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="部门全称：" prop="fullname">
-          <el-input
-            v-model="formData.fullname"
-            placeholder="请输入部门全称"
-            :maxlength="18"
-            clearable
-            :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="部门简称：" prop="simplename">
-          <el-input
-            v-model="formData.simplename"
-            placeholder="请输入部门简称"
-            :maxlength="18"
-            clearable
-            :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
-
-        <el-form-item label="显示排序：" prop="num">
-          <el-input-number
-            v-model="formData.num"
-            placeholder="显示排序"
-            :step="1"
-            step-strictly
-            :max="100"
-          >
-          </el-input-number>
-        </el-form-item>
-
-        <!-- <el-form-item label="部门状态：" prop="field110" v-if="showDepState">
-          <el-radio-group v-model="formData.field110" size="medium">
-            <el-radio
-              v-for="(item, index) in field110Options"
-              :key="index"
-              :label="item.value"
-              :disabled="item.disabled"
-              >{{ item.label }}</el-radio
-            >
-          </el-radio-group>
-        </el-form-item> -->
-        <el-form-item label="备注：" prop="tips">
-          <el-input
-            v-model="formData.tips"
-            type="textarea"
-            placeholder="请输入备注"
-            show-word-limit
-            :autosize="{ minRows: 3 }"
-            maxlength="1000"
-            :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
+        <el-form-item label="菜单编号：" prop=""> </el-form-item>
+        <el-form-item label="菜单名称：" prop=""> </el-form-item>
+        <el-form-item label="是否是菜单：" prop=""> </el-form-item>
+        <el-form-item label="是否打开：" prop=""> </el-form-item>
+        <el-form-item label="菜单图标：" prop=""> </el-form-item>
+        <el-form-item label="菜单排序号：" prop=""> </el-form-item>
+        <el-form-item label="菜单状态：" prop=""> </el-form-item>
+        <el-form-item label="url地址：" prop=""> </el-form-item>
+        <el-form-item label="备注：" prop=""> </el-form-item>
       </el-form>
     </template>
     <span slot="footer" class="dialog-footer">
@@ -188,11 +111,18 @@ export default {
     }
   },
   methods: {
-    showDialog(row, name) {
+    showDialog(name, row) {
       this.callName = name
-      // console.log(row)
-      this.formData.id = row.id
-      this.getList(row.name)
+      if (name === 'edit') {
+        this.dialogVisible = true
+      } else if (name === 'newSubDep') {
+        this.dialogVisible = true
+      } else if (name === 'newLevelDep') {
+        this.dialogVisible = true
+      } else {
+        this.$message.error('调用失败...')
+        this.dialogVisible = false
+      }
     },
     close(formName) {
       // 重置vue组件的data数据
