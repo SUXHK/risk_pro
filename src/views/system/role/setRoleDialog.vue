@@ -126,7 +126,7 @@ export default {
     // },
 
     showDialog(name, row) {
-      console.log('row', row.roleIds)
+      console.log('row', row)
       this.getRoleList()
       if (name === 'editRole') {
         this.dialogVisible = true

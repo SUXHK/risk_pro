@@ -307,11 +307,10 @@ export default {
       console.log(row)
       if (name === 'edit') {
         this.formData = this.$lodash.cloneDeep(row)
+        // 状态需要添加
         this.formData.status = 1
         this.dialogVisible = true
-      } else if (name === 'newSubDep') {
-        this.dialogVisible = true
-      } else if (name === 'newLevelDep') {
+      } else if (name === 'add') {
         this.dialogVisible = true
       } else {
         this.$message.error('调用失败...')
@@ -327,7 +326,7 @@ export default {
       // })
       this.dialogVisible = false
       this.resetForm(formName)
-      this.formData = this.$options.data().formData
+      // this.formData = this.$options.data().formData
     },
     sure(formName) {
       // this.$emit('fetch')

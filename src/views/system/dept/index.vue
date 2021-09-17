@@ -33,27 +33,33 @@
         label-position="right"
         class="queryForm"
         label-width="80px"
+        style="display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: space-between;
+    align-items: center;"
       >
         <!-- 部门名称 -->
-        <el-col :span="6" style="display:inline-block">
+        <div style="display:flex">
           <el-form-item label="部门名称:" prop="industryTitle">
             <el-input
               v-model="queryForm.industryTitle"
               placeholder="请输入部门名称"
               clearable
-              :style="{ width: '80%' }"
+              :style="{ width: '100%' }"
             >
             </el-input>
           </el-form-item>
-        </el-col>
-        <!-- 状态 -->
-        <el-col :span="6" style="display:inline-block">
+
+          <!-- 状态 -->
+
           <el-form-item label="状态:" prop="state">
             <el-select
               v-model="queryForm.state"
               placeholder="请选择状态"
               clearable
-              :style="{ width: '80%' }"
+              :style="{ width: '100%' }"
             >
               <el-option
                 v-for="(item, index) in stateOptions"
@@ -64,9 +70,8 @@
               ></el-option>
             </el-select>
           </el-form-item>
-        </el-col>
-        <el-col :span="6" style="display:inline-block;">
-          <el-form-item label-width="0px">
+
+          <el-form-item label-width="20px">
             <div :style="{ width: '100%' }">
               <el-button
                 type="primary"
@@ -86,7 +91,20 @@
               </el-button>
             </div>
           </el-form-item>
-        </el-col>
+        </div>
+
+        <div style="display:flex">
+          <el-form-item label-width="10px"
+            ><el-button
+              type="primary"
+              icon="el-icon-circle-plus"
+              size="small"
+              @click="editDialog('add')"
+            >
+              新建部门
+            </el-button></el-form-item
+          >
+        </div>
       </el-form>
     </el-row>
     <el-table
@@ -108,101 +126,23 @@
       :height="!pageParams.full ? pageParams.normalFull : pageParams.fullFull"
       ><el-table-column type="index" label="No." width="60"> </el-table-column>
       <el-table-column prop="name" label="组织机构层级"> </el-table-column>
-      <!-- <el-table-column prop="id" label="ID" align="center"> </el-table-column>
-      <el-table-column prop="pId" label="PID" align="center"> </el-table-column> -->
-      <!--<el-table-column prop="checked" label="checked" align="center">
-      </el-table-column>
-      <el-table-column prop="open" label="open" align="center">
-      </el-table-column>
-      <el-table-column prop="pId" label="pId" align="center"> </el-table-column> -->
-      <el-table-column label="操作" align="center" width="500">
+      <el-table-column label="操作" align="center" width="300">
         <template slot-scope="scope">
           <el-button
             type="text"
             size="small"
             icon="el-icon-edit"
-            @click="editDialog(scope.row, 'edit')"
+            @click="editDialog('edit', scope.row)"
             >编辑</el-button
           >
           <el-divider direction="vertical"></el-divider>
-
-          <el-button
-            type="text"
-            size="small"
-            icon="el-icon-circle-plus"
-            @click="editDialog(scope.row, 'newSubDep')"
-            >新建下级部门</el-button
-          >
-          <el-divider direction="vertical"></el-divider>
-          <el-button
-            type="text"
-            size="small"
-            icon="el-icon-plus"
-            @click="editDialog(scope.row, 'newLevelDep')"
-            >新建平级部门</el-button
-          >
-          <el-divider direction="vertical"></el-divider>
-
-          <!-- <el-dropdown trigger="click" size="medium" placement="bottom">
-            <el-button type="text" size="small" icon="el-icon-remove" disabled
-              >停用</el-button
-            >
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item
-                @click.native="removeAndDel(scope.row, 'disable')"
-                ><svg-icon
-                  icon-class="person-off"
-                  style="font-size:16px;margin-right:5px"
-                ></svg-icon
-                >停用一部门不包含员工</el-dropdown-item
-              >
-              <el-dropdown-item
-                @click.native="removeAndDel(scope.row, 'disableAll')"
-                ><svg-icon
-                  icon-class="group_off"
-                  style="font-size:16px; margin-right:5px"
-                ></svg-icon
-                >停用一部门包含员工</el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </el-dropdown>
-          <el-divider direction="vertical"></el-divider>
-
-          <el-dropdown trigger="click" size="medium" placement="bottom">
-            <el-button
-              type="text"
-              size="small"
-              icon="el-icon-delete-solid"
-              disabled
-              >删除</el-button
-            >
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="removeAndDel(scope.row, 'del')"
-                ><svg-icon
-                  icon-class="remove_person"
-                  style="font-size:16px; margin-right:5px"
-                ></svg-icon
-                >删除一部门不包含员工</el-dropdown-item
-              >
-              <el-dropdown-item
-                @click.native="removeAndDel(scope.row, 'delAll')"
-                ><svg-icon
-                  icon-class="remove_group"
-                  style="font-size:16px; margin-right:5px"
-                ></svg-icon
-                >删除一部门包含员工</el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </el-dropdown>
-          <el-divider direction="vertical"></el-divider> -->
-
           <el-popconfirm
             confirm-button-text="是的"
             cancel-button-text="取消"
             icon="el-icon-info"
             icon-color="red"
             title="确定删除整个部门？"
-            @confirm="removeAndDel(scope.row, 'del')"
+            @confirm="removeAndDel('del', scope.row)"
           >
             <el-button
               slot="reference"
@@ -333,24 +273,20 @@ export default {
       // console.log(formData)
       this.getTree()
     },
-    editDialog(row, name) {
+    editDialog(name, row) {
       if (name === 'edit') {
         // 编辑部门
         this.dialogParams.headerTitle = '编辑部门 - ' + row.name
-        this.$refs.deptdialog.showDialog(row, name)
-      } else if (name === 'newSubDep') {
+        this.$refs.deptdialog.showDialog(name, row)
+      } else if (name === 'add') {
         // 新建下级部门
-        this.dialogParams.headerTitle = '新建下级部门 - ' + row.name
-        this.$refs.deptdialog.showDialog(row, name)
-      } else if (name === 'newLevelDep') {
-        // 新建平级部门
-        this.dialogParams.headerTitle = '新建平级部门 - ' + row.name
-        this.$refs.deptdialog.showDialog(row, name)
+        this.dialogParams.headerTitle = '新建下级部门'
+        this.$refs.deptdialog.showDialog(name)
       } else {
         this.$message.error('调用失败...')
       }
     },
-    async removeAndDel(row, name) {
+    async removeAndDel(name, row) {
       if (name === 'disable') {
         this.$message.success('ID：' + row.id + '； Name：' + name)
       } else if (name === 'disableAll') {

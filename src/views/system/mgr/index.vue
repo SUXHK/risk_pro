@@ -222,40 +222,6 @@
                   >
                   </el-input>
                 </el-form-item>
-                <!-- style="width: 35%" -->
-                <!-- <el-form-item
-                  label="日期："
-                  prop="time"
-                  label-width="90px"
-                  style="width: 38%"
-                >
-                  <el-date-picker
-                    type="daterange"
-                    v-model="formData.time"
-                    format="yyyy-MM-dd"
-                    value-format="yyyy-MM-dd"
-                    :style="{ width: '100%' }"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    range-separator="-"
-                    clearable
-                  >
-                  </el-date-picker>
-                </el-form-item> -->
-                <!-- <el-form-item label="结束时间：" prop="field109">
-                  <el-date-picker
-                    type="daterange"
-                    v-model="formData.field109"
-                    format="yyyy-MM-dd"
-                    value-format="yyyy-MM-dd"
-                    :style="{ width: '100%' }"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    range-separator="至"
-                    clearable
-                  >
-                  </el-date-picker>
-                </el-form-item> -->
                 <el-form-item label-width="20px">
                   <el-button
                     type="primary"
@@ -395,13 +361,13 @@
                   编辑
                 </el-button>
 
-                <el-button
+                <!-- <el-button
                   type="text"
                   size="small"
                   @click="userControl('editRole', scope.row)"
                 >
                   角色分配
-                </el-button>
+                </el-button> -->
                 <template v-if="scope.row.status === 1">
                   <el-divider direction="vertical"></el-divider>
                   <el-button
@@ -591,6 +557,7 @@ export default {
     // 点击确定传来的值
     fetch() {
       this.getUserList()
+      this.getTree()
     },
     // 获取树
     async getTree() {

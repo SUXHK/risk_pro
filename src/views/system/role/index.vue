@@ -395,17 +395,45 @@
                     >
                   </template>
                 </af-table-column>
-                <!-- <af-table-column label="操作" align="center" fixed="right">
+                <af-table-column label="操作" align="center" fixed="right">
                   <template slot-scope="scope">
-                    <el-button
+                    <!-- <el-button
                       type="text"
                       size="small"
                       @click="userControl('delete', scope.row)"
                     >
                       删除
+                    </el-button> -->
+                    <el-button
+                      type="text"
+                      size="small"
+                      @click="userControl('editRole', scope.row)"
+                    >
+                      角色分配
                     </el-button>
+                    <template v-if="scope.row.status === 1">
+                      <el-divider direction="vertical"></el-divider>
+                      <el-button
+                        type="text"
+                        size="small"
+                        @click="userControl('freeze', scope.row)"
+                      >
+                        停用
+                      </el-button>
+                    </template>
+
+                    <template v-else>
+                      <el-divider direction="vertical"></el-divider>
+                      <el-button
+                        type="text"
+                        size="small"
+                        @click="userControl('unfreeze', scope.row)"
+                      >
+                        启用
+                      </el-button>
+                    </template>
                   </template>
-                </af-table-column> -->
+                </af-table-column>
               </el-table>
             </el-card>
           </el-col>
@@ -638,20 +666,28 @@
       :dialogParams="dialogParams"
     >
     </RoleDialog>
+    <setRoleDialog
+      ref="setRoleDialog"
+      @fetch="fetch"
+      :dialogParams="dialogParams"
+    >
+    </setRoleDialog>
   </el-card>
 </template>
 
 <script>
-import { getUserMgrList } from '@/api/system/mgr'
+import { getUserMgrList, freezeUser, unfreezeUser } from '@/api/system/mgr'
 // import { getUserMgrList } from '@/api/user'
 import { getRoleTree, roleAdd, roleEdit, roleDelete } from '@/api/system/role'
 import Dialog from './dialog.vue'
 import RoleDialog from './roleDialog.vue'
+import setRoleDialog from './setRoleDialog.vue'
 
 export default {
   components: {
     Dialog,
-    RoleDialog
+    RoleDialog,
+    setRoleDialog
   },
   inject: ['reload'],
   data() {
@@ -671,7 +707,7 @@ export default {
         // 正常table高度
         normalFull: 'calc(100vh - 312px)',
         // tabs标签页默认项
-        activeTabs: 'role' // staff role
+        activeTabs: 'staff' // staff role
       },
       // 查询表单
       formData: {
@@ -1029,6 +1065,60 @@ export default {
         this.$refs.roleselectdialog.showDialog(name)
       } else {
         this.$message.error('调用失败')
+      }
+    },
+    // 表格按钮功能
+    userControl(name, row) {
+      if (name === 'editRole') {
+        this.dialogParams.headerTitle = '角色分配 - ' + row.account
+        this.$refs.setRoleDialog.showDialog(name, row)
+      } else if (name === 'freeze') {
+        this.$confirm('停用此账号, 是否继续?', ` 🚫 停用 - ${row.account}`, {
+          confirmButtonText: '停 用',
+          cancelButtonText: '取 消',
+          type: 'warning',
+          closeOnClickModal: false
+        })
+          .then(async () => {
+            await freezeUser(row.id)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('停用成功！')
+                  this.getUserList()
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {})
+          })
+          .catch(() => {})
+      } else if (name === 'unfreeze') {
+        this.$confirm('启用此账号, 是否继续?', ` ✅ 启用 - ${row.account}`, {
+          confirmButtonText: '启 用',
+          cancelButtonText: '取 消',
+          type: 'warning',
+          closeOnClickModal: false
+        })
+          .then(async () => {
+            await unfreezeUser(row.id)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('启用成功！')
+
+                  this.getUserList()
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {})
+          })
+          .catch(() => {})
+      } else {
+        this.$message.error('请尝试刷新后再试')
       }
     }
     // 获取Menus

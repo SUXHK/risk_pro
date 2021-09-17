@@ -149,7 +149,7 @@ export default {
       // })
       this.dialogVisible = false
       this.resetForm(formName)
-      this.formData = this.$options.data().formData
+      // this.formData = this.$options.data().formData
     },
     sure(formName) {
       this.$refs[formName].validate(async valid => {

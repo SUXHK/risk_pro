@@ -12,72 +12,74 @@
         ref="elForm"
         :model="formData"
         :rules="rules"
-        size="small"
+        size="medium"
         label-width="100px"
+        label-position="top"
       >
-        <el-form-item label="上级部门：" prop="pid">
-          <el-select
-            v-if="callName === 'newSubDep'"
-            v-model="formData.pid"
-            placeholder="点击输入搜索或选择上级部门"
-            filterable
-            clearable
-            :style="{ width: '100%' }"
-          >
-            <el-option
-              v-for="(item, index) in deptList"
-              :key="index"
-              :label="item.simplename"
-              :value="item.id"
-              :disabled="item.disabled"
-            ></el-option>
-          </el-select>
-          <el-select
-            v-else
-            v-model="formData.pid"
-            placeholder="点击输入搜索或选择上级部门"
-            filterable
-            clearable
-            :style="{ width: '100%' }"
-          >
-            <el-option
-              v-for="(item, index) in deptList"
-              :key="index"
-              :label="item.pName"
-              :value="item.pid"
-              :disabled="item.disabled"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="部门全称：" prop="fullname">
-          <el-input
-            v-model="formData.fullname"
-            placeholder="请输入部门全称"
-            :maxlength="18"
-            clearable
-            :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="部门简称：" prop="simplename">
-          <el-input
-            v-model="formData.simplename"
-            placeholder="请输入部门简称"
-            :maxlength="18"
-            clearable
-            :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
-
-        <el-form-item label="显示排序：" prop="num">
-          <el-input-number
-            v-model="formData.num"
-            placeholder="显示排序"
-            :step="1"
-            step-strictly
-            :max="100"
-          >
-          </el-input-number>
-        </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="上级部门：" prop="pid">
+              <el-cascader
+                v-model="formData.pid"
+                :options="deptOptions"
+                :props="deptProps"
+                :style="{ width: '100%' }"
+                :placeholder="
+                  callName === 'add'
+                    ? '请选择上级部门 / 点击搜索'
+                    : '谨慎修改部门'
+                "
+                separator=" / "
+                filterable
+                :show-all-levels="false"
+                clearable
+                ref="myCascader"
+                ><template slot-scope="{ node, data }">
+                  <span>{{ data.name }}</span>
+                  <span v-if="!node.isLeaf">
+                    ({{ data.children.length }})
+                  </span>
+                </template></el-cascader
+              >
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="部门全称：" prop="fullname">
+              <el-input
+                v-model="formData.fullname"
+                placeholder="请输入部门全称"
+                :maxlength="18"
+                clearable
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="部门简称：" prop="simplename">
+              <el-input
+                v-model="formData.simplename"
+                placeholder="请输入部门简称"
+                :maxlength="18"
+                clearable
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="显示排序：" prop="num">
+              <el-input-number
+                v-model="formData.num"
+                placeholder="显示排序"
+                :step="1"
+                step-strictly
+                :max="100"
+              >
+              </el-input-number>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <!-- <el-form-item label="部门状态：" prop="field110" v-if="showDepState">
           <el-radio-group v-model="formData.field110" size="medium">
@@ -90,21 +92,32 @@
             >
           </el-radio-group>
         </el-form-item> -->
-        <el-form-item label="备注：" prop="tips">
-          <el-input
-            v-model="formData.tips"
-            type="textarea"
-            placeholder="请输入备注"
-            show-word-limit
-            :autosize="{ minRows: 3 }"
-            maxlength="1000"
-            :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item label="备注：" prop="tips">
+              <el-input
+                v-model="formData.tips"
+                type="textarea"
+                placeholder="请输入备注"
+                show-word-limit
+                :autosize="{ minRows: 3 }"
+                maxlength="1000"
+                :style="{ width: '100%' }"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
     </template>
     <span slot="footer" class="dialog-footer">
       <el-button @click="close('elForm')" size="small">取 消</el-button>
+      <el-button
+        type="warning"
+        size="small"
+        @click="resetForm('elForm')"
+        v-if="callName === 'add'"
+        >重 置</el-button
+      >
       <el-button
         type="primary"
         :loading="sureLoading"
@@ -117,7 +130,12 @@
 </template>
 
 <script>
-import { getDeptList, deptUpdate, deptAdd } from '@/api/system/dept'
+import {
+  getDeptTree,
+  deptUpdate,
+  deptAdd,
+  getDeptDetail
+} from '@/api/system/dept'
 export default {
   name: 'Dialog',
   props: {
@@ -135,24 +153,24 @@ export default {
   },
   data() {
     return {
+      // 部门列表
+      deptOptions: [],
+      deptProps: {
+        multiple: false,
+        label: 'name',
+        value: 'id',
+        children: 'children',
+        checkStrictly: true,
+        emitPath: false,
+        expandTrigger: 'hover'
+      },
       sureLoading: false,
       // dialog状态
       dialogVisible: false,
       // 调用名字
       callName: '',
-      // 部门显示状态
-      // showDepState: false,
-      // 部门列表
-      deptList: [],
       // 表单
       formData: {
-        // field101: '', // 上级部门
-        // field102: '123', // 部门名称
-        // field103: 2, // 负责人
-        // field106: '17630961996', // 手机号
-        // field107: 1, // 分类
-        // field108: 1, // 显示排序
-        // field109: '123', // 备注
         fullname: '', // 全称
         id: '', // 本id
         num: 0,
@@ -188,11 +206,48 @@ export default {
     }
   },
   methods: {
-    showDialog(row, name) {
+    async showDialog(name, row) {
       this.callName = name
-      // console.log(row)
-      this.formData.id = row.id
-      this.getList(row.name)
+      // this.formData.id = row.id
+      if (name === 'edit') {
+        this.dialogVisible = true
+        // 获取详情
+        await getDeptDetail(row.id)
+          .then(result => {
+            console.log('🚀🚀', result.data)
+            const { data, retMsg, retCode } = result.data
+            if (retCode === '000000') {
+              this.formData = data
+              // 获取全部列表
+              this.getDeptTree()
+            } else {
+              this.$message.error(retMsg)
+            }
+          })
+          .catch(() => {
+            console.log('🛸🛸🛸🛸🛸🛸🛸')
+          })
+      } else if (name === 'add') {
+        this.dialogVisible = true
+        this.getDeptTree()
+      } else {
+        this.$message.error('Error ')
+      }
+    },
+    setName(datas, id) {
+      console.log(id)
+      // 遍历树  获取id数组
+      for (var i in datas) {
+        if (datas[i].id === id) {
+          return (datas[i].disabled = true)
+        }
+        // this.expandedKeys.push(datas[i].id) // 遍历项目满足条件后的操作
+        if (datas[i].children) {
+          // 存在子节点就递归
+          this.setName(datas[i].children)
+          // console.log(datas[i].children)
+        }
+      }
     },
     close(formName) {
       // 重置vue组件的data数据
@@ -203,7 +258,7 @@ export default {
       // })
       this.dialogVisible = false
       this.resetForm(formName)
-      this.formData = this.$options.data().formData
+      // this.formData = this.$options.data().formData
     },
     sure(formName) {
       // this.$emit('fetch')
@@ -267,64 +322,18 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
-    // 获取所以部门列表
-    async getList(name) {
-      console.log(name)
-      await getDeptList(name)
-        .then(async result => {
-          const { data, retCode, retMsg } = result.data
+    async getDeptTree() {
+      await getDeptTree()
+        .then(result => {
+          const { data, retMsg, retCode } = result.data
           if (retCode === '000000') {
-            console.log('🚀🚀', data[0])
-            this.deptList = data
-            if (this.callName === 'edit') {
-              // 编辑部门
-              this.formData.fullname = this.deptList[0].fullname
-              this.formData.num = this.deptList[0].num
-              this.formData.pid = this.deptList[0].pid
-              this.formData.simplename = this.deptList[0].simplename
-              this.formData.tips = this.deptList[0].tips
-              this.dialogVisible = true
-            } else if (this.callName === 'newSubDep') {
-              // 新建下级部门
-              // this.formData.pid = this.deptList[0].pid
-              // console.log(this.deptList[0])
-              await this.getgetList(this.deptList[0].simplename)
-              this.dialogVisible = true
-            } else if (this.callName === 'newLevelDep') {
-              // 新建平级部门
-              // console.log(this.deptList[0])
-              // await this.getDeptList(this.deptList[0].simplename)
-              // await this.getgetList(this.deptList[0].pName)
-              this.formData.pid = this.deptList[0].pid
-              this.dialogVisible = true
-            } else {
-              this.$message.error('调用失败...')
-              this.dialogVisible = false
-            }
+            this.deptOptions = data
           } else {
             this.$message.error(retMsg)
           }
         })
         .catch(() => {
-          console.log('getDeptList')
-        })
-    },
-    // 获取所以部门列表
-    async getgetList(name) {
-      await getDeptList(name)
-        .then(async result => {
-          console.log(result)
-          const { data, retCode, retMsg } = result.data
-          if (retCode === '000000') {
-            console.log('🚀🚀🚀🚀🚀', data[0])
-            this.deptList = data
-            this.formData.pid = this.deptList[0].id
-          } else {
-            this.$message.error(retMsg)
-          }
-        })
-        .catch(() => {
-          console.log('新建下级getgetList')
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
         })
     }
   }

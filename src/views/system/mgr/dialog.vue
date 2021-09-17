@@ -22,28 +22,35 @@
       >
         <!-- <h3 style="padding:20px 0">账号信息</h3> -->
         <el-row :gutter="0">
-          <el-col :span="12"
-            ><el-form-item label="部门：" prop="deptid">
-              <el-select
+          <el-col :span="12">
+            <el-form-item label="部门：" prop="deptid">
+              <el-cascader
                 v-model="formData.deptid"
-                placeholder="点击输入搜索或选择部门"
-                filterable
-                clearable
+                :options="deptOptions"
+                :props="deptProps"
                 :style="{ width: '100%' }"
-              >
-                <el-option
-                  v-for="(item, index) in deptList"
-                  :key="index"
-                  :label="item.fullname"
-                  :value="item.id"
-                  :disabled="item.disabled"
-                ></el-option>
+                :placeholder="
+                  callName === 'add'
+                    ? '请选择上级部门 / 点击搜索'
+                    : '谨慎修改部门'
+                "
+                separator=" / "
+                filterable
+                :show-all-levels="false"
+                clearable
+                ref="myCascader"
+                ><template slot-scope="{ node, data }">
+                  <span>{{ data.name }}</span>
+                  <span v-if="!node.isLeaf">
+                    ({{ data.children.length }})
+                  </span>
+                </template>
                 <svg-icon
                   slot="prefix"
                   icon-class="folder_black_24dp"
                   style="font-size:16px;margin:0 4px;vertical-align:text-bottom"
                 ></svg-icon>
-              </el-select> </el-form-item
+              </el-cascader> </el-form-item
           ></el-col>
           <el-col :span="12">
             <el-form-item label="账户名：" prop="account">
@@ -211,7 +218,7 @@
 
 <script>
 import { getUserMgrView, userMgrEdit, userMgrAdd } from '@/api/system/mgr'
-import { getDeptList } from '@/api/system/dept'
+import { getDeptTree } from '@/api/system/dept'
 export default {
   name: 'Dialog',
   props: {
@@ -324,6 +331,16 @@ export default {
       },
       // 部门列表
       deptList: [],
+      deptOptions: [], //
+      deptProps: {
+        multiple: false,
+        label: 'name',
+        value: 'id',
+        children: 'children',
+        checkStrictly: true,
+        emitPath: false,
+        expandTrigger: 'hover'
+      },
       // 调用名字
       callName: '',
       // 性别
@@ -379,7 +396,7 @@ export default {
       // })
       this.dialogVisible = false
       this.resetForm(formName)
-      this.formData = this.$options.data().formData
+      // this.formData = this.$options.data().formData
     },
     sure(formName) {
       // this.$emit('fetch')
@@ -392,11 +409,12 @@ export default {
             await userMgrEdit(this.formData)
               .then(result => {
                 console.log('🚀', result.data)
-                this.sureLoading = false
+
                 const { retCode, retMsg } = result.data
                 if (retCode === '000000') {
                   this.$message.success('修改成功')
                   this.dialogVisible = false
+                  this.sureLoading = false
                   this.$emit('fetch')
                 } else {
                   setTimeout(() => {
@@ -415,9 +433,10 @@ export default {
                 console.log('🚀', result.data)
                 const { retCode, retMsg } = result.data
                 if (retCode === '000000') {
-                  this.$message.success('修改成功')
+                  this.$message.success('添加成功')
                   this.dialogVisible = false
                   this.$emit('fetch')
+                  this.sureLoading = false
                 } else {
                   setTimeout(() => {
                     this.sureLoading = false
@@ -462,32 +481,18 @@ export default {
     },
     // 获取所以部门列表
     async getgetList(name) {
-      await getDeptList(name)
+      await getDeptTree()
         .then(result => {
           console.log(result)
           const { data, retCode, retMsg } = result.data
           if (retCode === '000000') {
             console.log('🚀🚀🚀🚀🚀', data[0])
-            this.deptList = data
-            if (name) {
-              this.formData.deptid = data[0].pid
-              console.log(this.deptList)
-              console.log(this.formData.deptid)
-            }
-
-            // await getUserMgrView(id)
-            //   .then(result => {
-            //     console.log('🚀', result.data)
-            //     const { data, retCode, retMsg } = result.data
-            //     if (retCode === '000000') {
-            //       this.formData = data
-            //     } else {
-            //       this.$message.error(retMsg)
-            //     }
-            //   })
-            //   .catch(() => {
-            //     console.log('🛸🛸🛸🛸🛸🛸🛸')
-            //   })
+            this.deptOptions = data
+            // if (name) {
+            //   this.formData.deptid = data[0].pid
+            //   console.log(this.deptList)
+            //   console.log(this.formData.deptid)
+            // }
           } else {
             this.$message.error(retMsg)
           }

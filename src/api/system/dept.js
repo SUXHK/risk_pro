@@ -9,10 +9,11 @@ export function getDeptTree() {
 }
 
 // 查询部门详情
-export function getDeptDetail() {
+export function getDeptDetail(id) {
   return request({
     url: `/dept/detail`,
-    method: 'get'
+    method: 'get',
+    params: { deptId: id }
   })
 }
 
@@ -22,6 +23,12 @@ export function getDeptList(name) {
     url: `/dept/list`,
     method: 'get',
     params: { deptName: name }
+  })
+}
+export function getDeptList1() {
+  return request({
+    url: `/dept/list`,
+    method: 'get'
   })
 }
 

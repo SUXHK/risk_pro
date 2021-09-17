@@ -41,27 +41,33 @@
         label-position="right"
         class="queryForm"
         label-width="80px"
+        style="display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: space-between;
+    align-items: center;"
       >
         <!-- 菜单名称 -->
-        <el-col :span="6" style="display:inline-block">
+        <div style="display:flex">
           <el-form-item label="菜单名称:" prop="industryTitle">
             <el-input
               v-model="queryForm.industryTitle"
               placeholder="请输入菜单名称"
               clearable
-              :style="{ width: '80%' }"
+              :style="{ width: '100%' }"
             >
             </el-input>
           </el-form-item>
-        </el-col>
-        <!-- 状态 -->
-        <el-col :span="6" style="display:inline-block">
+
+          <!-- 状态 -->
+
           <el-form-item label="状态:" prop="state">
             <el-select
               v-model="queryForm.state"
               placeholder="请选择状态"
               clearable
-              :style="{ width: '80%' }"
+              :style="{ width: '100%' }"
             >
               <el-option
                 v-for="(item, index) in stateOptions"
@@ -72,9 +78,8 @@
               ></el-option>
             </el-select>
           </el-form-item>
-        </el-col>
-        <el-col :span="6" style="display:inline-block;">
-          <el-form-item label-width="0px">
+
+          <el-form-item label-width="20px">
             <div :style="{ width: '100%' }">
               <el-button
                 type="primary"
@@ -94,7 +99,39 @@
               </el-button>
             </div>
           </el-form-item>
-        </el-col>
+        </div>
+        <div style="display:flex">
+          <el-form-item label-width="10px"
+            ><el-button
+              type="primary"
+              icon="el-icon-circle-plus"
+              size="small"
+              @click="action('add')"
+            >
+              新建菜单
+            </el-button></el-form-item
+          >
+          <!-- <el-form-item label-width="10px"
+                  ><el-button
+                    type="danger"
+                    icon="el-icon-error"
+                    size="small"
+                    disabled
+                  >
+                    批量删除
+                  </el-button></el-form-item
+                >
+                <el-form-item label-width="10px"
+                  ><el-button
+                    icon="el-icon-remove"
+                    type="warning"
+                    size="small"
+                    disabled
+                  >
+                    批量停用
+                  </el-button></el-form-item
+                > -->
+        </div>
       </el-form>
     </el-row>
     <!-- :data="treeTableData" -->
@@ -178,7 +215,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="levels" label="层级">
+      <!-- <el-table-column prop="levels" label="层级">
         <template slot-scope="scope">
           <span v-if="scope.row.levels === 1" style="color:#0015FF"
             ><svg-icon
@@ -215,8 +252,8 @@
           ></svg-icon
           >{{ scope.row.num }}
         </template>
-      </el-table-column>
-      <el-table-column label="操作" width="360">
+      </el-table-column> -->
+      <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button
             type="text"
@@ -225,7 +262,7 @@
             @click="action('edit', scope.row)"
             >编辑</el-button
           >
-          <el-divider direction="vertical"></el-divider>
+          <!-- <el-divider direction="vertical"></el-divider>
           <el-button
             type="text"
             size="small"
@@ -240,7 +277,7 @@
             icon="el-icon-plus"
             @click="action('newLevelDep', scope.row)"
             >新建平级菜单</el-button
-          >
+          > -->
           <el-divider direction="vertical"></el-divider>
           <el-button
             type="text"
@@ -344,14 +381,10 @@ export default {
         // 编辑部门
         this.dialogParams.headerTitle = row.name + ' - 编辑部门'
         this.$refs.dialog.showDialog(name, row)
-      } else if (name === 'newSubDep') {
+      } else if (name === 'add') {
         // 新建下级菜单
-        this.dialogParams.headerTitle = row.name + ' - 新建下级菜单'
-        this.$refs.dialog.showDialog(name, row)
-      } else if (name === 'newLevelDep') {
-        // 新建平级菜单
-        this.dialogParams.headerTitle = row.name + ' - 新建平级菜单'
-        this.$refs.dialog.showDialog(name, row)
+        this.dialogParams.headerTitle = '新建下级菜单'
+        this.$refs.dialog.showDialog(name)
       } else if (name === 'del') {
         // 删除
         this.$message.success('ID：' + row.id + '； Name：' + name)
@@ -371,6 +404,7 @@ export default {
               this.tableLoading = false
             }, 500)
             this.treeTableData = data[0].children
+            // this.treeTableData = data
           } else {
             this.$$message.error(retMsg)
           }

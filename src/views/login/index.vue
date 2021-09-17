@@ -158,41 +158,41 @@ export default {
         username: [
           {
             required: true,
-            trigger: ['blur', 'change'],
+            trigger: ['blur'],
             message: '请输入用户名'
           },
           {
             min: 5,
             max: 16,
             message: '用户名长度在5-16字符之间',
-            trigger: ['blur', 'change']
+            trigger: ['blur']
           },
-          { validator: checkName, trigger: ['blur', 'change'] }
+          { validator: checkName, trigger: ['blur'] }
         ],
         password: [
           {
             required: true,
             message: '请输入密码',
-            trigger: ['blur', 'change']
+            trigger: ['blur']
           },
           {
             min: 6,
             max: 16,
             message: '密码长度在6-16字符之间',
-            trigger: ['blur', 'change']
+            trigger: ['blur']
           }
         ],
         kaptcha: [
           {
             required: true,
             message: '请输入验证码',
-            trigger: ['blur', 'change']
+            trigger: ['blur']
           },
           {
             min: 4,
             max: 4,
             message: '请输入4位验证码',
-            trigger: ['blur', 'change']
+            trigger: ['blur']
           }
         ]
       },
