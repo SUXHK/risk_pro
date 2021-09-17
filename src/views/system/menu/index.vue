@@ -24,6 +24,14 @@
         </el-button>
       </div>
     </div>
+    <!-- <el-alert
+      style="margin-bottom:20px"
+      title="提示"
+      type="success"
+      description="父级菜单、子级菜单、按钮"
+      show-icon
+    >
+    </el-alert> -->
     <el-row :gutter="0" style="margin-bottom:10px">
       <el-form
         ref="queryForm"
@@ -89,12 +97,13 @@
         </el-col>
       </el-form>
     </el-row>
+    <!-- :data="treeTableData" -->
     <el-table
-      :indent="20"
       :data="treeTableData"
-      size="small"
+      size="medium"
       :border="false"
       :stripe="true"
+      style="width:100%"
       highlight-current-row
       :header-cell-style="{
         background: pageParams.full ? '#e7eaff' : '',
@@ -102,27 +111,112 @@
       }"
       v-loading="tableLoading"
       row-key="id"
+      ref="treeTable"
       class="table-shadow"
       default-expand-all
       :tree-props="{ children: 'children' }"
       :height="!pageParams.full ? pageParams.normalFull : pageParams.fullFull"
     >
-      <af-table-column type="index" label="No."> </af-table-column>
-      <af-table-column label="菜单名称" prop="name" align="left">
-      </af-table-column>
-      <af-table-column label="请求地址" prop="url" align="left">
-      </af-table-column>
-      <af-table-column label="代码" prop="code" align="left"> </af-table-column>
-      <af-table-column label="图标" prop="icon" align="left"> </af-table-column>
-      <!-- <af-table-column label="id" prop="id" align="center"> </af-table-column> -->
-      <af-table-column label="是否菜单" prop="ismenu" align="left">
-      </af-table-column>
-      <af-table-column label="层级" prop="levels" align="left">
-      </af-table-column>
-      <af-table-column label="排序" prop="num" align="left"> </af-table-column>
-      <!-- <af-table-column label="parentId" prop="parentId" align="center">
-      </af-table-column> -->
-      <af-table-column label="操作" align="center">
+      <!-- <af-table-column type="index" label="No."> </af-table-column> -->
+      <el-table-column prop="name" label="菜单名称" min-width="270">
+        <template slot-scope="scope">
+          <template v-if="scope.row.ismenu === 1">
+            <el-badge
+              value="父级菜单"
+              v-if="scope.row.levels === 1"
+              class="item"
+            >
+              {{ scope.row.name }}
+            </el-badge>
+            <el-badge
+              value="子级菜单"
+              type="primary"
+              v-if="scope.row.levels === 2"
+              class="item"
+            >
+              {{ scope.row.name }}
+            </el-badge>
+          </template>
+          <el-tag effect="plain" v-if="scope.row.ismenu === 0">{{
+            scope.row.name
+          }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="url"
+        :fontRate="fontRate"
+        label="请求地址"
+        min-width="100"
+      >
+        <template slot-scope="scope">
+          <el-link type="success">{{ scope.row.url }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column prop="code" label="代码" min-width="200">
+        <template slot-scope="scope">
+          <el-link type="danger">{{ scope.row.code }}</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column prop="icon" label="图标"> </el-table-column>
+      <el-table-column prop="ismenu" label="是否菜单">
+        <template slot-scope="scope">
+          <span v-if="scope.row.ismenu == 1">
+            <svg-icon
+              title="菜单"
+              icon-class="menu-3-line"
+              style="font-size:16px;margin:0 5px;vertical-align:text-bottom;color: #6672fb;"
+            ></svg-icon
+            >菜单
+          </span>
+          <span v-else>
+            <svg-icon
+              title="按钮"
+              icon-class="radio-button-line"
+              style="font-size:16px;margin:0 5px;vertical-align:text-bottom;color: #47ba80;"
+            ></svg-icon
+            >按钮
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="levels" label="层级">
+        <template slot-scope="scope">
+          <span v-if="scope.row.levels === 1" style="color:#0015FF"
+            ><svg-icon
+              title="层级"
+              icon-class="stack-line"
+              style="font-size:16px;margin:0 5px;vertical-align:text-bottom;color: #0015FF;"
+            ></svg-icon
+            >{{ scope.row.levels }}</span
+          >
+          <span v-if="scope.row.levels === 2" style="color:#515FF9"
+            ><svg-icon
+              title="层级"
+              icon-class="stack-line"
+              style="font-size:16px;margin:0 5px;vertical-align:text-bottom;color: #515FF9;"
+            ></svg-icon
+            >{{ scope.row.levels }}</span
+          >
+          <span v-if="scope.row.levels === 3" style="color:#97A0F8"
+            ><svg-icon
+              title="层级"
+              icon-class="stack-line"
+              style="font-size:16px;margin:0 5px;vertical-align:text-bottom;color: #97A0F8;"
+            ></svg-icon
+            >{{ scope.row.levels }}</span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column prop="num" label="排序">
+        <template slot-scope="scope">
+          <svg-icon
+            title="排序"
+            icon-class="sort-asc"
+            style="font-size:16px;margin:0 5px;vertical-align:text-bottom;color: #6672fb;"
+          ></svg-icon
+          >{{ scope.row.num }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="360">
         <template slot-scope="scope">
           <el-button
             type="text"
@@ -156,7 +250,7 @@
             >删除</el-button
           >
         </template>
-      </af-table-column>
+      </el-table-column>
     </el-table>
     <app-footer class="footer" v-if="!pageParams.full"></app-footer>
 
@@ -188,6 +282,12 @@ export default {
         fullFull: 'calc(100vh - 150px)',
         // 正常table高度
         normalFull: 'calc(100vh - 251px)'
+      },
+      // 定义字体比例
+      fontRate: {
+        CHAR_RATE: 1.2, // 汉字比率 1.1
+        NUM_RATE: 1.3, // 数字 0.65
+        OTHER_RATE: 1 // 除汉字和数字以外的字符的比率 0.8
       },
 
       // 表格加载
@@ -230,12 +330,12 @@ export default {
     },
     // 查询按钮
     submitQueryForm() {
-      const submitForm = this.$lodash.cloneDeep(this.queryForm)
-      console.log(submitForm)
+      this.getMenuTree()
     },
     // 重置查询条件
     resetQueryForm(formName) {
       this.$refs[formName].resetFields()
+      this.submitQueryForm()
     },
 
     // 操作
@@ -264,13 +364,13 @@ export default {
       this.tableLoading = true
       await menuMgrTree()
         .then(result => {
+          console.log(result)
           const { data, retCode, retMsg } = result.data
           if (retCode === '000000') {
             setTimeout(() => {
               this.tableLoading = false
             }, 500)
             this.treeTableData = data[0].children
-            console.log(this.treeTableData)
           } else {
             this.$$message.error(retMsg)
           }
