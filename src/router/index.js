@@ -44,7 +44,7 @@ export const constantRoutes = [
             meta: { title: '仪表盘' },
             component: () =>
               import(
-                /* webpackChunkName: "Risk-User" */ '@/views/dashboard/dashboard.vue'
+                /* webpackChunkName: "Risk-User" */ '@/views/dashboard/index.vue'
               )
           }
         ]

@@ -1,7 +1,47 @@
 <template>
   <el-card class="card-sys" :class="pageParams.full ? 'fullScreen' : ''">
     <div slot="header" class="clearfix">
-      <div class="header-name">{{ pageParams.headerTitle }}</div>
+      <div class="header-name">
+        {{ pageParams.headerTitle }}
+
+        <el-popover placement="bottom" title="说明" trigger="click" width="300">
+          <br />
+          <div>
+            <div style="display: inline-block;margin-right:100px">
+              <el-badge
+                value="父级菜单：没有功能，只是包含子级菜单项"
+                class="item"
+              >
+                父级菜单
+              </el-badge>
+            </div>
+            <br /><br />
+            <div style="display: inline-block;margin-right:100px">
+              <el-badge
+                value="子级菜单：功能菜单项"
+                type="primary"
+                class="item"
+              >
+                子级菜单
+              </el-badge>
+            </div>
+            <br /><br />
+            <div style="display: inline-block;margin-right:100px">
+              <el-badge value="页面上的按钮项" type="primary" class="item">
+                <el-tag effect="plain">按钮</el-tag>
+              </el-badge>
+            </div>
+          </div>
+          <br />
+          <svg-icon
+            slot="reference"
+            title="菜单管理 - 帮助"
+            icon-class="question-fill"
+            class="el-button--text"
+            style="margin-left:12px;cursor: pointer"
+          ></svg-icon>
+        </el-popover>
+      </div>
       <div class="header-action">
         <el-button
           plain
@@ -24,14 +64,6 @@
         </el-button>
       </div>
     </div>
-    <!-- <el-alert
-      style="margin-bottom:20px"
-      title="提示"
-      type="success"
-      description="父级菜单、子级菜单、按钮"
-      show-icon
-    >
-    </el-alert> -->
     <el-row :gutter="0" style="margin-bottom:10px">
       <el-form
         ref="queryForm"
@@ -174,11 +206,20 @@
               {{ scope.row.name }}
             </el-badge>
           </template>
+          <!-- <el-badge
+            value="按钮"
+            type="success"
+            v-if="scope.row.ismenu === 0"
+            class="item"
+          >
+            <el-tag effect="plain" type="success">{{ scope.row.name }}</el-tag>
+          </el-badge> -->
           <el-tag effect="plain" v-if="scope.row.ismenu === 0">{{
             scope.row.name
           }}</el-tag>
         </template>
       </el-table-column>
+
       <el-table-column
         prop="url"
         :fontRate="fontRate"
@@ -198,12 +239,22 @@
       <el-table-column prop="ismenu" label="是否菜单">
         <template slot-scope="scope">
           <span v-if="scope.row.ismenu == 1">
-            <svg-icon
-              title="菜单"
-              icon-class="menu-3-line"
-              style="font-size:16px;margin:0 5px;vertical-align:text-bottom;color: #6672fb;"
-            ></svg-icon
-            >菜单
+            <span v-if="scope.row.levels === 1"
+              ><svg-icon
+                title="菜单项"
+                icon-class="menu-3-line"
+                style="font-size:16px;margin:0 5px;vertical-align:text-bottom;color: #f34d37;"
+              ></svg-icon
+              >菜单项</span
+            >
+            <span v-if="scope.row.levels === 2"
+              ><svg-icon
+                title="功能菜单"
+                icon-class="menu-4-line"
+                style="font-size:16px;margin:0 5px;vertical-align:text-bottom;color: #6672fb;"
+              ></svg-icon
+              >功能菜单</span
+            >
           </span>
           <span v-else>
             <svg-icon
@@ -253,7 +304,7 @@
           >{{ scope.row.num }}
         </template>
       </el-table-column> -->
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="160">
         <template slot-scope="scope">
           <el-button
             type="text"
@@ -262,30 +313,30 @@
             @click="action('edit', scope.row)"
             >编辑</el-button
           >
-          <!-- <el-divider direction="vertical"></el-divider>
-          <el-button
-            type="text"
-            size="small"
-            icon="el-icon-circle-plus"
-            @click="action('newSubDep', scope.row)"
-            >新建下级菜单</el-button
+          <el-divider direction="vertical"></el-divider>
+          <el-popconfirm
+            confirm-button-text="是的"
+            cancel-button-text="取消"
+            icon="el-icon-info"
+            icon-color="red"
+            :title="scope.row.ismenu == 1 ? '确定删除菜单？' : '确定删除按钮？'"
+            @confirm="action('del', scope.row)"
           >
-          <el-divider direction="vertical"></el-divider>
-          <el-button
-            type="text"
-            size="small"
-            icon="el-icon-plus"
-            @click="action('newLevelDep', scope.row)"
-            >新建平级菜单</el-button
-          > -->
-          <el-divider direction="vertical"></el-divider>
-          <el-button
+            <el-button
+              slot="reference"
+              type="text"
+              size="small"
+              icon="el-icon-delete-solid"
+              >删除</el-button
+            >
+          </el-popconfirm>
+          <!-- <el-button
             type="text"
             size="small"
             icon="el-icon-delete-solid"
             @click="action('del', scope.row)"
             >删除</el-button
-          >
+          > -->
         </template>
       </el-table-column>
     </el-table>
@@ -296,8 +347,9 @@
 </template>
 
 <script>
-import { menuMgrTree } from '@/api/system/menu'
+import { menuMgrTree, menuMgrRemove } from '@/api/system/menu'
 import Dialog from './dialog.vue'
+
 export default {
   components: {
     Dialog
@@ -307,7 +359,7 @@ export default {
     return {
       // headerTitle: 'Header'
       dialogParams: {
-        headerTitle: '编辑部门'
+        headerTitle: '编辑菜单'
       },
       // 页面参数
       pageParams: {
@@ -376,10 +428,10 @@ export default {
     },
 
     // 操作
-    action(name, row) {
+    async action(name, row) {
       if (name === 'edit') {
         // 编辑部门
-        this.dialogParams.headerTitle = row.name + ' - 编辑部门'
+        this.dialogParams.headerTitle = row.name + ' - 编辑菜单'
         this.$refs.dialog.showDialog(name, row)
       } else if (name === 'add') {
         // 新建下级菜单
@@ -387,7 +439,19 @@ export default {
         this.$refs.dialog.showDialog(name)
       } else if (name === 'del') {
         // 删除
-        this.$message.success('ID：' + row.id + '； Name：' + name)
+        await menuMgrRemove(row.id)
+          .then(result => {
+            console.log('🚀', result.data)
+            const { retCode, retMsg } = result.data
+            if (retCode === '000000') {
+              this.$message.success('删除成功')
+            } else {
+              this.$message.error(retMsg)
+            }
+          })
+          .catch(() => {
+            console.log('🛸🛸🛸🛸🛸🛸🛸')
+          })
       } else {
         this.$message.error('调用失败...')
       }

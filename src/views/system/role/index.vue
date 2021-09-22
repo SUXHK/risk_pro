@@ -95,6 +95,7 @@
                 <template>
                   <div style="overflow-x: hidden">
                     <el-tree
+                      class="custom-tree"
                       node-key="id"
                       :current-node-key="0"
                       :expand-on-click-node="false"
@@ -163,16 +164,18 @@
                             style="font-size:18px;margin:0 5px;vertical-align:text-bottom;"
                             @click.stop="() => edit(node, data)"
                           ></svg-icon>
+
                           <svg-icon
                             v-if="
                               !treeControl.isEditTreeNode ||
                                 node.id !== treeControl.nodeId
                             "
                             title="删除"
+                            @click.stop="() => remove(node, data)"
                             icon-class="delete_black_24dp"
                             style="font-size:18px;margin:0 5px;vertical-align:text-bottom;"
-                            @click.stop="() => remove(node, data)"
                           ></svg-icon>
+
                           <svg-icon
                             v-if="
                               treeControl.isEditTreeNode &&
@@ -184,6 +187,7 @@
                             style="font-size:20px;color: $base-color-default;margin:0 5px 0 10px;vertical-align:text-bottom;"
                             @click.stop="() => editConfirm(node, data)"
                           ></svg-icon>
+
                           <svg-icon
                             v-if="
                               treeControl.isEditTreeNode &&
@@ -505,13 +509,14 @@
                   <div style="overflow-x: hidden">
                     <!-- <div style="overflow-x: hidden"> -->
                     <el-tree
+                      class="custom-tree"
                       node-key="id"
                       :current-node-key="0"
                       :expand-on-click-node="false"
                       highlight-current
                       :data="roleTreeList"
                       :props="defaultProps"
-                      @node-click="handleNodeClick"
+                      @node-click="roleHandleNodeClick"
                       :filter-node-method="filterNode"
                       ref="roletree"
                       default-expand-all
@@ -636,11 +641,9 @@
             </el-card>
           </el-col>
           <el-col :span="18">
-            <el-card
-              class="table-card"
-              shadow="never"
-              style="height: calc(100vh - 247px);"
-            >
+            <el-card class="table-card clear" shadow="never">
+              <!-- style="height: calc(100vh - 247px);" -->
+              <!-- 125px -->
               <div slot="header" style="height: 63px;">
                 <span style="font-weight: bold;font-size:14px;line-height: 63px"
                   >当前角色：</span
@@ -649,7 +652,25 @@
                   treeControl.currentRoleName
                 }}</span>
               </div>
-              123
+              <!-- 树形控件 -->
+              <div style="overflow-x: hidden">
+                <el-tree
+                  :data="treeEditData"
+                  :props="treeEditProps"
+                  show-checkbox
+                  node-key="id"
+                  default-expand-all
+                  highlight-current
+                  check-on-click-node
+                  :default-checked-keys="defKeys"
+                  ref="treeEditRef"
+                  :style="{
+                    height: !pageParams.full
+                      ? 'calc(100vh - 312px)'
+                      : 'calc(100vh - 190px)'
+                  }"
+                ></el-tree>
+              </div>
             </el-card>
           </el-col>
         </el-row>
@@ -678,11 +699,18 @@
 <script>
 import { getUserMgrList, freezeUser, unfreezeUser } from '@/api/system/mgr'
 // import { getUserMgrList } from '@/api/user'
-import { getRoleTree, roleAdd, roleEdit, roleDelete } from '@/api/system/role'
+import {
+  getRoleTree,
+  roleAdd,
+  roleEdit,
+  roleDelete,
+  getAuthMenus
+} from '@/api/system/role'
 import Dialog from './dialog.vue'
 import RoleDialog from './roleDialog.vue'
 import setRoleDialog from './setRoleDialog.vue'
 
+import { menuMgrTree } from '@/api/system/menu'
 export default {
   components: {
     Dialog,
@@ -707,7 +735,7 @@ export default {
         // 正常table高度
         normalFull: 'calc(100vh - 312px)',
         // tabs标签页默认项
-        activeTabs: 'staff' // staff role
+        activeTabs: 'role' // staff role
       },
       // 查询表单
       formData: {
@@ -744,7 +772,18 @@ export default {
       },
       addSubPopover: false,
       // 搜索项
-      filterText: ''
+      filterText: '',
+
+      // 角色权限设置的树
+      roleTreeLoading: true,
+      treeEditData: [],
+      // 树形控件绑定对象
+      treeEditProps: {
+        label: 'name',
+        children: 'children'
+      },
+      // 默认选中节点的id值
+      defKeys: []
     }
   },
   created() {
@@ -799,7 +838,47 @@ export default {
     // },
     // el-tabs切换点击
     tabsClick(tab, event) {
-      console.log(tab, event)
+      if (tab.name === 'role') {
+        this.getMenuTree()
+        this.getDefKeys('0')
+      }
+    },
+    // 获取树lable
+    async getMenuTree() {
+      this.roleTreeLoading = true
+      await menuMgrTree()
+        .then(result => {
+          console.log(result)
+          const { data, retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            setTimeout(() => {
+              this.roleTreeLoading = false
+            }, 500)
+            this.treeEditData = data[0].children
+            // this.treeTableData = data
+          } else {
+            this.$$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
+    },
+    // DefKeys
+    async getDefKeys(id) {
+      await getAuthMenus(id)
+        .then(result => {
+          console.log('🚀', result.data)
+          const { retCode, retMsg, data } = result.data
+          if (retCode === '000000') {
+            this.defKeys = data
+          } else {
+            this.$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
     },
     // 获取角色树状列表
     async getTree() {
@@ -855,8 +934,15 @@ export default {
     handleNodeClick(data) {
       console.log('handleNodeClick', data)
       this.formData.id = data.id
-      this.treeControl.currentRoleName = data.name
+      // this.treeControl.currentRoleName = data.name
       this.getUserList(this.formData.username, this.formData.id)
+    },
+    // rolehandleNodeClick
+    roleHandleNodeClick(data) {
+      this.defKeys = []
+      console.log(data.id)
+      this.treeControl.currentRoleName = data.name
+      this.getDefKeys(data.id)
     },
     // 搜索过滤
     filterNode(value, data) {
@@ -966,21 +1052,30 @@ export default {
 
     // 删除
     async remove(node, data) {
-      console.log(data.id)
-      await roleDelete(data.id)
-        .then(result => {
-          console.log('🚀', result.data)
-          const { retCode, retMsg } = result.data
-          if (retCode === '000000') {
-            this.$message.success(retMsg)
-            this.getTree()
-          } else {
-            this.$message.error(retMsg)
-          }
+      this.$confirm('是否继续?', `删除角色 -  ${data.name}`, {
+        confirmButtonText: '删 除',
+        cancelButtonText: '取 消',
+        type: 'warning',
+        closeOnClickModal: false
+      })
+        .then(async () => {
+          console.log(data.id)
+          await roleDelete(data.id)
+            .then(result => {
+              console.log('🚀', result.data)
+              const { retCode, retMsg } = result.data
+              if (retCode === '000000') {
+                this.$message.success(retMsg)
+                this.getTree()
+              } else {
+                this.$message.error(retMsg)
+              }
+            })
+            .catch(() => {
+              console.log('🛸🛸🛸🛸🛸🛸🛸')
+            })
         })
-        .catch(() => {
-          console.log('🛸🛸🛸🛸🛸🛸🛸')
-        })
+        .catch(() => {})
     },
     // 编辑
     edit(node, data) {

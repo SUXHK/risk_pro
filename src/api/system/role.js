@@ -79,3 +79,12 @@ export function roleView(id) {
     params: { roleId: id }
   })
 }
+
+// 获取角色授权的菜单id
+export function getAuthMenus(id) {
+  return request({
+    url: `/role/getAuthMenus`,
+    method: 'get',
+    params: { roleId: id }
+  })
+}

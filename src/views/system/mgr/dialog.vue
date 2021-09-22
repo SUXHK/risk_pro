@@ -45,13 +45,14 @@
                     ({{ data.children.length }})
                   </span>
                 </template>
-                <svg-icon
+                <!-- <svg-icon
                   slot="prefix"
                   icon-class="folder_black_24dp"
                   style="font-size:16px;margin:0 4px;vertical-align:text-bottom"
-                ></svg-icon>
-              </el-cascader> </el-form-item
-          ></el-col>
+                ></svg-icon> -->
+              </el-cascader>
+            </el-form-item></el-col
+          >
           <el-col :span="12">
             <el-form-item label="账户名：" prop="account">
               <el-input

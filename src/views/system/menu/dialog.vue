@@ -3,6 +3,7 @@
     :title="dialogParams.headerTitle"
     :visible.sync="dialogVisible"
     width="35%"
+    :top="callName === 'add' ? '10vh' : '15vh'"
     @close="close('elForm')"
     :append-to-body="true"
     :close-on-click-modal="false"
@@ -18,6 +19,31 @@
         class="mar-add-form"
         style="padding: 0 20px;"
       >
+        <el-row :gutter="20" v-if="callName === 'add'">
+          <el-col :span="24">
+            <el-form-item label="所属菜单项：" prop="deptid">
+              <el-cascader
+                v-model="formData.deptid"
+                :options="deptOptions"
+                :props="deptProps"
+                :style="{ width: '100%' }"
+                placeholder="请选择所属菜单项 / 点击搜索
+              "
+                separator=" / "
+                filterable
+                :show-all-levels="false"
+                clearable
+                ref="myCascader"
+                ><template slot-scope="{ node, data }">
+                  <span>{{ data.name }}</span>
+                  <span v-if="!node.isLeaf">
+                    ({{ data.children.length }})
+                  </span>
+                </template>
+              </el-cascader>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="菜单名称：" prop="name">
@@ -137,6 +163,13 @@
     <span slot="footer" class="dialog-footer">
       <el-button @click="close('elForm')" size="small">取 消</el-button>
       <el-button
+        v-if="callName === 'add'"
+        type="warning"
+        size="small"
+        @click="resetForm('elForm')"
+        >重 置</el-button
+      >
+      <el-button
         type="primary"
         :loading="sureLoading"
         size="small"
@@ -148,7 +181,7 @@
 </template>
 
 <script>
-import { menuMgrEdit } from '@/api/system/menu'
+import { menuMgrEdit, menuMgrTree, menuMgrAdd } from '@/api/system/menu'
 export default {
   name: 'Dialog',
   props: {
@@ -260,6 +293,13 @@ export default {
             message: '请输入备注',
             trigger: 'blur'
           }
+        ],
+        deptid: [
+          {
+            required: true,
+            message: '请选择所属菜单',
+            trigger: 'blur'
+          }
         ]
       },
       ismenuOptions: [
@@ -298,20 +338,33 @@ export default {
         value: 'value',
         children: 'children',
         checkStrictly: true
+      },
+      // 部门列表
+      deptOptions: [], //
+      deptProps: {
+        multiple: false,
+        label: 'name',
+        value: 'id',
+        children: 'children',
+        checkStrictly: true,
+        emitPath: false,
+        expandTrigger: 'hover'
       }
     }
   },
   methods: {
     showDialog(name, row) {
       this.callName = name
-      console.log(row)
       if (name === 'edit') {
         this.formData = this.$lodash.cloneDeep(row)
-        // 状态需要添加
-        this.formData.status = 1
+        // !状态需要添加 手动追加
+        this.$set(this.formData, 'status', 1)
         this.dialogVisible = true
       } else if (name === 'add') {
+        // !状态需要添加 手动追加
+        this.$set(this.formData, 'status', 1)
         this.dialogVisible = true
+        this.getMenuTree()
       } else {
         this.$message.error('调用失败...')
         this.dialogVisible = false
@@ -350,10 +403,24 @@ export default {
                 console.log('🛸🛸🛸🛸🛸🛸🛸')
                 this.sureLoading = false
               })
-          } else if (this.callName === 'newSubDep') {
-            this.$message.info('newSubDep')
-          } else if (this.callName === 'newLevelDep') {
-            this.$message.info('newLevelDep')
+          } else if (this.callName === 'add') {
+            console.log(this.formData)
+            console.log(menuMgrAdd)
+            // await menuMgrAdd(this.formData)
+            //   .then(result => {
+            //     console.log('🚀', result.data)
+            //     this.sureLoading = false
+            //     const { retCode, retMsg } = result.data
+            //     if (retCode === '000000') {
+            //       this.$message.success('添加成功')
+            //     } else {
+            //       this.$message.error(retMsg)
+            //     }
+            //   })
+            //   .catch(() => {
+            //     console.log('🛸🛸🛸🛸🛸🛸🛸')
+            //     this.sureLoading = false
+            //   })
           } else {
             this.$message.error('error submit!!')
           }
@@ -366,6 +433,26 @@ export default {
     // 重置
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    // 获取菜单树状列表
+    async getMenuTree() {
+      await menuMgrTree()
+        .then(result => {
+          console.log(result)
+          const { data, retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            setTimeout(() => {
+              this.tableLoading = false
+            }, 500)
+            this.deptOptions = data[0].children
+            // this.treeTableData = data
+          } else {
+            this.$$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
     }
   }
 }

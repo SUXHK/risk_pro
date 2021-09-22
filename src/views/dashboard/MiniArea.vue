@@ -1,20 +1,18 @@
 <template>
-  <el-card class="card" style="height: calc(100vh - 70px)">
-    <el-row :gutter="20">
-      <el-col :span="8">
+  <!-- <el-card class="card" style="height: 300px">
+    <el-row :gutter="20"> -->
+  <!-- <el-col :span="8">
         <div id="main" style="height: 40vh;width: 100%;overflow: hidden;"></div>
       </el-col>
       <el-col :span="8">
         <div id="main1" style="height:40vh;width: 100%;overflow: hidden;"></div>
-      </el-col>
-      <el-col :span="8">
-        <div
-          id="main2"
-          style="height: 40vh;width: 100%;overflow: hidden;"
-        ></div>
-      </el-col>
-    </el-row>
-  </el-card>
+      </el-col> -->
+  <div
+    id="main2"
+    style="height: calc(100vh - 353px);width: 100%;overflow: hidden;"
+  ></div>
+  <!-- </el-row>
+  </el-card> -->
 </template>
 <script>
 import * as echarts from 'echarts'
@@ -407,14 +405,14 @@ export default {
   },
   created() {},
   mounted() {
-    var myChart = echarts.init(document.getElementById('main'))
-    var myChart1 = echarts.init(document.getElementById('main1'))
+    // var myChart = echarts.init(document.getElementById('main'))
+    // var myChart1 = echarts.init(document.getElementById('main1'))
     var myChart2 = echarts.init(document.getElementById('main2'))
-    const res = this.$lodash.merge(this.data, this.options)
-    const res1 = this.$lodash.merge(this.data1, this.options1)
-    const res2 = this.$lodash.merge(this.data2, this.options2)
-    myChart.setOption(res)
-    myChart1.setOption(res1)
+    // const res = this.$lodash.merge(this.data, this.options)
+    // const res1 = this.$lodash.merge(this.data1, this.options1)
+    const res2 = this.$lodash.merge(this.data, this.options)
+    // myChart.setOption(res)
+    // myChart1.setOption(res1)
     myChart2.setOption(res2)
   },
   methods: {

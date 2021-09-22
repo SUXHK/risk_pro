@@ -81,6 +81,7 @@
             <template>
               <div style="overflow-x: hidden">
                 <el-tree
+                  class="custom-tree"
                   node-key="id"
                   :current-node-key="0"
                   :expand-on-click-node="false"
@@ -344,11 +345,29 @@
             </af-table-column>
             <af-table-column prop="status" label="status" align="center">
             </af-table-column>
-            <af-table-column
+            <!-- <af-table-column
               prop="statusName"
               label="statusName"
               align="center"
             >
+            </af-table-column> -->
+            <af-table-column
+              prop="statusName"
+              label="状态"
+              align="center"
+              fixed="right"
+            >
+              <template slot-scope="scope">
+                <el-tag size="small" v-if="scope.row.status === 1">{{
+                  scope.row.statusName
+                }}</el-tag>
+                <el-tag
+                  type="danger"
+                  size="small"
+                  v-if="scope.row.status === 2"
+                  >{{ scope.row.statusName }}</el-tag
+                >
+              </template>
             </af-table-column>
             <af-table-column label="操作" align="center" fixed="right">
               <!-- slot-scope="scope" -->
@@ -370,32 +389,54 @@
                 </el-button> -->
                 <template v-if="scope.row.status === 1">
                   <el-divider direction="vertical"></el-divider>
-                  <el-button
-                    type="text"
-                    size="small"
-                    @click="userControl('freeze', scope.row)"
+                  <el-popconfirm
+                    confirm-button-text="是的"
+                    cancel-button-text="取消"
+                    icon="el-icon-info"
+                    icon-color="red"
+                    title="确定停用此员工？"
+                    @confirm="userControl('freeze', scope.row)"
                   >
-                    停用
-                  </el-button>
+                    <el-button slot="reference" type="text" size="small"
+                      >停用</el-button
+                    >
+                  </el-popconfirm>
                 </template>
                 <template v-else>
                   <el-divider direction="vertical"></el-divider>
-                  <el-button
-                    type="text"
-                    size="small"
-                    @click="userControl('unfreeze', scope.row)"
+                  <el-popconfirm
+                    confirm-button-text="是的"
+                    cancel-button-text="取消"
+                    icon="el-icon-info"
+                    icon-color="red"
+                    title="确定启用此员工？"
+                    @confirm="userControl('unfreeze', scope.row)"
                   >
-                    启用
-                  </el-button>
+                    <el-button slot="reference" type="text" size="small"
+                      >启用</el-button
+                    >
+                  </el-popconfirm>
                 </template>
                 <el-divider direction="vertical"></el-divider>
-                <el-button
+                <el-popconfirm
+                  confirm-button-text="是的"
+                  cancel-button-text="取消"
+                  icon="el-icon-info"
+                  icon-color="red"
+                  title="确定删除此员工？"
+                  @confirm="userControl('delete', scope.row)"
+                >
+                  <el-button slot="reference" type="text" size="small"
+                    >删除</el-button
+                  >
+                </el-popconfirm>
+                <!-- <el-button
                   type="text"
                   size="small"
                   @click="userControl('delete', scope.row)"
                 >
                   删除
-                </el-button>
+                </el-button> -->
                 <el-divider direction="vertical"></el-divider>
                 <el-button
                   type="text"
@@ -602,7 +643,7 @@ export default {
         })
     },
     // 表格按钮功能
-    userControl(name, row) {
+    async userControl(name, row) {
       if (name === 'add') {
         this.dialogParams.headerTitle = '新建用户'
         this.$refs.mgrdialog.showDialog(name)
@@ -657,71 +698,54 @@ export default {
           })
           .catch(() => {})
       } else if (name === 'freeze') {
-        this.$confirm('停用此账号, 是否继续?', ` 🚫 停用 - ${row.account}`, {
-          confirmButtonText: '停 用',
-          cancelButtonText: '取 消',
-          type: 'warning',
-          closeOnClickModal: false
-        })
-          .then(async () => {
-            await freezeUser(row.id)
-              .then(result => {
-                console.log('🚀', result.data)
-                const { retCode, retMsg } = result.data
-                if (retCode === '000000') {
-                  this.$message.success('停用成功！')
-                  this.getUserList()
-                } else {
-                  this.$message.error(retMsg)
-                }
-              })
-              .catch(() => {})
+        await freezeUser(row.id)
+          .then(result => {
+            console.log('🚀', result.data)
+            const { retCode, retMsg } = result.data
+            if (retCode === '000000') {
+              this.$message.success('停用成功！')
+              this.getUserList()
+            } else {
+              this.$message.error(retMsg)
+            }
           })
           .catch(() => {})
       } else if (name === 'unfreeze') {
-        this.$confirm('启用此账号, 是否继续?', ` ✅ 启用 - ${row.account}`, {
-          confirmButtonText: '启 用',
-          cancelButtonText: '取 消',
-          type: 'warning',
-          closeOnClickModal: false
-        })
-          .then(async () => {
-            await unfreezeUser(row.id)
-              .then(result => {
-                console.log('🚀', result.data)
-                const { retCode, retMsg } = result.data
-                if (retCode === '000000') {
-                  this.$message.success('启用成功！')
+        await unfreezeUser(row.id)
+          .then(result => {
+            console.log('🚀', result.data)
+            const { retCode, retMsg } = result.data
+            if (retCode === '000000') {
+              this.$message.success('启用成功！')
 
-                  this.getUserList()
-                } else {
-                  this.$message.error(retMsg)
-                }
-              })
-              .catch(() => {})
+              this.getUserList()
+            } else {
+              this.$message.error(retMsg)
+            }
           })
           .catch(() => {})
       } else if (name === 'delete') {
-        this.$confirm('删除此账号, 是否继续?', ` ❌ 删除 - ${row.account}`, {
-          confirmButtonText: '重 置',
-          cancelButtonText: '取 消',
-          type: 'warning',
-          closeOnClickModal: false
-        })
-          .then(async () => {
-            await deleteUser(row.id)
-              .then(result => {
-                console.log('🚀', result.data)
-                const { retCode, retMsg } = result.data
-                if (retCode === '000000') {
-                  this.$message.success('删除成功！')
+        // this.$confirm('删除此账号, 是否继续?', ` ❌ 删除 - ${row.account}`, {
+        //   confirmButtonText: '重 置',
+        //   cancelButtonText: '取 消',
+        //   type: 'warning',
+        //   closeOnClickModal: false
+        // })
+        //   .then(async () => {
 
-                  this.getUserList()
-                } else {
-                  this.$message.error(retMsg)
-                }
-              })
-              .catch(() => {})
+        //   })
+        //   .catch(() => {})
+        await deleteUser(row.id)
+          .then(result => {
+            console.log('🚀', result.data)
+            const { retCode, retMsg } = result.data
+            if (retCode === '000000') {
+              this.$message.success('删除成功！')
+
+              this.getUserList()
+            } else {
+              this.$message.error(retMsg)
+            }
           })
           .catch(() => {})
       } else {
