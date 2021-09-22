@@ -29,7 +29,7 @@
       @tab-click="tabsClick"
       class="tabs-role"
     >
-      <el-tab-pane label="员工角色分配" name="staff">
+      <el-tab-pane label="角色 - 分配设置" name="staff">
         <el-row :gutter="0">
           <el-col :span="6">
             <el-card class="tree-card clear" shadow="never">
@@ -40,11 +40,11 @@
                   style="float: right; padding: 3px 0"
                   type="text"
                   icon="el-icon-refresh "
-                  @click="getTree"
+                  @click="getStaffTree"
                   >刷新</el-button
                 >
                 <el-button
-                  v-if="roleTreeList.length <= 0"
+                  v-if="staffRoleTreeList.length <= 0"
                   style="float: right; padding: 3px 10px"
                   type="text"
                   icon="el-icon-circle-plus-outline"
@@ -100,7 +100,7 @@
                       :current-node-key="0"
                       :expand-on-click-node="false"
                       highlight-current
-                      :data="roleTreeList"
+                      :data="staffRoleTreeList"
                       :props="defaultProps"
                       @node-click="handleNodeClick"
                       :filter-node-method="filterNode"
@@ -153,11 +153,11 @@
                             style="font-size:18px;margin:0 5px;vertical-align:text-bottom;"
                             @click.stop="() => append(data)"
                           ></svg-icon>
-
                           <svg-icon
                             v-if="
-                              !treeControl.isEditTreeNode ||
-                                node.id !== treeControl.nodeId
+                              (!treeControl.isEditTreeNode ||
+                                node.id !== treeControl.nodeId) &&
+                                data.id !== 0
                             "
                             title="编辑"
                             icon-class="edit-2-fill"
@@ -167,8 +167,9 @@
 
                           <svg-icon
                             v-if="
-                              !treeControl.isEditTreeNode ||
-                                node.id !== treeControl.nodeId
+                              (!treeControl.isEditTreeNode ||
+                                node.id !== treeControl.nodeId) &&
+                                data.id !== 0
                             "
                             title="删除"
                             @click.stop="() => remove(node, data)"
@@ -443,7 +444,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="角色权限设置" name="role">
+      <el-tab-pane label="角色 - URL权限设置" name="role">
         <el-row :gutter="0">
           <el-col :span="6">
             <el-card class="tree-card clear" shadow="never">
@@ -453,11 +454,11 @@
                   style="float: right; padding: 3px 0"
                   type="text"
                   icon="el-icon-refresh "
-                  @click="getTree"
+                  @click="getRoleTree"
                   >刷新</el-button
                 >
                 <el-button
-                  v-if="roleTreeList.length <= 0"
+                  v-if="roleRoleTreeList.length <= 0"
                   style="float: right; padding: 3px 10px"
                   type="text"
                   icon="el-icon-circle-plus-outline"
@@ -511,10 +512,10 @@
                     <el-tree
                       class="custom-tree"
                       node-key="id"
-                      :current-node-key="0"
+                      :current-node-key="1"
                       :expand-on-click-node="false"
                       highlight-current
-                      :data="roleTreeList"
+                      :data="roleRoleTreeList"
                       :props="defaultProps"
                       @node-click="roleHandleNodeClick"
                       :filter-node-method="filterNode"
@@ -645,36 +646,182 @@
               <!-- style="height: calc(100vh - 247px);" -->
               <!-- 125px -->
               <div slot="header" style="height: 63px;">
-                <span style="font-weight: bold;font-size:14px;line-height: 63px"
-                  >当前角色：</span
-                >
-                <span style="line-height: 63px;margin-left:5px">{{
-                  treeControl.currentRoleName
-                }}</span>
+                <div style="float: left;">
+                  <span
+                    style="font-weight: bold;font-size:14px;line-height: 63px"
+                    >当前角色：</span
+                  >
+                  <span style="line-height: 63px;margin-left:5px">{{
+                    treeControl.currentRoleName
+                  }}</span>
+                  <el-popover
+                    placement="bottom"
+                    title="角色权限设置 - 帮助"
+                    trigger="click"
+                    width="200"
+                  >
+                    <br />
+                    <div>
+                      选中所需的权限，点击应用即可
+                    </div>
+                    <br />
+                    <svg-icon
+                      slot="reference"
+                      title="角色管理 - 角色权限设置 - 帮助"
+                      icon-class="question-fill"
+                      class="el-button--text"
+                      style="margin-left:12px;cursor: pointer;font-size:16px"
+                    ></svg-icon>
+                  </el-popover>
+                  <el-button
+                    type="primary"
+                    icon="el-icon-check"
+                    size="small"
+                    style="margin-left: 20px;"
+                    @click="useRole"
+                    :loading="useBtnLoading"
+                    >应 用</el-button
+                  >
+                  <el-button
+                    type="warning"
+                    icon="el-icon-refresh-right"
+                    size="small"
+                    style="margin-left: 20px;"
+                    @click="getDefKeys(roleNodeClickId)"
+                    >重 置</el-button
+                  >
+                </div>
               </div>
               <!-- 树形控件 -->
               <div style="overflow-x: hidden">
-                <el-tree
-                  :data="treeEditData"
-                  :props="treeEditProps"
-                  show-checkbox
-                  node-key="id"
-                  default-expand-all
-                  highlight-current
-                  check-on-click-node
-                  :default-checked-keys="defKeys"
-                  ref="treeEditRef"
+                <el-skeleton
+                  :loading="treeRoleTableLoading"
+                  animated
+                  :rows="7"
                   :style="{
                     height: !pageParams.full
                       ? 'calc(100vh - 312px)'
                       : 'calc(100vh - 190px)'
                   }"
-                ></el-tree>
+                >
+                  <template slot="template">
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" style="width: 50%;" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" />
+                    </div>
+                    <div style="padding: 10px 0;">
+                      <el-skeleton-item variant="text" style="width: 50%;" />
+                    </div>
+                  </template>
+                  <template>
+                    <el-tree
+                      :data="treeEditData"
+                      :props="treeEditProps"
+                      show-checkbox
+                      node-key="id"
+                      default-expand-all
+                      highlight-current
+                      check-on-click-node
+                      check-strictly
+                      icon-class="el-icon-arrow-right"
+                      :default-checked-keys="defKeys"
+                      ref="treeEditRef"
+                      :style="{
+                        height: !pageParams.full
+                          ? 'calc(100vh - 312px)'
+                          : 'calc(100vh - 190px)',
+                        width: '600px'
+                      }"
+                    >
+                      <span
+                        class="custom-tree-node"
+                        slot-scope="{ node, data }"
+                      >
+                        <!-- <span> -->
+                        <template>
+                          {{ node.label }}
+                          <span v-if="data.levels === 1">
+                            <el-badge value="一级菜单" class="item"> </el-badge>
+                          </span>
+                          <span v-else-if="data.levels === 2">
+                            <el-badge
+                              value="二级菜单"
+                              class="item"
+                              type="primary"
+                            >
+                            </el-badge>
+                          </span>
+                          <span v-else>
+                            <el-badge value="按钮" class="item" type="success">
+                            </el-badge>
+                          </span>
+                        </template>
+                        <!-- </span> -->
+
+                        <!-- <el-badge
+                          v-if="data.levels === 1"
+                          value="父级菜单"
+                          class="item"
+                          ><span>{{ node.label }}</span>
+                        </el-badge>
+                        <el-badge
+                          v-else-if="data.levels === 2"
+                          value="子级菜单"
+                          class="item"
+                          ><span>{{ node.label }}</span>
+                        </el-badge>
+                        <el-badge v-else value="按钮" class="item"
+                          ><span>{{ node.label }}</span>
+                        </el-badge> -->
+                      </span>
+                    </el-tree>
+                    <!--  check-strictly -->
+                  </template>
+                </el-skeleton>
+                <!-- <el-button
+                  type="primary"
+                  style="position: absolute;top: 0;  right: 40px;"
+                  icon="el-icon-check"
+                  >应用</el-button
+                > -->
               </div>
             </el-card>
           </el-col>
         </el-row>
       </el-tab-pane>
+      <el-tab-pane label="角色 - 数据查看权限" name="data"> 123</el-tab-pane>
     </el-tabs>
 
     <app-footer class="top-footer" v-if="!pageParams.full"></app-footer>
@@ -704,7 +851,8 @@ import {
   roleAdd,
   roleEdit,
   roleDelete,
-  getAuthMenus
+  getAuthMenus,
+  roleAuthMenus
 } from '@/api/system/role'
 import Dialog from './dialog.vue'
 import RoleDialog from './roleDialog.vue'
@@ -735,7 +883,7 @@ export default {
         // 正常table高度
         normalFull: 'calc(100vh - 312px)',
         // tabs标签页默认项
-        activeTabs: 'role' // staff role
+        activeTabs: 'role' // staff role data
       },
       // 查询表单
       formData: {
@@ -751,8 +899,11 @@ export default {
       tableLoading: true,
       // 用于展示骨架屏
       treeTableLoading: true,
+      // 右边树的loading
+      treeRoleTableLoading: true,
       // 左侧树
-      roleTreeList: [],
+      staffRoleTreeList: [],
+      roleRoleTreeList: [],
       // 左侧树配置
       defaultProps: {
         children: 'children',
@@ -783,12 +934,13 @@ export default {
         children: 'children'
       },
       // 默认选中节点的id值
-      defKeys: []
+      defKeys: [],
+      // 点击时候的id
+      roleNodeClickId: '',
+      useBtnLoading: false
     }
   },
   created() {
-    this.getTree()
-    this.getUserList()
     // this.handleNodeClick({ id: 1 })
   },
   mounted() {},
@@ -802,6 +954,24 @@ export default {
     filterText(val) {
       // console.log(val)
       this.$refs.roletree.filter(val)
+    },
+    pageParams: {
+      handler: function(val) {
+        if (val.activeTabs === 'staff') {
+          this.getStaffTree()
+          this.getUserList()
+        } else if (val.activeTabs === 'role') {
+          this.getRoleRoleTree()
+          this.roleHandleNodeClick({ id: 1, name: '超级管理员' })
+          this.getMenuTree()
+          // this.getDefKeys('1')
+        } else if (val.activeTabs === 'data') {
+        } else {
+          this.$message.error('请刷新后重试')
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -821,7 +991,7 @@ export default {
     // 重置搜索
     resetForm(formName) {
       this.formData.id = ''
-      this.getTree()
+      this.getStaffTree()
       this.$refs[formName].resetFields()
       this.getUserList()
     },
@@ -838,22 +1008,45 @@ export default {
     // },
     // el-tabs切换点击
     tabsClick(tab, event) {
-      if (tab.name === 'role') {
-        this.getMenuTree()
-        this.getDefKeys('0')
-      }
+      // if (tab.name === 'role') {
+      // }
+    },
+    // 应用
+    async useRole() {
+      this.useBtnLoading = true
+      const keys = [
+        ...this.$refs.treeEditRef.getCheckedKeys(),
+        ...this.$refs.treeEditRef.getHalfCheckedKeys()
+      ]
+      const idStr = keys.join(',')
+      console.log(idStr)
+      await roleAuthMenus(idStr, this.roleNodeClickId)
+        .then(result => {
+          console.log('🚀', result.data)
+          const { retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            setTimeout(() => {
+              this.useBtnLoading = false
+            }, 500)
+            this.getDefKeys(this.roleNodeClickId)
+            this.$message.success('设置成功')
+          } else {
+            this.$message.error(retMsg)
+            this.useBtnLoading = false
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+          this.useBtnLoading = false
+        })
     },
     // 获取树lable
     async getMenuTree() {
-      this.roleTreeLoading = true
       await menuMgrTree()
         .then(result => {
           console.log(result)
           const { data, retCode, retMsg } = result.data
           if (retCode === '000000') {
-            setTimeout(() => {
-              this.roleTreeLoading = false
-            }, 500)
             this.treeEditData = data[0].children
             // this.treeTableData = data
           } else {
@@ -866,11 +1059,15 @@ export default {
     },
     // DefKeys
     async getDefKeys(id) {
+      this.treeRoleTableLoading = true
       await getAuthMenus(id)
         .then(result => {
           console.log('🚀', result.data)
           const { retCode, retMsg, data } = result.data
           if (retCode === '000000') {
+            setTimeout(() => {
+              this.treeRoleTableLoading = false
+            }, 500)
             this.defKeys = data
           } else {
             this.$message.error(retMsg)
@@ -880,8 +1077,8 @@ export default {
           console.log('🛸🛸🛸🛸🛸🛸🛸')
         })
     },
-    // 获取角色树状列表
-    async getTree() {
+    // 获取角色树状列表staff
+    async getStaffTree() {
       this.treeTableLoading = true
       await getRoleTree()
         .then(result => {
@@ -896,7 +1093,35 @@ export default {
             // arrSort.sort()
             // this.treeControl.currentNodeKey = arrSort[0]
 
-            this.roleTreeList = data
+            this.staffRoleTreeList = data
+            this.timerLoading = setTimeout(() => {
+              this.treeTableLoading = false
+            }, 500)
+            // this.treeTableLoading = false
+          } else {
+            this.$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
+    },
+    // getRoleTree
+    getRoleTree() {
+      this.getRoleRoleTree()
+      this.roleHandleNodeClick({ id: 1, name: '超级管理员' })
+      this.getMenuTree()
+    },
+    // 获取角色树状列表
+    async getRoleRoleTree() {
+      this.treeTableLoading = true
+      await getRoleTree()
+        .then(result => {
+          console.log('🚀', result.data)
+          const { retCode, data, retMsg } = result.data
+          if (retCode === '000000') {
+            console.log(data)
+            this.roleRoleTreeList = data[0].children
             this.timerLoading = setTimeout(() => {
               this.treeTableLoading = false
             }, 500)
@@ -939,8 +1164,10 @@ export default {
     },
     // rolehandleNodeClick
     roleHandleNodeClick(data) {
+      // this.getDefKeys('1')
       this.defKeys = []
       console.log(data.id)
+      this.roleNodeClickId = data.id
       this.treeControl.currentRoleName = data.name
       this.getDefKeys(data.id)
     },
@@ -975,7 +1202,7 @@ export default {
                 const { retCode, retMsg } = result.data
                 if (retCode === '000000') {
                   setTimeout(() => {
-                    this.getTree()
+                    this.getStaffTree()
                     instance.confirmButtonLoading = false
                     done()
                   }, 500)
@@ -1025,7 +1252,7 @@ export default {
                 const { retCode, retMsg } = result.data
                 if (retCode === '000000') {
                   setTimeout(() => {
-                    this.getTree()
+                    this.getStaffTree()
                     instance.confirmButtonLoading = false
                     done()
                   }, 500)
@@ -1066,7 +1293,7 @@ export default {
               const { retCode, retMsg } = result.data
               if (retCode === '000000') {
                 this.$message.success(retMsg)
-                this.getTree()
+                this.getStaffTree()
               } else {
                 this.$message.error(retMsg)
               }
@@ -1100,7 +1327,7 @@ export default {
             if (retCode === '000000') {
               this.$message.success(retMsg)
               this.editCancel(node, data)
-              this.getTree()
+              this.getStaffTree()
             } else {
               this.$message.error(retMsg)
             }
