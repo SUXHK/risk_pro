@@ -349,20 +349,29 @@ export const constantRoutes = [
               import(
                 /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/index.vue'
               ),
-            name: 'bizDef',
+            name: 'bizDef'
 
-            children: [
-              {
-                path: 'details',
-                meta: { title: '详情' },
-                name: 'details',
-                redirect: '/system/bizDef/details',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/details.vue'
-                  )
-              }
-            ]
+            // children: [
+            //   {
+            //     path: 'details',
+            //     meta: { title: '详情' },
+            //     name: 'details',
+            //     redirect: '/system/bizDef/details',
+            //     component: () =>
+            //       import(
+            //         /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/details.vue'
+            //       )
+            //   }
+            // ]
+          },
+          {
+            path: 'bizDef/details',
+            meta: { title: '详情' },
+            name: 'details',
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/details.vue'
+              )
           }
         ]
       }
