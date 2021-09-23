@@ -341,6 +341,28 @@ export const constantRoutes = [
               import(
                 /* webpackChunkName: "Risk-system-notice" */ '@/views/system/notice.vue'
               )
+          },
+          {
+            path: 'bizDef',
+            meta: { title: '业务表管理' },
+            component: () =>
+              import(
+                /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/index.vue'
+              ),
+            name: 'bizDef',
+
+            children: [
+              {
+                path: 'details',
+                meta: { title: '详情' },
+                name: 'details',
+                redirect: '/system/bizDef/details',
+                component: () =>
+                  import(
+                    /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/details.vue'
+                  )
+              }
+            ]
           }
         ]
       }
