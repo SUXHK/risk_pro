@@ -49,7 +49,7 @@ export function defView(id) {
   })
 }
 
-// --------------------------------------
+// ---------------column 列信息-----------------------
 
 // 删除业务表字段
 export function columnDefMgrDelete(id) {
