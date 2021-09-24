@@ -415,7 +415,19 @@ export default {
     },
     // 点击确定传来的值
     fetch(formData) {
-      this.getTree()
+      // this.getTree()
+      this.getMenuTree()
+      this.$store
+        .dispatch('user/getInfo')
+        .then(result => {})
+        .catch(() => {
+          this.$notify({
+            title: '菜单资源加载错误',
+            message: '请重试',
+            type: 'error',
+            duration: 0
+          })
+        })
     },
     // 查询按钮
     submitQueryForm() {

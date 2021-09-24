@@ -883,7 +883,7 @@ export default {
         // 正常table高度
         normalFull: 'calc(100vh - 312px)',
         // tabs标签页默认项
-        activeTabs: 'role' // staff role data
+        activeTabs: 'staff' // staff role data
       },
       // 查询表单
       formData: {

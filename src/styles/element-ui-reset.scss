@@ -304,6 +304,16 @@
 .top-footer {
   margin-top: 20px !important;
 }
+.theme-message {
+  .el-icon-loading {
+    color: #6672fb;
+    font-weight: 700;
+  }
+  .el-message__content {
+    font-size: 14px;
+    margin-left: 5px;
+  }
+}
 // tabs 标签页
 .tabs-role {
   .el-tabs__header {
@@ -314,7 +324,12 @@
     }
   }
 }
-
+.el-page-header__content {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000;
+  overflow: hidden;
+}
 // @mixin rolelight {
 //   &:hover {
 //     color: $base-color-default !important;

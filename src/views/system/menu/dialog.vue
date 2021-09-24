@@ -210,6 +210,7 @@ export default {
       deptList: [],
       // 表单
       formData: {
+        // deptid
         name: '',
         code: '',
         icon: '',
@@ -395,6 +396,8 @@ export default {
                 const { retCode, retMsg } = result.data
                 if (retCode === '000000') {
                   this.$message.success('编辑成功')
+                  this.dialogVisible = false
+                  this.$emit('fetch')
                 } else {
                   this.$message.error(retMsg)
                 }
@@ -405,22 +408,24 @@ export default {
               })
           } else if (this.callName === 'add') {
             console.log(this.formData)
-            console.log(menuMgrAdd)
-            // await menuMgrAdd(this.formData)
-            //   .then(result => {
-            //     console.log('🚀', result.data)
-            //     this.sureLoading = false
-            //     const { retCode, retMsg } = result.data
-            //     if (retCode === '000000') {
-            //       this.$message.success('添加成功')
-            //     } else {
-            //       this.$message.error(retMsg)
-            //     }
-            //   })
-            //   .catch(() => {
-            //     console.log('🛸🛸🛸🛸🛸🛸🛸')
-            //     this.sureLoading = false
-            //   })
+
+            await menuMgrAdd(this.formData)
+              .then(result => {
+                console.log('🚀', result.data)
+                this.sureLoading = false
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  this.$message.success('添加成功')
+                  this.dialogVisible = false
+                  this.$emit('fetch')
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {
+                console.log('🛸🛸🛸🛸🛸🛸🛸')
+                this.sureLoading = false
+              })
           } else {
             this.$message.error('error submit!!')
           }

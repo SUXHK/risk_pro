@@ -343,36 +343,52 @@ export const constantRoutes = [
               )
           },
           {
+            // path: 'bizDef',
+            // meta: { title: '业务表管理' },
+            // component: () =>
+            //   import(
+            //     /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/index.vue'
+            //   ),
+            // name: 'bizDef',
+            // !!
             path: 'bizDef',
-            meta: { title: '业务表管理' },
+            name: 'bizDef',
+            redirect: '/system/bizDef',
             component: () =>
               import(
-                /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/index.vue'
+                /* webpackChunkName: "Risk-Home" */ '@/layout/EmptyLayout.vue'
               ),
-            name: 'bizDef'
+            meta: { title: '业务表' },
 
-            // children: [
-            //   {
-            //     path: 'details',
-            //     meta: { title: '详情' },
-            //     name: 'details',
-            //     redirect: '/system/bizDef/details',
-            //     component: () =>
-            //       import(
-            //         /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/details.vue'
-            //       )
-            //   }
-            // ]
-          },
-          {
-            path: 'bizDef/details',
-            meta: { title: '详情' },
-            name: 'details',
-            component: () =>
-              import(
-                /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/details.vue'
-              )
+            children: [
+              {
+                path: '/',
+                // name: 'bizDef',
+                meta: { title: '管理' },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "Risk-system-bizDef" */ '@/views/system/bizDef/index.vue'
+                  )
+              },
+              {
+                path: 'details',
+                meta: { title: '详情' },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "Risk-system-bizDef" */ '@/views/system/bizDef/details.vue'
+                  )
+              }
+            ]
           }
+          // {
+          //   path: 'bizDef/details',
+          //   meta: { title: '详情' },
+          //   name: 'details',
+          //   component: () =>
+          //     import(
+          //       /* webpackChunkName: "Risk-system-notice" */ '@/views/system/bizDef/details.vue'
+          //     )
+          // }
         ]
       }
     ]

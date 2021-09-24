@@ -17,11 +17,11 @@ export function defInsert(data) {
   })
 }
 // 查询业务表
-export function defList(alia, name) {
+export function defList({ limit, offset, alias, tableName }) {
   return request({
     url: `/tableDefMgr/list`,
     method: 'get',
-    params: { alias: alia, tableName: name }
+    params: { limit, offset, alias, tableName }
   })
 }
 
@@ -46,5 +46,49 @@ export function defView(id) {
     url: `/tableDefMgr/view`,
     method: 'get',
     params: { tableDefId: id }
+  })
+}
+
+// --------------------------------------
+
+// 删除业务表字段
+export function columnDefMgrDelete(id) {
+  return request({
+    url: `/columnDefMgr/delete`,
+    method: 'get',
+    params: { columnDefId: id }
+  })
+}
+// 新增业务表字段
+export function columnDefMgrInsert(data) {
+  return request({
+    url: `/columnDefMgr/insert`,
+    method: 'post',
+    data
+  })
+}
+// 查询业务表字段（分页）
+export function columnDefMgrList({ offset, limit, columnName, tableId }) {
+  return request({
+    url: `/columnDefMgr/list`,
+    method: 'get',
+    params: { offset, limit, columnName, tableId }
+  })
+}
+
+// 修改业务表字段
+export function columnDefMgrUpdate(data) {
+  return request({
+    url: `/columnDefMgr/update`,
+    method: 'post',
+    data
+  })
+}
+// 业务表字段详情
+export function columnDefMgrView(columnDefId) {
+  return request({
+    url: `/columnDefMgr/view`,
+    method: 'get',
+    params: { columnDefId }
   })
 }
