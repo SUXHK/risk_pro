@@ -62,7 +62,7 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="状态：" prop="status">
               <el-switch
                 v-model="formData.status"
@@ -74,7 +74,7 @@
               </el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="加密标志：" prop="encryptFlag">
               <el-switch
                 v-model="formData.encryptFlag"
@@ -90,8 +90,9 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="字段类型：" prop="type">
-              <el-radio-group v-model="formData.type" size="medium">
+              <el-radio-group v-model="formData.type" size="small">
                 <el-radio
+                  class="bizDef-radio"
                   v-for="(item, index) in typeOptions"
                   :key="index"
                   :label="item.value"
@@ -129,12 +130,11 @@
             </el-form-item>
           </el-col>
         </el-row>
-
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="描述：" prop="description">
+            <el-form-item label="备注：" prop="memo">
               <el-input
-                v-model="formData.description"
+                v-model="formData.memo"
                 type="textarea"
                 placeholder="请输入备注"
                 show-word-limit
@@ -198,11 +198,11 @@ export default {
         context: '', // 转义描述
         description: '', // 业务描述
         displayName: '', // 业务展示名称
-        encryptFlag: 1, // 加密标志（0：不加密 1：加密）
+        encryptFlag: 0, // 加密标志（0：不加密 1：加密）
         id: '', // 主键
         memo: '', // 备注
         orderNo: 0, // 顺序
-        status: 0, // 状态 0：启用 1：隐藏
+        status: 1, // 状态 0：启用 1：隐藏
         tableId: '', // 业务表名
         type: '' // 字段类型(1：字符型 2：数值型 3：日期 4：时间）
       },
