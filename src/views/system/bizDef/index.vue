@@ -147,7 +147,7 @@
       </af-table-column>
       <el-table-column
         label="表名（点击查看详情）"
-        width="380"
+        width="310"
         prop="tableName"
       >
         <template slot-scope="scope">
@@ -208,7 +208,7 @@
           ><el-tag v-else type="warning">禁用</el-tag> -->
         </template>
       </el-table-column>
-      <el-table-column label="编辑" prop="status" width="120">
+      <el-table-column label="操作" prop="status" width="130">
         <template slot-scope="scope">
           <el-button
             type="text"
@@ -216,7 +216,7 @@
             icon="el-icon-edit"
             @click="control('edit', scope.row)"
             >编辑</el-button
-          >
+          ><el-divider direction="vertical"></el-divider>
           <el-button
             type="text"
             size="small"

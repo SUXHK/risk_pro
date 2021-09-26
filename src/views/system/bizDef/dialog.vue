@@ -111,17 +111,6 @@ export default {
   },
   data() {
     return {
-      // 部门列表
-      deptOptions: [],
-      deptProps: {
-        multiple: false,
-        label: 'name',
-        value: 'id',
-        children: 'children',
-        checkStrictly: true,
-        emitPath: false,
-        expandTrigger: 'hover'
-      },
       sureLoading: false,
       // dialog状态
       dialogVisible: false,

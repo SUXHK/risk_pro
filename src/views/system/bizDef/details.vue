@@ -108,20 +108,43 @@
       class="tables"
       style="width: 100%;box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%)"
     >
-      <!-- tooltip-effect="dark" -->
-      <!-- <el-table-column type="index" label="No." width="60"> </el-table-column> -->
-      <af-table-column
+      <el-table-column
         v-if="total > 0"
         type="index"
         label="No."
         :index="indexMethod"
         width="60"
       >
-      </af-table-column>
-      <af-table-column prop="alisa" label="alisa"> </af-table-column>
-      <af-table-column prop="columnName" label="columnName"> </af-table-column>
-      <el-table-column prop="context" label="context" min-width="250">
-        <!-- show-overflow-tooltip -->
+      </el-table-column>
+      <el-table-column prop="alisa" label="别名" width="150">
+        <template slot-scope="scope">
+          <el-popover
+            width="250"
+            placement="top-start"
+            trigger="hover"
+            :content="scope.row.alisa"
+          >
+            <span slot="reference" class="one-txt-cut">{{
+              scope.row.alisa
+            }}</span>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column prop="columnName" label="列名" width="150"
+        ><template slot-scope="scope">
+          <el-popover
+            width="250"
+            placement="top-start"
+            trigger="hover"
+            :content="scope.row.columnName"
+          >
+            <span slot="reference" class="one-txt-cut">{{
+              scope.row.columnName
+            }}</span>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column prop="context" label="内容解释" width="200">
         <template slot-scope="scope">
           <el-popover
             width="250"
@@ -133,32 +156,133 @@
               scope.row.context
             }}</span>
           </el-popover>
-          <!-- <el-tooltip
-            class="item"
-            effect="light"
-            :content="scope.row.context"
+        </template>
+      </el-table-column>
+      <el-table-column prop="displayName" label="显示列名" width="250">
+        <template slot-scope="scope">
+          <el-popover
+            width="250"
             placement="top-start"
+            trigger="hover"
+            :content="scope.row.displayName"
           >
-            <div slot="content" style="width: 300px;">
-              {{ scope.row.context }}
-            </div>
-            <div class="btn">{{ scope.row.context }}</div>
-          </el-tooltip> -->
+            <span slot="reference" class="one-txt-cut">{{
+              scope.row.displayName
+            }}</span>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column prop="description" label="描述">
+        <template slot-scope="scope">
+          <el-popover
+            width="250"
+            placement="top-start"
+            trigger="hover"
+            :content="scope.row.description"
+          >
+            <span slot="reference" class="one-txt-cut">{{
+              scope.row.description
+            }}</span>
+          </el-popover>
         </template>
       </el-table-column>
 
-      <af-table-column prop="description" label="description">
-      </af-table-column>
-      <af-table-column prop="displayName" label="displayName">
-      </af-table-column>
-      <af-table-column prop="encryptFlag" label="encryptFlag">
-      </af-table-column>
-      <af-table-column prop="memo" label="memo"> </af-table-column>
-      <af-table-column prop="orderNo" label="orderNo"> </af-table-column>
-      <af-table-column prop="status" label="status"> </af-table-column>
-      <af-table-column prop="tableId" label="tableId"> </af-table-column>
-      <af-table-column prop="type" label="type"> </af-table-column>
+      <el-table-column prop="encryptFlag" label="是否加密" width="80"
+        ><template slot-scope="scope">
+          <!-- {{ scope.row.encryptFlag }} -->
+          <!-- <svg-icon
+            v-if="scope.row.encryptFlag === 1"
+            title="加密"
+            icon-class="check_circle_black_24dp"
+            class="el-button--text"
+            style="font-size:16px;color: #15d36a;vertical-align: middle"
+          ></svg-icon> -->
+          <el-tag
+            effect="plain"
+            type="success"
+            v-if="scope.row.encryptFlag === 1"
+            >加密</el-tag
+          >
+          <el-tag effect="plain" type="info" v-else>不加密</el-tag>
+
+          <!-- <svg-icon
+            v-else
+            title="不加密"
+            icon-class="cancel_black_24dp"
+            style="font-size:16px;color: red;vertical-align: middle"
+          ></svg-icon>  -->
+        </template></el-table-column
+      >
+      <el-table-column prop="orderNo" label="顺序" width="80">
+        <template slot-scope="scope">
+          <svg-icon
+            :title="`排序` + scope.row.orderNo"
+            icon-class="menu-4-line"
+            class="el-button--text"
+            style="font-size:16px;vertical-align: middle"
+          ></svg-icon>
+
+          <span style="vertical-align: middle;margin-left:5px">{{
+            scope.row.orderNo
+          }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="type" label="类型" width="120"> </el-table-column>
+      <el-table-column prop="status" label="状态" width="80">
+        <template slot-scope="scope">
+          <template v-if="scope.row.status === 0">
+            <svg-icon
+              title="启用"
+              icon-class="dian"
+              style="margin-right:2px;cursor: pointer;color:#52c41a;font-size:20px;vertical-align:middle"
+            >
+              ></svg-icon
+            >
+            <span style="font-size:14px;vertical-align:middle;">启用</span>
+          </template>
+          <template v-else>
+            <svg-icon
+              title="禁用"
+              icon-class="dian"
+              style="margin-right:2px;cursor: pointer;color:red;font-size:20px;vertical-align:middle;"
+            ></svg-icon
+            ><span style="font-size:14px;vertical-align:middle;">禁用</span>
+          </template>
+          <!-- <el-tag type="success" v-if="scope.row.status === 0">开启</el-tag
+          ><el-tag v-else type="warning">禁用</el-tag> -->
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="140">
+        <template slot-scope="scope">
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-edit"
+            @click="control('edit', scope.row)"
+            >编辑</el-button
+          ><el-divider direction="vertical"></el-divider>
+
+          <el-popconfirm
+            confirm-button-text="是的"
+            cancel-button-text="取消"
+            icon="el-icon-info"
+            icon-color="red"
+            title="确定要删除吗？"
+            @confirm="control('del', scope.row)"
+          >
+            <el-button
+              type="text"
+              slot="reference"
+              size="small"
+              icon="el-icon-delete"
+              >删除</el-button
+            >
+          </el-popconfirm>
+        </template>
+      </el-table-column>
     </el-table>
+
     <el-pagination
       background
       @size-change="handleSizeChange"
@@ -172,14 +296,13 @@
     </el-pagination>
     <app-footer class="footer" v-if="!pageParams.full"></app-footer>
 
-    <Dialog ref="deptdialog" @fetch="fetch" :dialogParams="dialogParams">
-    </Dialog>
+    <Dialog ref="dialog" @fetch="fetch" :dialogParams="dialogParams"> </Dialog>
     <!-- <router-view /> -->
   </el-card>
 </template>
 
 <script>
-import Dialog from './dialog.vue'
+import Dialog from './detailsDialog.vue'
 import { columnDefMgrList } from '@/api/system/bizDef'
 export default {
   components: {
@@ -303,6 +426,14 @@ export default {
     // 序号
     indexMethod(index) {
       return index + 1 + (this.queryForm.offset - 1) * this.queryForm.limit
+    },
+    control(name, row) {
+      if (name === 'edit') {
+        this.dialogParams.headerTitle = '编辑 - ' + row.displayName
+        this.$refs.dialog.showDialog(name, row)
+      } else {
+        this.$message.error('调用失败...')
+      }
     }
   }
 }
