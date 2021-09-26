@@ -108,10 +108,45 @@
       class="tables"
       style="width: 100%;box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%)"
     >
-      <el-table-column type="index" label="No." width="60"> </el-table-column>
+      <!-- tooltip-effect="dark" -->
+      <!-- <el-table-column type="index" label="No." width="60"> </el-table-column> -->
+      <af-table-column
+        v-if="total > 0"
+        type="index"
+        label="No."
+        :index="indexMethod"
+        width="60"
+      >
+      </af-table-column>
       <af-table-column prop="alisa" label="alisa"> </af-table-column>
       <af-table-column prop="columnName" label="columnName"> </af-table-column>
-      <af-table-column prop="context" label="context"> </af-table-column>
+      <el-table-column prop="context" label="context" min-width="250">
+        <!-- show-overflow-tooltip -->
+        <template slot-scope="scope">
+          <el-popover
+            width="250"
+            placement="top-start"
+            trigger="hover"
+            :content="scope.row.context"
+          >
+            <span slot="reference" class="one-txt-cut">{{
+              scope.row.context
+            }}</span>
+          </el-popover>
+          <!-- <el-tooltip
+            class="item"
+            effect="light"
+            :content="scope.row.context"
+            placement="top-start"
+          >
+            <div slot="content" style="width: 300px;">
+              {{ scope.row.context }}
+            </div>
+            <div class="btn">{{ scope.row.context }}</div>
+          </el-tooltip> -->
+        </template>
+      </el-table-column>
+
       <af-table-column prop="description" label="description">
       </af-table-column>
       <af-table-column prop="displayName" label="displayName">
@@ -174,13 +209,6 @@ export default {
       tableData: [],
       // 分页默认值
       total: 0,
-      // 查询参数
-      queryParams: {
-        // 分页偏移量
-        offset: 1,
-        // 分页大小
-        limit: 20
-      },
       // 查询表单
       queryForm: {
         // 分页偏移量
@@ -237,8 +265,13 @@ export default {
           console.log('🛸🛸🛸🛸🛸🛸🛸')
         })
     },
-    submitQueryForm() {},
-    resetQueryForm() {},
+    submitQueryForm() {
+      this.getList(this.queryForm)
+    },
+    resetQueryForm(formName) {
+      this.$refs[formName].resetFields()
+      this.getList(this.queryForm)
+    },
     // 返回
     goBack() {
       // this.$router.go(-1)

@@ -10,10 +10,6 @@
             <div style="display: inline-block;margin-right:100px">
               <el-badge value="点击查看详情" class="item">
                 <el-link type="primary">
-                  业务表别名
-                </el-link>
-                <el-divider direction="vertical"></el-divider>
-                <el-link type="primary">
                   业务表名
                 </el-link>
               </el-badge>
@@ -69,22 +65,20 @@
       >
         <!-- 部门名称 -->
         <div style="display:flex">
-          <el-form-item label="业务表别名:" prop="alias">
+          <el-form-item label="业务表名:" prop="tableName">
             <el-input
-              v-model="queryForm.alias"
-              placeholder="请输入业务表别名"
+              v-model="queryForm.tableName"
+              placeholder="请输入业务表名"
               clearable
               :style="{ width: '100%' }"
             >
             </el-input>
           </el-form-item>
 
-          <!-- 状态 -->
-
-          <el-form-item label="业务表名:" prop="tableName">
+          <el-form-item label="业务表别名:" prop="alias">
             <el-input
-              v-model="queryForm.tableName"
-              placeholder="请输入业务表名"
+              v-model="queryForm.alias"
+              placeholder="请输入业务表别名"
               clearable
               :style="{ width: '100%' }"
             >
@@ -143,7 +137,14 @@
       v-loading="tableLoading"
       :stripe="true"
     >
-      <el-table-column type="index" label="No." width="60"> </el-table-column>
+      <af-table-column
+        v-if="total > 0"
+        type="index"
+        label="No."
+        :index="indexMethod"
+        width="60"
+      >
+      </af-table-column>
       <el-table-column
         label="表名（点击查看详情）"
         width="380"
@@ -199,7 +200,7 @@
             <svg-icon
               title="状态：禁用"
               icon-class="dian"
-              style="margin: 0 0px;cursor: pointer;color:red;font-size:20px;vertical-align:middle;"
+              style="margin: 0 2px;cursor: pointer;color:red;font-size:20px;vertical-align:middle;"
             ></svg-icon
             ><span style="font-size:14px;vertical-align:middle;">禁用</span>
           </template>
@@ -207,7 +208,7 @@
           ><el-tag v-else type="warning">禁用</el-tag> -->
         </template>
       </el-table-column>
-      <el-table-column label="编辑" prop="status" width="80">
+      <el-table-column label="编辑" prop="status" width="120">
         <template slot-scope="scope">
           <el-button
             type="text"
@@ -215,6 +216,13 @@
             icon="el-icon-edit"
             @click="control('edit', scope.row)"
             >编辑</el-button
+          >
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-view"
+            @click="pusher(scope.row.id)"
+            >查看</el-button
           >
         </template>
       </el-table-column>
@@ -273,10 +281,10 @@ export default {
       total: 0,
       // 查询表单
       queryForm: {
-        // 分页偏移量
-        offset: 1,
         // 分页大小
         limit: 20,
+        // 分页偏移量
+        offset: 1,
         alias: '',
         tableName: ''
       },
@@ -301,6 +309,7 @@ export default {
   methods: {
     // defList
     async getDefList({ limit, offset, alias, tableName }) {
+      console.log({ limit, offset, alias, tableName })
       this.tableLoading = true
       await defList({ limit, offset, alias, tableName })
         .then(result => {
@@ -322,17 +331,16 @@ export default {
     },
     // 查询按钮
     submitQueryForm() {
-      this.getDefList(this.queryForm.alias, this.queryForm.tableName)
+      this.getDefList(this.queryForm)
     },
     // 重置查询条件
     resetQueryForm(formName) {
-      this.getDefList()
       this.$refs[formName].resetFields()
+      this.getDefList(this.queryForm)
     },
     control(name, row) {
       console.log(row.displayName)
       if (name === 'edit') {
-        this.$message.success('调用...')
         this.dialogParams.headerTitle = '业务表编辑 - ' + row.displayName
         this.$refs.dialog.showDialog(name, row)
       } else {
@@ -341,7 +349,6 @@ export default {
     },
     // 监听pagesize改变的事件
     handleSizeChange(val) {
-      console.log('🚀 ~ handleSizeChange ~ val', val)
       this.queryForm.limit = val
       this.queryForm.offset = 1
       this.getDefList(this.queryForm)
@@ -357,7 +364,6 @@ export default {
       return index + 1 + (this.queryForm.offset - 1) * this.queryForm.limit
     },
     pusher(id) {
-      console.log(id)
       this.$router.push({
         path: '/system/bizDef/details',
         query: {
@@ -382,7 +388,7 @@ export default {
               duration: 0,
               iconClass: 'el-icon-loading'
             })
-            console.log($message)
+            // console.log($message)
             setTimeout(() => {
               this.syncLoading = false
               $message.message = retMsg
@@ -391,7 +397,7 @@ export default {
               setTimeout(() => {
                 $message.close()
               }, 1500)
-              this.getDefList()
+              this.getDefList(this.queryForm)
               // this.$message.success(retMsg)
             }, 3000)
           } else {
@@ -412,7 +418,9 @@ export default {
       this.reload()
     },
     // 点击确定传来的值
-    fetch(formData) {}
+    fetch(formData) {
+      this.getDefList(this.queryForm)
+    }
   }
 }
 </script>

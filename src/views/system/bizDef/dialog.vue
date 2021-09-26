@@ -22,7 +22,6 @@
               <el-input
                 v-model="formData.alias"
                 placeholder="请输入业务表别名"
-                :maxlength="18"
                 clearable
                 :style="{ width: '100%' }"
               ></el-input>
@@ -35,7 +34,6 @@
               <el-input
                 v-model="formData.displayName"
                 placeholder="请输入业务表名"
-                :maxlength="18"
                 clearable
                 :style="{ width: '100%' }"
               ></el-input>
@@ -49,6 +47,9 @@
                 v-model="formData.status"
                 active-text="启用"
                 inactive-text="停用"
+                :active-value="0"
+                :inactive-value="1"
+                inactive-color="#ff4949"
               >
               </el-switch>
             </el-form-item>
@@ -92,7 +93,7 @@
 </template>
 
 <script>
-// import {} from '@/api/system/dept'
+import { defUpdate } from '@/api/system/bizDef'
 export default {
   name: 'Dialog',
   props: {
@@ -131,7 +132,8 @@ export default {
         alias: '', // 业务表别名
         displayName: '', // 业务表名
         description: '', // 描述
-        status: '' // 状态
+        status: 0 // 状态
+        // id: ''
       },
       rules: {
         alias: [
@@ -171,6 +173,9 @@ export default {
       // this.formData.id = row.id
       if (name === 'edit') {
         this.dialogVisible = true
+        console.log(row)
+        this.formData = this.$lodash.cloneDeep(row)
+        console.log(this.formData)
         // 获取详情
       } else {
         this.$message.error('Error ')
@@ -185,7 +190,26 @@ export default {
         if (valid) {
           this.sureLoading = true
           if (this.callName === 'edit') {
+            await defUpdate(this.formData)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  setTimeout(() => {
+                    this.sureLoading = false
+                    this.$emit('fetch')
+                    this.dialogVisible = false
+                  }, 500)
+                  this.$message.success('修改成功')
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {
+                console.log('🛸🛸🛸🛸🛸🛸🛸')
+              })
           } else {
+            this.$message.error('error submit!!')
           }
         } else {
           this.$message.error('error submit!!')
