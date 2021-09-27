@@ -13,11 +13,10 @@
         :model="formDataPass"
         :rules="rulesPass"
         size="medium"
-        :inline="true"
         label-position="top"
         class="mar-add-form"
       >
-        <el-row :gutter="0">
+        <el-row :gutter="20">
           <el-col :span="12"
             ><el-form-item label="旧密码" prop="oldPwd">
               <el-input
@@ -32,7 +31,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="0">
+        <el-row :gutter="20">
           <el-col :span="12"
             ><el-form-item label="新密码" prop="newPwd">
               <el-input

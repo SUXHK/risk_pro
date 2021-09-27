@@ -3,6 +3,7 @@
     :title="dialogParams.headerTitle"
     :visible.sync="dialogVisible"
     width="35%"
+    top="10vh"
     @close="close('elForm')"
     :append-to-body="true"
     :close-on-click-modal="false"
@@ -158,6 +159,7 @@ export default {
   },
   methods: {
     showDialog(name, row) {
+      console.log(row)
       this.callName = name
       // this.formData.id = row.id
       if (name === 'edit') {

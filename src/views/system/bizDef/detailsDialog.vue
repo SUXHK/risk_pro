@@ -2,7 +2,7 @@
   <el-dialog
     :title="dialogParams.headerTitle"
     :visible.sync="dialogVisible"
-    width="35%"
+    width="40%"
     top="5vh"
     @close="close('elForm')"
     :append-to-body="true"
@@ -19,20 +19,20 @@
       >
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="业务表别名：" prop="alias">
+            <el-form-item label="字段别名：" prop="alisa">
               <el-input
-                v-model="formData.alias"
-                placeholder="请输入业务表别名"
+                v-model="formData.alisa"
+                placeholder="请输入字段别名"
                 clearable
                 :style="{ width: '100%' }"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="业务表名：" prop="columnName">
+            <el-form-item label="业务字段名：" prop="columnName">
               <el-input
                 v-model="formData.columnName"
-                placeholder="请输入业务表别名"
+                placeholder="请输入业务字段名"
                 clearable
                 :style="{ width: '100%' }"
               ></el-input>
@@ -67,7 +67,7 @@
               <el-switch
                 v-model="formData.status"
                 active-text="启用"
-                inactive-text="隐藏"
+                inactive-text="禁用"
                 :active-value="0"
                 :inactive-value="1"
               >
@@ -124,7 +124,7 @@
                 placeholder="请输入转义描述"
                 show-word-limit
                 :autosize="{ minRows: 2 }"
-                maxlength="1000"
+                maxlength="200"
                 :style="{ width: '100%' }"
               ></el-input>
             </el-form-item>
@@ -139,7 +139,7 @@
                 placeholder="请输入备注"
                 show-word-limit
                 :autosize="{ minRows: 2 }"
-                maxlength="1000"
+                maxlength="200"
                 :style="{ width: '100%' }"
               ></el-input>
             </el-form-item>
@@ -168,7 +168,11 @@
 </template>
 
 <script>
-import { columnDefMgrView } from '@/api/system/bizDef'
+import {
+  columnDefMgrView,
+  columnDefMgrUpdate,
+  columnDefMgrInsert
+} from '@/api/system/bizDef'
 export default {
   name: 'Dialog',
   props: {
@@ -207,7 +211,7 @@ export default {
         type: '' // 字段类型(1：字符型 2：数值型 3：日期 4：时间）
       },
       rules: {
-        alias: [
+        alisa: [
           {
             required: true,
             message: '请输入业务表别名',
@@ -308,8 +312,11 @@ export default {
         // // 指定id
         // this.$set(this.formData, 'tableId', id)
         // console.log(this.formData)
-        // this.getView(row.id)
+        this.getView(row.id)
         // 获取详情
+      } else if (name === 'add') {
+        this.formData.tableId = this.$route.query.tableId
+        this.dialogVisible = true
       } else {
         this.$message.error('Error ')
       }
@@ -323,6 +330,44 @@ export default {
         if (valid) {
           this.sureLoading = true
           if (this.callName === 'edit') {
+            console.log(this.formData)
+            await columnDefMgrUpdate(this.formData)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  setTimeout(() => {
+                    this.sureLoading = false
+                    this.$emit('fetch')
+                    this.dialogVisible = false
+                  }, 500)
+                  this.$message.success('编辑成功')
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {
+                console.log('🛸🛸🛸🛸🛸🛸🛸')
+              })
+          } else if (this.callName === 'add') {
+            await columnDefMgrInsert(this.formData)
+              .then(result => {
+                console.log('🚀', result.data)
+                const { retCode, retMsg } = result.data
+                if (retCode === '000000') {
+                  setTimeout(() => {
+                    this.sureLoading = false
+                    this.$emit('fetch')
+                    this.dialogVisible = false
+                  }, 500)
+                  this.$message.success('添加成功')
+                } else {
+                  this.$message.error(retMsg)
+                }
+              })
+              .catch(() => {
+                console.log('🛸🛸🛸🛸🛸🛸🛸')
+              })
           } else {
             this.$message.error('error submit!!')
           }
@@ -344,6 +389,12 @@ export default {
           const { data, retCode, retMsg } = result.data
           if (retCode === '000000') {
             this.formData = data
+            if (this.formData.encryptFlag === '') {
+              this.formData.encryptFlag = 0
+            }
+            if (this.formData.status === '') {
+              this.formData.status = 1
+            }
           } else {
             this.$message.error(retMsg)
             setTimeout(() => {

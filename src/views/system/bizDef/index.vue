@@ -375,6 +375,7 @@ export default {
     // 同步
     async syncTableInfo() {
       this.syncLoading = true
+      this.tableLoading = true
       await syncTable()
         .then(result => {
           console.log('🚀', result.data)
@@ -397,6 +398,7 @@ export default {
               setTimeout(() => {
                 $message.close()
               }, 1500)
+              this.tableLoading = false
               this.getDefList(this.queryForm)
               // this.$message.success(retMsg)
             }, 3000)

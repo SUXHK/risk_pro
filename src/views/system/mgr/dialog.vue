@@ -4,7 +4,6 @@
     :visible.sync="dialogVisible"
     width="35%"
     @close="close('elForm')"
-    class="mgr-dialog"
     top="10vh"
     :append-to-body="true"
     :close-on-click-modal="false"
@@ -15,13 +14,11 @@
         :model="formData"
         :rules="rules"
         size="medium"
-        :inline="true"
+        label-width="100px"
         label-position="top"
-        class="mar-add-form"
-        style="padding: 0 0 0 50px;"
       >
         <!-- <h3 style="padding:20px 0">账号信息</h3> -->
-        <el-row :gutter="0">
+        <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="部门：" prop="deptid">
               <el-cascader
@@ -56,10 +53,10 @@
           <el-col :span="12">
             <el-form-item label="账户名：" prop="account">
               <el-input
+                :style="{ width: '100%' }"
                 v-model="formData.account"
                 placeholder="请输入账户名"
                 :maxlength="18"
-                :style="{ width: '100%' }"
                 clearable
                 ><svg-icon
                   slot="prefix"
@@ -71,7 +68,7 @@
           </el-col>
         </el-row>
 
-        <el-row :gutter="0">
+        <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="手机号：" prop="phone">
               <el-input
@@ -101,7 +98,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="0">
+        <el-row :gutter="20">
           <el-col :span="12"
             ><el-form-item label="出生日期：" prop="birthday">
               <el-date-picker
@@ -130,7 +127,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="0">
+        <el-row :gutter="20">
           <!-- <el-col :span="12"
             ><el-form-item
               :label="callName === 'add' ? '设置初始密码：' : '设置新密码：'"
@@ -165,7 +162,7 @@
           </el-col>
         </el-row>
 
-        <el-row :gutter="0">
+        <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="性别：" prop="sex">
               <el-radio-group v-model="formData.sex" size="medium">

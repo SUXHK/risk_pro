@@ -48,7 +48,7 @@
       >
         <!-- 部门名称 -->
         <div style="display:flex">
-          <el-form-item label="业务列字段ID:" prop="columnName">
+          <el-form-item label="业务字段名:" prop="columnName">
             <el-input
               v-model="queryForm.columnName"
               placeholder="请输入业务列字段ID"
@@ -81,7 +81,11 @@
         </div>
         <div style="float:right" label-width="10px">
           <el-form-item label-width="10px">
-            <el-button icon="el-icon-plus" type="primary" size="small"
+            <el-button
+              icon="el-icon-plus"
+              type="primary"
+              size="small"
+              @click="control('add')"
               >添 加</el-button
             >
           </el-form-item>
@@ -116,7 +120,7 @@
         width="60"
       >
       </el-table-column>
-      <el-table-column prop="alisa" label="别名" width="150">
+      <el-table-column prop="alisa" label="字段别名" width="150">
         <template slot-scope="scope">
           <el-popover
             width="250"
@@ -130,7 +134,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="columnName" label="列名" width="150"
+      <el-table-column prop="columnName" label="业务字段名" width="150"
         ><template slot-scope="scope">
           <el-popover
             width="250"
@@ -144,7 +148,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="context" label="内容解释" width="200">
+      <el-table-column prop="context" label="转义描述" width="200">
         <template slot-scope="scope">
           <el-popover
             width="250"
@@ -158,7 +162,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="displayName" label="显示列名" width="250">
+      <el-table-column prop="displayName" label="业务展示名称" width="250">
         <template slot-scope="scope">
           <el-popover
             width="250"
@@ -172,7 +176,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="description" label="描述">
+      <el-table-column prop="description" label="业务描述">
         <template slot-scope="scope">
           <el-popover
             width="250"
@@ -187,7 +191,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="encryptFlag" label="是否加密" width="80"
+      <el-table-column prop="encryptFlag" label="加密标志" width="80"
         ><template slot-scope="scope">
           <!-- {{ scope.row.encryptFlag }} -->
           <!-- <svg-icon
@@ -200,10 +204,11 @@
           <el-tag
             effect="plain"
             type="success"
+            size="small"
             v-if="scope.row.encryptFlag === 1"
             >加密</el-tag
           >
-          <el-tag effect="plain" type="info" v-else>不加密</el-tag>
+          <el-tag effect="plain" size="small" type="info" v-else>不加密</el-tag>
 
           <!-- <svg-icon
             v-else
@@ -228,7 +233,53 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="type" label="类型" width="120"> </el-table-column>
+      <el-table-column prop="type" label="字段类型" width="90">
+        <template slot-scope="scope">
+          <el-tag effect="plain" size="small" v-if="scope.row.type === 1"
+            ><svg-icon
+              title="字符型"
+              icon-class="text_fields_black_24dp"
+              style="font-size:14px;vertical-align: sub"
+            ></svg-icon
+            ><span style="vertical-align: middle">字符型</span></el-tag
+          >
+          <el-tag effect="plain" size="small" v-else-if="scope.row.type === 2"
+            ><svg-icon
+              title="数字型"
+              icon-class="looks_one_black_24dp"
+              style="font-size:14px;vertical-align: sub"
+            ></svg-icon
+            ><span style="vertical-align: middle">数字型</span></el-tag
+          >
+          <el-tag effect="plain" size="small" v-else-if="scope.row.type === 3"
+            ><svg-icon
+              title="日期"
+              icon-class="date_range_black_24dp"
+              style="font-size:14px;vertical-align: sub"
+            ></svg-icon
+            ><span style="vertical-align: middle">日期</span></el-tag
+          ><el-tag
+            effect="plain"
+            size="small"
+            v-else-if="scope.row.type === 4"
+            style="vertical-align: middle"
+            ><svg-icon
+              title="时间"
+              icon-class="schedule_black_24dp"
+              style="font-size:14px;vertical-align: sub"
+            ></svg-icon
+            ><span style="vertical-align: middle">时间</span></el-tag
+          >
+          <el-tag v-else effect="plain" size="small" type="danger"
+            ><svg-icon
+              title="时间"
+              icon-class="question-mark"
+              style="vertical-align: sub"
+            ></svg-icon
+            ><span style="vertical-align: middle">未知</span></el-tag
+          >
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="状态" width="80">
         <template slot-scope="scope">
           <template v-if="scope.row.status === 0">
@@ -303,7 +354,7 @@
 
 <script>
 import Dialog from './detailsDialog.vue'
-import { columnDefMgrList } from '@/api/system/bizDef'
+import { columnDefMgrList, columnDefMgrDelete } from '@/api/system/bizDef'
 export default {
   components: {
     Dialog
@@ -409,7 +460,9 @@ export default {
       this.reload()
     },
     // 点击确定传来的值
-    fetch(formData) {},
+    fetch(formData) {
+      this.getList(this.queryForm)
+    },
     // 监听pagesize改变的事件
     handleSizeChange(val) {
       console.log('🚀 ~ handleSizeChange ~ val', val)
@@ -431,9 +484,30 @@ export default {
       if (name === 'edit') {
         this.dialogParams.headerTitle = '编辑 - ' + row.displayName
         this.$refs.dialog.showDialog(name, row)
+      } else if (name === 'del') {
+        // console.log(row.id)
+        this.del(row.id)
+      } else if (name === 'add') {
+        this.dialogParams.headerTitle = '添加'
+        this.$refs.dialog.showDialog(name)
       } else {
         this.$message.error('调用失败...')
       }
+    },
+    async del(id) {
+      await columnDefMgrDelete(id)
+        .then(result => {
+          console.log('🚀', result.data)
+          const { retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            this.getList(this.queryForm)
+          } else {
+            this.$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
     }
   }
 }
