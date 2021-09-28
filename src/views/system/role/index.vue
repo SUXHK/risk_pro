@@ -145,8 +145,9 @@
                         <span>
                           <svg-icon
                             v-if="
-                              !treeControl.isEditTreeNode ||
-                                node.id !== treeControl.nodeId
+                              (!treeControl.isEditTreeNode ||
+                                node.id !== treeControl.nodeId) &&
+                                data.id !== 0
                             "
                             title="添加下级"
                             icon-class="queue_black_24dp"
@@ -843,7 +844,7 @@
                   >刷新</el-button
                 >
                 <el-button
-                  v-if="roleRoleTreeList.length <= 0"
+                  v-if="dataTreeList.length <= 0"
                   style="float: right; padding: 3px 10px"
                   type="text"
                   icon="el-icon-circle-plus-outline"
@@ -900,7 +901,7 @@
                       :current-node-key="1"
                       :expand-on-click-node="false"
                       highlight-current
-                      :data="roleRoleTreeList"
+                      :data="dataTreeList"
                       :props="defaultProps"
                       @node-click="dataHandleNodeClick"
                       :filter-node-method="filterNode"
@@ -1051,15 +1052,17 @@
                       style="margin-left: 20px;"
                       @click="useData"
                       :loading="useBtnLoading"
+                      :disabled="sureDisable"
                       >应 用</el-button
                     >
                     <el-button
-                      type="warning"
+                      type="danger"
                       icon="el-icon-refresh-right"
                       size="small"
                       style="margin-left: 20px;"
                       @click="resetData"
-                      >重 置</el-button
+                      :disabled="sureDisable"
+                      >清空选中</el-button
                     >
                   </div>
                 </div>
@@ -1068,8 +1071,8 @@
               <!-- 树形控件 -->
               <el-row :gutter="20">
                 <el-col :span="12">
-                  <h2 style="padding:10px 0;">
-                    一
+                  <h2 style="padding:10px 0 10px 10px">
+                    业务表
                   </h2>
 
                   <el-skeleton :loading="dataZhongLoading" animated :rows="7">
@@ -1116,22 +1119,27 @@
                     </template>
                     <template>
                       <el-table
-                        :data="dataTableData"
+                        @row-click="rowClick"
                         :show-header="false"
+                        size="small"
+                        class="role-table-data"
+                        :data="dataTableData"
                         :loading="dataZhongLoading"
+                        ref="dataTableData"
+                        highlight-current-row
                         :height="
                           !pageParams.full
                             ? 'calc(100vh - 356px)'
                             : 'calc(100vh - 234px)'
                         "
                       >
-                        <el-table-column prop="displayName"
+                        <el-table-column prop="displayName" label="业务表"
                           ><template slot-scope="scope">
                             <!-- <el-badge value="点击查看详情"> -->
                             <el-link
-                              @click="pusher(scope.row.id)"
+                              :underline="false"
                               type="primary"
-                              title="详情"
+                              title="点击查看详情"
                             >
                               <!-- <i class="el-icon-document"></i>  -->
                               <svg-icon
@@ -1150,14 +1158,11 @@
                   </el-skeleton>
                 </el-col>
                 <el-col :span="12">
-                  <h2 style="padding:10px 0">二</h2>
+                  <h2 style="padding:10px 0 10px 20px">业务列</h2>
                   <div style="overflow-x: hidden">
                     <el-skeleton :loading="dataYouLoading" animated :rows="7">
-                      <!-- :style="{
-                        height: !pageParams.full
-                          ? 'calc(100vh - 312px)'
-                          : 'calc(100vh - 190px)'
-                      }" -->
+                      <!-- :style="{ height: !pageParams.full ? 'calc(100vh - 312px)'
+                      : 'calc(100vh - 190px)' }" -->
                       <template slot="template">
                         <div style="padding: 10px 0;">
                           <el-skeleton-item
@@ -1206,7 +1211,25 @@
                         </div>
                       </template>
                       <template>
-                        123
+                        <el-tree
+                          empty-text=" 👈 点击左侧业务列获取数据"
+                          :data="tableYouData"
+                          :props="datadefaultProps"
+                          show-checkbox
+                          node-key="id"
+                          highlight-current
+                          default-expand-all
+                          check-on-click-node
+                          check-strictly
+                          :default-checked-keys="dataDefaultCheckedKeys"
+                          ref="dataYouTree"
+                          :style="{
+                            height: !pageParams.full
+                              ? 'calc(100vh - 356px)'
+                              : 'calc(100vh - 234px)'
+                          }"
+                        >
+                        </el-tree>
                       </template>
                     </el-skeleton>
                   </div>
@@ -1239,14 +1262,16 @@
 
 <script>
 import { getUserMgrList, freezeUser, unfreezeUser } from '@/api/system/mgr'
-import { defList } from '@/api/system/bizDef'
+import { defList, columnDefMgrList } from '@/api/system/bizDef'
 import {
   getRoleTree,
   roleAdd,
   roleEdit,
   roleDelete,
   getAuthMenus,
-  roleAuthMenus
+  roleAuthMenus,
+  getAuthCols,
+  setAuthColumns
 } from '@/api/system/role'
 import Dialog from './dialog.vue'
 import RoleDialog from './roleDialog.vue'
@@ -1342,13 +1367,26 @@ export default {
 
       // !-----------------data-------------------
       dataZuoLoading: true,
+      dataTreeList: [],
       // data中的
       dataZhongLoading: true,
       // data的表格
       dataTableData: [],
 
       // data右的
-      dataYouLoading: true
+      dataYouLoading: false,
+      tableYouData: [],
+      // 应用
+      sureDisable: true,
+      dataNodeClickId: '',
+      dataTableId: '',
+
+      datadefaultProps: {
+        children: null,
+        label: 'displayName'
+      },
+
+      dataDefaultCheckedKeys: []
       // !---------------data-end-----------------
     }
   },
@@ -1878,7 +1916,15 @@ export default {
 
     // !-----------------data-------------------
     // 点击角色数据中的
-    pusher(id) {},
+    async rowClick(row, column, event) {
+      await this.getList({ offset: 1, limit: 99 })
+      console.log(row.id)
+      this.dataTableId = row.id
+      console.log(this.dataNodeClickId)
+      await this.getCols(this.dataNodeClickId, this.dataTableId)
+      this.sureDisable = false
+    },
+
     // getDataTree
     getDataTree() {
       this.getRoleRoleTree()
@@ -1906,8 +1952,14 @@ export default {
     // datahandleNodeClick
     dataHandleNodeClick(data) {
       console.log(data)
-      this.roleNodeClickId = data.id
+      this.sureDisable = true
+      this.dataNodeClickId = data.id
       this.treeControl.currentRoleName = data.name
+
+      if (Object.keys(data).length > 2) {
+        this.$refs.dataTableData.setCurrentRow(-1)
+      }
+      this.tableYouData = []
     },
     // 刷新
     getRutDataTree() {
@@ -1924,7 +1976,7 @@ export default {
           const { retCode, data, retMsg } = result.data
           if (retCode === '000000') {
             console.log(data)
-            this.roleRoleTreeList = data[0].children
+            this.dataTreeList = data[0].children
             this.timerLoading = setTimeout(() => {
               this.dataZuoLoading = false
             }, 500)
@@ -1937,13 +1989,90 @@ export default {
           console.log('🛸🛸🛸🛸🛸🛸🛸')
         })
     },
-    useData() {
-      this.useBtnLoading = true
-      setTimeout(() => {
-        this.useBtnLoading = false
-      }, 500)
+    // 获取表格
+    async getList({ offset, limit }) {
+      // this.dataYouLoading = true
+      await columnDefMgrList({ offset, limit })
+        .then(result => {
+          console.log('🚀', result.data)
+          const { data, retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            // this.timerLoading = setTimeout(() => {
+            //   this.dataYouLoading = false
+            // }, 500)
+            this.tableYouData = data.rows
+            // this.total = data.total
+          } else {
+            this.$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
     },
-    resetData() {}
+    // 点击row选中
+    openDetails(row) {
+      console.log(row)
+      // this.selectlist.push(row)
+
+      // this.$refs.dataYouTableData.clearSelection()
+      this.$refs.dataYouTableData.toggleRowSelection(row)
+    },
+
+    // 过去id
+    async getCols(dataNodeClickId, id) {
+      this.dataYouLoading = true
+      await getAuthCols(dataNodeClickId, id)
+        .then(result => {
+          console.log('🚀', result.data)
+          const { data, retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            this.timerLoading = setTimeout(() => {
+              this.dataYouLoading = false
+            }, 500)
+            this.dataDefaultCheckedKeys = data
+          } else {
+            this.$message.error(retMsg)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+        })
+    },
+    resetData() {
+      this.$refs.dataYouTree.setCheckedKeys([])
+      this.$message.warning('业务列清空成功')
+    },
+    async useData() {
+      this.useBtnLoading = true
+      const keys = [
+        ...this.$refs.dataYouTree.getCheckedKeys(),
+        ...this.$refs.dataYouTree.getHalfCheckedKeys()
+      ]
+      const idStr = keys.join(',')
+      console.log(idStr)
+      await setAuthColumns(idStr, this.dataNodeClickId)
+        .then(result => {
+          console.log('🚀', result.data)
+          const { retCode, retMsg } = result.data
+          if (retCode === '000000') {
+            setTimeout(() => {
+              this.useBtnLoading = false
+            }, 500)
+            this.$message.success(retMsg)
+            this.getCols(this.dataNodeClickId, this.dataTableId)
+          } else {
+            this.$message.error(retMsg)
+            setTimeout(() => {
+              this.useBtnLoading = false
+            }, 500)
+          }
+        })
+        .catch(() => {
+          console.log('🛸🛸🛸🛸🛸🛸🛸')
+          this.useBtnLoading = false
+        })
+    }
 
     // !---------------data-end-----------------
   }

@@ -88,3 +88,20 @@ export function getAuthMenus(id) {
     params: { roleId: id }
   })
 }
+
+// 获取角色列信息id
+export function getAuthCols(roleId, tableId) {
+  return request({
+    url: `/role/getAuthCols`,
+    method: 'get',
+    params: { roleId: roleId, tableId: tableId }
+  })
+}
+// 配置角色-业务表字段权限
+export function setAuthColumns(cols, roleId) {
+  return request({
+    url: `/role/authColumns`,
+    method: 'get',
+    params: { cols: cols, roleId: roleId }
+  })
+}
