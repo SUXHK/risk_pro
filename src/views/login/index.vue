@@ -123,7 +123,7 @@
               :value="rememberMe"
               @change="rememberMeChange($event)"
               class="checkbox"
-              >下次自动登录</el-checkbox
+              >自动登录</el-checkbox
             >
           </div>
         </div>

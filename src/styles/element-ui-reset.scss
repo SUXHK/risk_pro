@@ -21,8 +21,8 @@
 
 @mixin base-scrollbar {
   &::-webkit-scrollbar {
-    width: 13px;
-    height: 13px;
+    width: 15px;
+    height: 15px;
   }
 
   &::-webkit-scrollbar-thumb {

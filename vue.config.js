@@ -2,6 +2,9 @@ const path = require('path')
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
+const dayjs = require('dayjs')
+const time = dayjs().format('YYYY-M-D HH:mm:ss')
+process.env.VUE_APP_UPDATE_TIME = time
 module.exports = {
   devServer: {
     headers: {

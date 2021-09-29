@@ -9,9 +9,12 @@ import '@/plugins/af-table-column'
 import 'normalize.css/normalize.css'
 import * as filters from '@/utils/filters'
 import '@/config/permission'
-
+// -----------------------------
+import VabCount from 'zx-count'
+// ----------------------------
 import GlobalPromptStyle from '@/utils/GlobalPromptStyle'
 Vue.use(GlobalPromptStyle)
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+Vue.use(VabCount)

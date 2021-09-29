@@ -117,23 +117,76 @@
         </chart-card>
       </el-col>
     </el-row>
-
-    <el-card
-      class="all-el-card"
-      :bordered="false"
-      :body-style="{ padding: '0' }"
-    >
-      <div class="salesCard" style="padding-top:20px">
-        <el-row>
-          <el-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
-            <!-- <bar :list="barData" title="销售额排行" /> -->
-            <mini-area />
-          </el-col>
-          <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-            <rank-list title="地区分布" :list="rankList" />
-          </el-col>
-        </el-row>
-      </div>
+    <el-row :gutter="12">
+      <el-col :span="12">
+        <el-card class="card" shadow="never">
+          <div
+            slot="header"
+            style="display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: space-between;
+    align-items: center;"
+          >
+            <span
+              style="color: rgba(0, 0, 0, 0.45);
+    font-size: 14px;
+    line-height: 22px;"
+              >依赖信息</span
+            >
+            <el-tag>前端部署时间：{{ updateTime }}</el-tag>
+            <!-- <div style="float: right">部署时间:{{ updateTime }}</div> -->
+          </div>
+          <div class="bottom-btn"></div>
+          <table class="table">
+            <tr>
+              <td>@vue/cli版本</td>
+              <td>{{ devDependencies['@vue/cli-service'] }}</td>
+              <td>vue版本</td>
+              <td>{{ dependencies['vue'] }}</td>
+            </tr>
+            <tr>
+              <td>vuex版本</td>
+              <td>{{ dependencies['vuex'] }}</td>
+              <td>vue-router版本</td>
+              <td>{{ dependencies['vue-router'] }}</td>
+            </tr>
+            <tr>
+              <td>element-ui版本</td>
+              <td>{{ dependencies['element-ui'] }}</td>
+              <td>axios版本</td>
+              <td>{{ dependencies['axios'] }}</td>
+            </tr>
+            <tr>
+              <td>eslint版本</td>
+              <td>{{ devDependencies['eslint'] }}</td>
+              <td>sass版本</td>
+              <td>{{ devDependencies['sass'] }}</td>
+            </tr>
+            <tr>
+              <td>dayjs版本</td>
+              <td>{{ dependencies['dayjs'] }}</td>
+              <td>lodash版本</td>
+              <td>{{ dependencies['lodash'] }}</td>
+            </tr>
+            <tr>
+              <td>v-fit-columns版本</td>
+              <td>{{ dependencies['v-fit-columns'] }}</td>
+              <td>svg-sprite版本</td>
+              <td>{{ devDependencies['svg-sprite-loader'] }}</td>
+            </tr>
+          </table>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card>
+          <rank-list title="地区分布" :list="rankList" />
+        </el-card>
+      </el-col>
+    </el-row>
+    正再做...
+    <el-card class="footer-card">
       <app-footer class="top-footer"></app-footer>
     </el-card>
   </div>
@@ -143,11 +196,14 @@
 // import VCharts from 'v-charts'
 import ChartCard from './ChartCard.vue'
 import Trend from './Trend.vue'
-import MiniArea from './MiniArea.vue'
+// import MiniArea from './MiniArea.vue'
 import MiniBar from './MiniBar.vue'
 import MiniProgress from './MiniProgress.vue'
 import RankList from './RankList.vue'
+import { dependencies, devDependencies } from '../../../package.json'
 // import Bar from './Bar.vue'
+// import VabChart from '@/plugins/echarts'
+// import VabCount from 'zx-count'
 
 const barData = []
 const barData2 = []
@@ -176,17 +232,22 @@ export default {
     // VCharts,
     ChartCard,
     Trend,
-    MiniArea,
+    // MiniArea,
     MiniBar,
     MiniProgress,
     RankList
+    // VabCount,
+    // VabChart
     // Bar
   },
   data() {
     return {
       barData,
       barData2,
-      rankList
+      rankList,
+      devDependencies: devDependencies,
+      dependencies: dependencies,
+      updateTime: process.env.VUE_APP_UPDATE_TIME
     }
   },
   methods: {}
@@ -194,6 +255,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.top-footer {
+  margin-top: 0 !important;
+}
+.footer-card {
+  .el-card__body {
+    padding: 0 !important;
+  }
+}
 .dashboard-editor-container {
   // height: 100vh;
   // padding: 8px 9px;
@@ -224,6 +293,67 @@ export default {
 @media (max-width: 1024px) {
   .chart-wrapper {
     padding: 8px;
+  }
+}
+
+.card {
+  ::v-deep {
+    .el-card__body {
+      .echarts {
+        width: 100%;
+        height: 305px;
+      }
+    }
+  }
+}
+
+.bottom {
+  padding-top: 20px;
+  margin-top: 5px;
+  color: #595959;
+  text-align: left;
+  border-top: 1px solid $base-border-color;
+}
+
+.table {
+  width: 100%;
+  color: #666;
+  border-collapse: collapse;
+  background-color: #fff;
+
+  td {
+    position: relative;
+    min-height: 20px;
+    padding: 9px 15px;
+    font-size: 14px;
+    line-height: 20px;
+    border: 1px solid #e6e6e6;
+
+    &:nth-child(odd) {
+      width: 20%;
+      text-align: right;
+      background-color: #f7f7f7;
+    }
+  }
+}
+
+.icon-panel {
+  height: 117px;
+  text-align: center;
+  cursor: pointer;
+
+  svg {
+    font-size: 40px;
+  }
+
+  p {
+    margin-top: 10px;
+  }
+}
+
+.bottom-btn {
+  button {
+    margin: 5px 10px 15px 0;
   }
 }
 </style>
