@@ -10,7 +10,10 @@ import 'normalize.css/normalize.css'
 import * as filters from '@/utils/filters'
 import '@/config/permission'
 // -----------------------------
+// import '@/colorfulIcon'
 import VabCount from 'zx-count'
+import VabIcon from 'vab-icon'
+
 // ----------------------------
 import GlobalPromptStyle from '@/utils/GlobalPromptStyle'
 Vue.use(GlobalPromptStyle)
@@ -18,3 +21,4 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 Vue.use(VabCount)
+Vue.component('VabIcon', VabIcon)

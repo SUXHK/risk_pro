@@ -98,10 +98,10 @@ export function getAuthCols(roleId, tableId) {
   })
 }
 // 配置角色-业务表字段权限
-export function setAuthColumns(cols, roleId) {
+export function setAuthColumns(cols, roleId, tableId) {
   return request({
     url: `/role/authColumns`,
     method: 'get',
-    params: { cols: cols, roleId: roleId }
+    params: { cols: cols, roleId: roleId, tableId: tableId }
   })
 }

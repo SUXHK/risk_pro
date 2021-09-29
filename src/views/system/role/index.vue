@@ -1262,7 +1262,7 @@
 
 <script>
 import { getUserMgrList, freezeUser, unfreezeUser } from '@/api/system/mgr'
-import { defList, columnDefMgrList } from '@/api/system/bizDef'
+import { defList, columnDefMgrListList } from '@/api/system/bizDef'
 import {
   getRoleTree,
   roleAdd,
@@ -1302,7 +1302,7 @@ export default {
         // 正常table高度
         normalFull: 'calc(100vh - 312px)',
         // tabs标签页默认项
-        activeTabs: 'data' // staff role data
+        activeTabs: 'staff' // staff role data
       },
       // !-----------------public-----------------
 
@@ -1917,7 +1917,7 @@ export default {
     // !-----------------data-------------------
     // 点击角色数据中的
     async rowClick(row, column, event) {
-      await this.getList({ offset: 1, limit: 99 })
+      await this.getList({ offset: 1, limit: 99, tableId: row.id })
       console.log(row.id)
       this.dataTableId = row.id
       console.log(this.dataNodeClickId)
@@ -1990,9 +1990,9 @@ export default {
         })
     },
     // 获取表格
-    async getList({ offset, limit }) {
+    async getList({ offset, limit, tableId }) {
       // this.dataYouLoading = true
-      await columnDefMgrList({ offset, limit })
+      await columnDefMgrListList({ offset, limit, tableId })
         .then(result => {
           console.log('🚀', result.data)
           const { data, retCode, retMsg } = result.data
@@ -2051,7 +2051,7 @@ export default {
       ]
       const idStr = keys.join(',')
       console.log(idStr)
-      await setAuthColumns(idStr, this.dataNodeClickId)
+      await setAuthColumns(idStr, this.dataNodeClickId, this.dataTableId)
         .then(result => {
           console.log('🚀', result.data)
           const { retCode, retMsg } = result.data

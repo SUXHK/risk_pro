@@ -1,144 +1,127 @@
 <template>
-  <div class="dashboard-editor-container">
-    <el-row :gutter="12">
-      <el-col
-        :sm="24"
-        :xs="24"
-        :md="6"
-        :xl="6"
-        :lg="6"
-        :style="{ marginBottom: '8px' }"
-      >
-        <chart-card title="金额" total="￥126,560">
-          <el-tooltip
-            slot="action"
-            class="item"
-            effect="dark"
-            content="指标说明"
-            placement="top-start"
-          >
-            <i class="el-icon-warning-outline" />
-          </el-tooltip>
-          <div>
-            <trend flag="top" style="margin-right: 16px;" rate="12">
-              <span slot="term">周同比</span>
-            </trend>
-            <trend flag="bottom" rate="11">
-              <span slot="term">日同比</span>
-            </trend>
-          </div>
-          <template slot="footer">全部金额<span>￥ 234.56</span></template>
-        </chart-card>
-      </el-col>
-      <el-col
-        :sm="24"
-        :xs="24"
-        :md="6"
-        :xl="6"
-        :lg="6"
-        :style="{ marginBottom: '8px' }"
-      >
-        <chart-card title="访问量" :total="8846">
-          <el-tooltip
-            slot="action"
-            class="item"
-            effect="dark"
-            content="指标说明"
-            placement="top-start"
-          >
-            <i class="el-icon-warning-outline" />
-          </el-tooltip>
-          <div>
-            <!-- <mini-area /> -->
-          </div>
-          <template slot="footer"
-            >日访问量<span> {{ '1234' }}</span></template
-          >
-        </chart-card>
-      </el-col>
-      <el-col
-        :sm="24"
-        :xs="24"
-        :md="6"
-        :xl="6"
-        :lg="6"
-        :style="{ marginBottom: '8px' }"
-      >
-        <chart-card title="支付笔数" :total="6560">
-          <el-tooltip
-            slot="action"
-            class="item"
-            effect="dark"
-            content="指标说明"
-            placement="top-start"
-          >
-            <i class="el-icon-warning-outline" />
-          </el-tooltip>
-          <div>
-            <mini-bar />
-          </div>
-          <template slot="footer">转化率 <span>60%</span></template>
-        </chart-card>
-      </el-col>
-      <el-col
-        :sm="24"
-        :xs="24"
-        :md="6"
-        :xl="6"
-        :lg="6"
-        :style="{ marginBottom: '8px' }"
-      >
-        <chart-card title="运营活动效果" total="78%">
-          <el-tooltip
-            slot="action"
-            class="item"
-            effect="dark"
-            content="指标说明"
-            placement="top-start"
-          >
-            <i class="el-icon-warning-outline" />
-          </el-tooltip>
-          <div>
-            <mini-progress
-              color="rgb(19, 194, 194)"
-              :target="80"
-              :percentage="78"
-              height="8px"
-            />
-          </div>
-          <template slot="footer">
-            <trend flag="top" style="margin-right: 16px;" rate="12">
-              <span slot="term">同周比</span>
-            </trend>
-            <trend flag="bottom" rate="80">
-              <span slot="term">日环比</span>
-            </trend>
-          </template>
-        </chart-card>
-      </el-col>
-    </el-row>
-    <el-row :gutter="12">
-      <el-col :span="12">
-        <el-card class="card" shadow="never">
+  <div class="index-container">
+    <el-row :gutter="10">
+      <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+        <el-alert v-if="noticeList[0]" :closable="noticeList[0].closable">
           <div
-            slot="header"
-            style="display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: space-between;
-    align-items: center;"
+            style="display: flex; align-items: center; justify-content: center"
           >
-            <span
-              style="color: rgba(0, 0, 0, 0.45);
-    font-size: 14px;
-    line-height: 22px;"
-              >依赖信息</span
-            >
-            <el-tag>前端部署时间：{{ updateTime }}</el-tag>
-            <!-- <div style="float: right">部署时间:{{ updateTime }}</div> -->
+            <a target="_blank" href="https://github.com/SUXHK">
+              <img
+                style="margin-right: 10px"
+                src="https://img.shields.io/badge/SUXH-%E8%8B%8F%E6%98%9F%E6%B2%B3-green"
+              />
+            </a>
+            <p>
+              Create By SUXH，<a target="_blank" href="https://github.com/SUXHK"
+                >欢迎访问作者 Github</a
+              >
+            </p>
           </div>
-          <div class="bottom-btn"></div>
+        </el-alert>
+      </el-col>
+      <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
+        <el-card shadow="never">
+          <div slot="header">
+            <span>访问量</span>
+          </div>
+          <vab-chart autoresize theme="vab-echarts-theme" :option="fwl" />
+          <div class="bottom">
+            <span>
+              日均访问量:
+              <vab-count
+                :start-val="config1.startVal"
+                :end-val="config1.endVal"
+                :duration="config1.duration"
+                :separator="config1.separator"
+                :prefix="config1.prefix"
+                :suffix="config1.suffix"
+                :decimals="config1.decimals"
+              />
+            </span>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
+        <el-card shadow="never">
+          <div slot="header">
+            <span>授权数</span>
+          </div>
+          <vab-chart autoresize theme="vab-echarts-theme" :option="sqs" />
+          <div class="bottom">
+            <span>
+              总授权数:
+              <vab-count
+                :start-val="config2.startVal"
+                :end-val="config2.endVal"
+                :duration="config2.duration"
+                :separator="config2.separator"
+                :prefix="config2.prefix"
+                :suffix="config2.suffix"
+                :decimals="config2.decimals"
+              />
+            </span>
+          </div>
+        </el-card>
+      </el-col>
+
+      <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+        <plan></plan>
+      </el-col>
+      <el-col
+        :xs="24"
+        :sm="24"
+        :md="24"
+        :lg="12"
+        :xl="12"
+        style="margin-top:10px;"
+      >
+        <el-card shadow="never">
+          <div slot="header">
+            <span>其他信息</span>
+          </div>
+          <div style="text-align: center">
+            <!-- <vab-colorful-icon style="font-size: 140px" icon-class="vab" /> -->
+            <img src="~@/assets/images/sand.png" alt="" width="150px" />
+            <h1 style="font-size: 30px">
+              Copyright © Sand Risk Control Management System
+            </h1>
+          </div>
+          <div v-for="(item, index) in noticeList" :key="index">
+            <el-alert
+              v-if="index !== 0"
+              :title="item.title"
+              :type="item.type"
+              :closable="item.closable"
+              >简介~</el-alert
+            >
+            <br />
+          </div>
+          <el-alert :closable="false" type="info" title="当前浏览器版本："
+            ><strong
+              ><h3>{{ userAgent }}</h3></strong
+            ></el-alert
+          >
+        </el-card>
+        <!-- <version-information></version-information> -->
+      </el-col>
+      <el-col
+        :xs="24"
+        :sm="24"
+        :md="24"
+        :lg="12"
+        :xl="12"
+        style="margin-top:10px;"
+      >
+        <el-card class="card" shadow="never">
+          <div slot="header">
+            <span>前端依赖信息</span>
+            <!-- <div style="float: right"></div> -->
+            <!-- <el-tag>部署时间:{{ updateTime }}</el-tag> -->
+            <el-button style="float: right; padding: 3px 0" type="text"
+              >前端部署时间：{{ updateTime }}</el-button
+            >
+          </div>
           <table class="table">
             <tr>
               <td>@vue/cli版本</td>
@@ -178,182 +161,517 @@
             </tr>
           </table>
         </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card>
-          <rank-list title="地区分布" :list="rankList" />
+        <el-card class="card" shadow="never" style="margin-top:10px;">
+          <div slot="header">
+            <span>后端依赖信息</span>
+            <!-- <div style="float: right"></div> -->
+            <!-- <el-tag>部署时间:{{ updateTime }}</el-tag> -->
+            <el-button style="float: right; padding: 3px 0" type="text"
+              >后端部署时间：Null</el-button
+            >
+          </div>
+          <table class="table">
+            <tr>
+              <td>JDK版本</td>
+              <td>1.8</td>
+              <td>Nginx版本</td>
+              <td>Null</td>
+            </tr>
+            <tr>
+              <td>Spring版本</td>
+              <td>Null</td>
+              <td>SQL版本</td>
+              <td>Null</td>
+            </tr>
+          </table>
         </el-card>
+        <!-- <version-information></version-information> -->
       </el-col>
     </el-row>
-    正再做...
-    <el-card class="footer-card">
-      <app-footer class="top-footer"></app-footer>
-    </el-card>
+    <app-footer class="footer"></app-footer>
   </div>
 </template>
 
 <script>
-// import VCharts from 'v-charts'
-import ChartCard from './ChartCard.vue'
-import Trend from './Trend.vue'
-// import MiniArea from './MiniArea.vue'
-import MiniBar from './MiniBar.vue'
-import MiniProgress from './MiniProgress.vue'
-import RankList from './RankList.vue'
+import VabChart from '@/plugins/echarts'
 import { dependencies, devDependencies } from '../../../package.json'
-// import Bar from './Bar.vue'
-// import VabChart from '@/plugins/echarts'
-// import VabCount from 'zx-count'
-
-const barData = []
-const barData2 = []
-for (let i = 0; i < 12; i += 1) {
-  barData.push({
-    x: `${i + 1}月`,
-    y: Math.floor(Math.random() * 1000) + 200
-  })
-  barData2.push({
-    x: `${i + 1}月`,
-    y: Math.floor(Math.random() * 1000) + 200
-  })
-}
-
-const rankList = []
-for (let i = 0; i < 7; i++) {
-  rankList.push({
-    name: '上海分公司 ' + (i + 1) + ' 号店',
-    total: 1234.56 - i * 100
-  })
-}
+import Plan from './components/Plan'
+// import VersionInformation from './components/VersionInformation'
 
 export default {
-  name: 'DashboardAdmin',
+  name: 'Index',
   components: {
-    // VCharts,
-    ChartCard,
-    Trend,
-    // MiniArea,
-    MiniBar,
-    MiniProgress,
-    RankList
-    // VabCount,
-    // VabChart
-    // Bar
+    VabChart,
+    Plan
+    // VersionInformation
   },
   data() {
     return {
-      barData,
-      barData2,
-      rankList,
-      devDependencies: devDependencies,
+      timer: 0,
+      updateTime: process.env.VUE_APP_UPDATE_TIME,
+      nodeEnv: process.env.NODE_ENV,
       dependencies: dependencies,
-      updateTime: process.env.VUE_APP_UPDATE_TIME
+      devDependencies: devDependencies,
+      config1: {
+        startVal: 0,
+        endVal: this.$lodash.random(20000, 60000),
+        decimals: 0,
+        prefix: '',
+        suffix: '',
+        separator: ',',
+        duration: 8000
+      },
+      config2: {
+        startVal: 0,
+        endVal: this.$lodash.random(1000, 20000),
+        decimals: 0,
+        prefix: '',
+        suffix: '',
+        separator: ',',
+        duration: 8000
+      },
+      config3: {
+        startVal: 0,
+        endVal: this.$lodash.random(1000, 20000),
+        decimals: 0,
+        prefix: '',
+        suffix: '',
+        separator: ',',
+        duration: 8000
+      },
+
+      // 访问量
+      fwl: {
+        grid: {
+          top: '4%',
+          left: '2%',
+          right: '4%',
+          bottom: '0%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: [],
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '访问量',
+            type: 'line',
+            data: [],
+            smooth: true,
+            areaStyle: {}
+          }
+        ]
+      },
+      // 测试
+      sqs: {
+        grid: {
+          top: '4%',
+          left: '2%',
+          right: '4%',
+          bottom: '0%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            // /*boundaryGap: false,*/
+            data: ['0时', '4时', '8时', '12时', '16时', '20时', '24时'],
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '数量（测试）',
+            type: 'bar',
+            barWidth: '60%',
+            data: [10, 52, 20, 33, 39, 33, 22]
+          }
+        ]
+      },
+      // 词云
+      cy: {
+        grid: {
+          top: '4%',
+          left: '2%',
+          right: '4%',
+          bottom: '0%'
+        },
+        series: [
+          {
+            type: 'wordCloud',
+            gridSize: 15,
+            sizeRange: [12, 40],
+            rotationRange: [0, 0],
+            width: '100%',
+            height: '100%',
+            textStyle: {
+              normal: {
+                color() {
+                  const arr = [
+                    '#6672fb',
+                    '#91cc75',
+                    '#fac858',
+                    '#ee6666',
+                    '#73c0de',
+                    '#975FE5'
+                  ]
+                  // eslint-disable-next-line prefer-const
+                  let index = Math.floor(Math.random() * arr.length)
+                  return arr[index]
+                }
+              }
+            },
+            data: [
+              {
+                name: 'vue-admin-beautiful',
+                value: 15000
+              },
+              {
+                name: 'element',
+                value: 10081
+              },
+              {
+                name: 'beautiful',
+                value: 9386
+              },
+
+              {
+                name: 'vue',
+                value: 6500
+              },
+              {
+                name: 'chuzhixin',
+                value: 6000
+              },
+              {
+                name: 'good',
+                value: 4500
+              },
+              {
+                name: 'success',
+                value: 3800
+              },
+              {
+                name: 'never',
+                value: 3000
+              },
+              {
+                name: 'boy',
+                value: 2500
+              },
+              {
+                name: 'girl',
+                value: 2300
+              },
+              {
+                name: 'github',
+                value: 2000
+              },
+              {
+                name: 'hbuilder',
+                value: 1900
+              },
+              {
+                name: 'dcloud',
+                value: 1800
+              },
+              {
+                name: 'china',
+                value: 1700
+              },
+              {
+                name: '1204505056',
+                value: 1600
+              },
+              {
+                name: '972435319',
+                value: 1500
+              },
+              {
+                name: 'young',
+                value: 1200
+              },
+              {
+                name: 'old',
+                value: 1100
+              },
+              {
+                name: 'vuex',
+                value: 900
+              },
+              {
+                name: 'router',
+                value: 800
+              },
+              {
+                name: 'money',
+                value: 700
+              },
+              {
+                name: 'qingdao',
+                value: 800
+              },
+              {
+                name: 'yantai',
+                value: 9000
+              },
+              {
+                name: 'author is very cool',
+                value: 9200
+              }
+            ]
+          }
+        ]
+      },
+
+      // 更新日志
+      reverse: true,
+      activities: [],
+      noticeList: [],
+      // 其他信息
+      userAgent: navigator.userAgent,
+
+      getList: [
+        {
+          content: '凌晨两点，我累了，移除无用组件，精简package',
+          timestamp: '2020-10-02'
+        },
+        {
+          content: '富文本编辑器支持精细化配置',
+          timestamp: '2020-10-20'
+        },
+        {
+          content: '公共布局支持自动导出',
+          timestamp: '2020-10-23'
+        },
+        {
+          content: '遮罩添加高斯模糊',
+          timestamp: '2020-10-25'
+        },
+        {
+          content: 'vue3.0 + element-plus版本正式上线',
+          timestamp: '2020-12-5'
+        },
+        {
+          content: '完成首页重构，跟进echarts 5.0',
+          timestamp: '2020-12-7'
+        },
+        {
+          content: '更新sass版本至最新',
+          timestamp: '2021-1-7'
+        },
+        {
+          content: '更新vue-echarts版本至最新,options变更为option',
+          timestamp: '2021-2-23'
+        },
+        {
+          content: '开源版品牌名升级为vue-admin-beautiful-pro，',
+          timestamp: '最近更新'
+        }
+      ]
     }
   },
-  methods: {}
+  created() {
+    this.fetchData()
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+  },
+  mounted() {
+    // eslint-disable-next-line prefer-const
+    let base = +new Date(2020, 1, 1)
+    // eslint-disable-next-line prefer-const
+    let oneDay = 24 * 3600 * 1000
+    // eslint-disable-next-line prefer-const
+    let date = []
+
+    // eslint-disable-next-line prefer-const
+    let data = [Math.random() * 1500]
+    let now = new Date(base)
+
+    const addData = shift => {
+      now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/')
+      date.push(now)
+      data.push(this.$lodash.random(20000, 60000))
+
+      if (shift) {
+        date.shift()
+        data.shift()
+      }
+
+      now = new Date(+new Date(now) + oneDay)
+    }
+
+    for (let i = 1; i < 6; i++) {
+      addData()
+    }
+    addData(true)
+    this.fwl.xAxis[0].data = date
+    this.fwl.series[0].data = data
+    this.timer = setInterval(() => {
+      addData(true)
+      this.fwl.xAxis[0].data = date
+      this.fwl.series[0].data = data
+    }, 3000)
+    setInterval(() => {
+      this.sqs.series[0].data = [
+        Math.floor(Math.random() * (100 - 1)) + 100,
+        Math.floor(Math.random() * (100 - 1)) + 100,
+        Math.floor(Math.random() * (100 - 1)) + 100,
+        Math.floor(Math.random() * (100 - 1)) + 100,
+        Math.floor(Math.random() * (100 - 1)) + 100,
+        Math.floor(Math.random() * (100 - 1)) + 100,
+        Math.floor(Math.random() * (100 - 1)) + 100
+      ]
+    }, 3000)
+    setInterval(() => {
+      this.config1.endVal = Math.floor(Math.random() * (1000 - 1)) + 1000
+      this.config2.endVal = Math.floor(Math.random() * (1000 - 1)) + 1000
+    }, 16000)
+  },
+  methods: {
+    handleClick(e) {
+      this.$message.success(`点击了${e.name},这里可以写跳转`)
+    },
+    handleZrClick(e) {},
+    handleChangeTheme() {
+      // this.$baseEventBus.$emit('theme')
+    },
+    async fetchData() {
+      const data = this.getList
+      data.map((item, index) => {
+        if (index === data.length - 1) {
+          item.color = '#0bbd87'
+        }
+      })
+      this.activities = data
+
+      this.noticeList = [
+        {
+          _id: '60fd73529b33ed00017eac32',
+          title:
+            "温馨提示：集成版虽功能丰富，但冗余依赖过多，建议开发时使用基础版进行开发， 中秋特惠：<a target='_blank' href='http://vue-admin-beautiful.com/authorization'>点我获取优惠福利</a>",
+          closable: true,
+          type: 'success'
+        },
+
+        {
+          _id: '60fd73a33a9af40001fb586b',
+          title: '欢迎使用杉德风控管理系统！',
+          closable: false,
+          type: 'success'
+        }
+      ]
+    }
+  }
 }
 </script>
-
 <style lang="scss" scoped>
-.top-footer {
-  margin-top: 0 !important;
-}
-.footer-card {
-  .el-card__body {
-    padding: 0 !important;
-  }
-}
-.dashboard-editor-container {
-  // height: 100vh;
-  // padding: 8px 9px;
-  // padding: 5px;
-  background-color: rgb(240, 242, 245);
-  // position: relative;
+.index-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #f5f7f8 !important;
 
-  .github-corner {
-    position: absolute;
-    top: 0;
-    border: 0;
-    right: 0;
-  }
-
-  .chart-wrapper {
-    background: #fff;
-    padding: 16px 16px 0;
-    margin-bottom: 32px;
-  }
-}
-
-// /deep/ .el-tabs__item {
-//   padding-left: 16px !important;
-//   height: 50px;
-//   line-height: 50px;
-// }
-
-@media (max-width: 1024px) {
-  .chart-wrapper {
-    padding: 8px;
-  }
-}
-
-.card {
   ::v-deep {
+    .el-alert {
+      padding: $base-padding;
+
+      &--info.is-light {
+        min-height: 82px;
+        padding: $base-padding;
+        margin-bottom: 10px;
+        color: #909399;
+        background-color: $base-color-white;
+        border: 1px solid #ebeef5;
+      }
+    }
+
     .el-card__body {
       .echarts {
         width: 100%;
-        height: 305px;
+        height: 160px;
       }
     }
   }
-}
 
-.bottom {
-  padding-top: 20px;
-  margin-top: 5px;
-  color: #595959;
-  text-align: left;
-  border-top: 1px solid $base-border-color;
-}
-
-.table {
-  width: 100%;
-  color: #666;
-  border-collapse: collapse;
-  background-color: #fff;
-
-  td {
-    position: relative;
-    min-height: 20px;
-    padding: 9px 15px;
-    font-size: 14px;
-    line-height: 20px;
-    border: 1px solid #e6e6e6;
-
-    &:nth-child(odd) {
-      width: 20%;
-      text-align: right;
-      background-color: #f7f7f7;
+  .card {
+    ::v-deep {
+      .el-card__body {
+        .echarts {
+          width: 100%;
+          height: 305px;
+        }
+      }
     }
   }
-}
 
-.icon-panel {
-  height: 117px;
-  text-align: center;
-  cursor: pointer;
-
-  svg {
-    font-size: 40px;
+  .bottom {
+    padding-top: 20px;
+    margin-top: 5px;
+    color: #595959;
+    text-align: left;
+    border-top: 1px solid $base-border-color;
   }
 
-  p {
-    margin-top: 10px;
-  }
-}
+  .table {
+    width: 100%;
+    color: #666;
+    border-collapse: collapse;
+    background-color: #fff;
 
-.bottom-btn {
-  button {
-    margin: 5px 10px 15px 0;
+    td {
+      position: relative;
+      min-height: 20px;
+      padding: 9px 15px;
+      font-size: 14px;
+      line-height: 20px;
+      border: 1px solid #e6e6e6;
+
+      &:nth-child(odd) {
+        width: 20%;
+        text-align: right;
+        background-color: #f7f7f7;
+      }
+    }
+  }
+
+  .icon-panel {
+    height: 117px;
+    text-align: center;
+    cursor: pointer;
+
+    svg {
+      font-size: 40px;
+    }
+
+    p {
+      margin-top: 10px;
+    }
+  }
+
+  .bottom-btn {
+    button {
+      margin: 5px 10px 15px 0;
+    }
   }
 }
 </style>

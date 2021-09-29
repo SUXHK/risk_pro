@@ -76,6 +76,15 @@ export function columnDefMgrList({ offset, limit, columnName, tableId }) {
   })
 }
 
+// 查询业务表字段（分页）
+export function columnDefMgrListList({ offset, limit, tableId }) {
+  return request({
+    url: `/columnDefMgr/list`,
+    method: 'get',
+    params: { offset, limit, tableId }
+  })
+}
+
 // 修改业务表字段
 export function columnDefMgrUpdate(data) {
   return request({
