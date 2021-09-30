@@ -2,9 +2,11 @@
   <el-card shadow="hover" class="jihua">
     <template #header>
       <!-- <vab-icon icon="vab" /> -->
+
+      <i class="el-icon-warning-outline" style="margin-right:5px"></i>
       进度查询
     </template>
-    <el-table :data="tableData" row-key="title" height="247px">
+    <el-table :data="tableData" row-key="title" height="249px">
       <el-table-column align="center" label="拖拽" width="50px">
         <template #default="{}">
           <vab-icon

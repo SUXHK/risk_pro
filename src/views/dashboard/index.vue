@@ -24,7 +24,9 @@
         <el-card shadow="never">
           <div slot="header">
             <i class="el-icon-warning-outline" style="margin-right:5px"></i>
-            <span>总交易</span>
+            <el-badge value="new" class="item">
+              总交易
+            </el-badge>
           </div>
           <vab-chart autoresize theme="vab-echarts-theme" :option="fwl" />
           <div class="bottom">
@@ -48,7 +50,9 @@
         <el-card shadow="never">
           <div slot="header">
             <i class="el-icon-warning-outline" style="margin-right:5px"></i>
-            <span>交易次数</span>
+            <el-badge value="new" class="item">
+              交易次数
+            </el-badge>
           </div>
           <vab-chart autoresize theme="vab-echarts-theme" :option="sqs" />
           <div class="bottom">
@@ -82,11 +86,12 @@
       >
         <el-card shadow="never">
           <div slot="header">
+            <i class="el-icon-warning-outline" style="margin-right:5px"></i>
             <span>其他信息</span>
           </div>
           <div style="text-align: center">
             <!-- <vab-colorful-icon style="font-size: 140px" icon-class="vab" /> -->
-            <img src="~@/assets/images/sand.png" alt="" width="150px" />
+            <img src="~@/assets/images/sand.png" alt="" width="180px" />
             <h1 style="font-size: 30px">
               Copyright © Sand Risk Control Management System
             </h1>
@@ -119,6 +124,7 @@
       >
         <el-card class="card" shadow="never">
           <div slot="header">
+            <i class="el-icon-warning-outline" style="margin-right:5px"></i>
             <span>前端依赖信息</span>
             <!-- <div style="float: right"></div> -->
             <!-- <el-tag>部署时间:{{ updateTime }}</el-tag> -->
@@ -167,6 +173,7 @@
         </el-card>
         <el-card class="card" shadow="never" style="margin-top:10px;">
           <div slot="header">
+            <i class="el-icon-warning-outline" style="margin-right:5px"></i>
             <span>后端依赖信息</span>
             <!-- <div style="float: right"></div> -->
             <!-- <el-tag>部署时间:{{ updateTime }}</el-tag> -->
@@ -177,7 +184,7 @@
           <table class="table">
             <tr>
               <td>JDK版本</td>
-              <td>1.8</td>
+              <td>Null</td>
               <td>Nginx版本</td>
               <td>Null</td>
             </tr>
