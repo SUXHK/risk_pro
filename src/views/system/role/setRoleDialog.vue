@@ -144,6 +144,7 @@ export default {
           this.formData.roleIds = arr
         } else {
           this.formData.roleIds.push(row.roleIds)
+          console.log(this.formData.roleIds)
         }
       } else {
         this.$message.error('调用失败...')
@@ -159,6 +160,7 @@ export default {
       // })
       this.dialogVisible = false
       this.resetForm(formName)
+      this.formData.roleIds = []
       // this.formData = this.$options.data().formData
     },
     sure(formName) {

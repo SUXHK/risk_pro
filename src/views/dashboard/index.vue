@@ -23,13 +23,15 @@
       <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
         <el-card shadow="never">
           <div slot="header">
-            <span>访问量</span>
+            <i class="el-icon-warning-outline" style="margin-right:5px"></i>
+            <span>总交易</span>
           </div>
           <vab-chart autoresize theme="vab-echarts-theme" :option="fwl" />
           <div class="bottom">
             <span>
-              日均访问量:
+              总交易:
               <vab-count
+                style="font-size:18px;font-weight:bold"
                 :start-val="config1.startVal"
                 :end-val="config1.endVal"
                 :duration="config1.duration"
@@ -45,13 +47,15 @@
       <el-col :xs="24" :sm="24" :md="12" :lg="6" :xl="6">
         <el-card shadow="never">
           <div slot="header">
-            <span>授权数</span>
+            <i class="el-icon-warning-outline" style="margin-right:5px"></i>
+            <span>交易次数</span>
           </div>
           <vab-chart autoresize theme="vab-echarts-theme" :option="sqs" />
           <div class="bottom">
             <span>
-              总授权数:
+              交易次数:
               <vab-count
+                style="font-size:18px;font-weight:bold"
                 :start-val="config2.startVal"
                 :end-val="config2.endVal"
                 :duration="config2.duration"

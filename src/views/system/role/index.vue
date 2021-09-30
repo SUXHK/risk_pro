@@ -272,7 +272,7 @@
                       >
                       </el-date-picker>
                     </el-form-item> -->
-                    <el-form-item label-width="20px">
+                    <el-form-item label-width="10px">
                       <el-button
                         type="primary"
                         icon="el-icon-search"
@@ -284,7 +284,7 @@
                     </el-form-item>
                     <!-- </el-col>
                   <el-col :span="4"> -->
-                    <el-form-item label-width="20px">
+                    <el-form-item label-width="10px">
                       <el-button
                         type="warning"
                         icon="el-icon-refresh-right"
@@ -694,7 +694,6 @@
                       type="primary"
                       icon="el-icon-check"
                       size="small"
-                      style="margin-left: 20px;"
                       @click="useRole"
                       :loading="useBtnLoading"
                       >应 用</el-button
@@ -703,7 +702,6 @@
                       type="warning"
                       icon="el-icon-refresh-right"
                       size="small"
-                      style="margin-left: 20px;"
                       @click="getDefKeys(roleNodeClickId)"
                       >重 置</el-button
                     >
@@ -1049,17 +1047,23 @@
                       type="primary"
                       icon="el-icon-check"
                       size="small"
-                      style="margin-left: 20px;"
                       @click="useData"
                       :loading="useBtnLoading"
                       :disabled="sureDisable"
                       >应 用</el-button
                     >
                     <el-button
-                      type="danger"
+                      type="success"
+                      icon="el-icon-finished"
+                      size="small"
+                      @click="allChecked"
+                      :disabled="sureDisable"
+                      >全 选</el-button
+                    >
+                    <el-button
+                      type="warning"
                       icon="el-icon-refresh-right"
                       size="small"
-                      style="margin-left: 20px;"
                       @click="resetData"
                       :disabled="sureDisable"
                       >清空选中</el-button
@@ -1158,7 +1162,20 @@
                   </el-skeleton>
                 </el-col>
                 <el-col :span="12">
-                  <h2 style="padding:10px 0 10px 20px">业务列</h2>
+                  <div
+                    style="display: flex;
+    padding: 10px 0px 10px 20px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;"
+                  >
+                    <h2 style="margin-right: 20px">业务列</h2>
+                    <!-- <el-checkbox v-model="allChecked" v-if="!sureDisable">{{
+                      allChecked ? '取消全选' : '全选'
+                    }}</el-checkbox> -->
+                  </div>
                   <div style="overflow-x: hidden">
                     <el-skeleton :loading="dataYouLoading" animated :rows="7">
                       <!-- :style="{ height: !pageParams.full ? 'calc(100vh - 312px)'
@@ -1387,6 +1404,7 @@ export default {
       },
 
       dataDefaultCheckedKeys: []
+      // allChecked: false
       // !---------------data-end-----------------
     }
   },
@@ -1405,6 +1423,13 @@ export default {
       // console.log(val)
       this.$refs.roletree.filter(val)
     },
+    // allChecked(val) {
+    //   if (val) {
+    //     this.$refs.dataYouTree.setCheckedNodes(this.tableYouData)
+    //   } else {
+    //     this.$refs.dataYouTree.setCheckedKeys([])
+    //   }
+    // },
     pageParams: {
       handler: function(val) {
         if (val.activeTabs === 'staff') {
@@ -1923,6 +1948,7 @@ export default {
       console.log(this.dataNodeClickId)
       await this.getCols(this.dataNodeClickId, this.dataTableId)
       this.sureDisable = false
+      // this.allChecked = false
     },
 
     // getDataTree
@@ -2001,6 +2027,7 @@ export default {
             //   this.dataYouLoading = false
             // }, 500)
             this.tableYouData = data.rows
+            console.log(this.tableYouData)
             // this.total = data.total
           } else {
             this.$message.error(retMsg)
@@ -2031,6 +2058,13 @@ export default {
               this.dataYouLoading = false
             }, 500)
             this.dataDefaultCheckedKeys = data
+            // if (
+            //   this.dataDefaultCheckedKeys.length === this.tableYouData.length
+            // ) {
+            //   this.allChecked = true
+            // } else {
+            //   this.allChecked = false
+            // }
           } else {
             this.$message.error(retMsg)
           }
@@ -2042,6 +2076,9 @@ export default {
     resetData() {
       this.$refs.dataYouTree.setCheckedKeys([])
       this.$message.warning('业务列清空成功')
+    },
+    allChecked() {
+      this.$refs.dataYouTree.setCheckedNodes(this.tableYouData)
     },
     async useData() {
       this.useBtnLoading = true

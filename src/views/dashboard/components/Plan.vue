@@ -2,9 +2,9 @@
   <el-card shadow="hover" class="jihua">
     <template #header>
       <!-- <vab-icon icon="vab" /> -->
-      计划目标
+      进度查询
     </template>
-    <el-table :data="tableData" row-key="title" height="243px">
+    <el-table :data="tableData" row-key="title" height="247px">
       <el-table-column align="center" label="拖拽" width="50px">
         <template #default="{}">
           <vab-icon
