@@ -93,7 +93,7 @@
             <!-- <vab-colorful-icon style="font-size: 140px" icon-class="vab" /> -->
             <img src="~@/assets/images/sand.png" alt="" width="180px" />
             <h1 style="font-size: 30px">
-              Copyright © Sand Risk Control Management System
+              杉 德 风 控 管 理 系 统
             </h1>
           </div>
           <div v-for="(item, index) in noticeList" :key="index">
