@@ -32,7 +32,7 @@ module.exports = {
   },
   outputDir: 'dist',
   // outputDir: 'D://phpStudy//PHPTutorial//WWW',
-  publicPath: './',
+  publicPath: '/',
   assetsDir: 'static',
   productionSourceMap: false,
   lintOnSave: true,

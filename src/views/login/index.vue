@@ -32,7 +32,7 @@
                   placeholder="请输入账号"
                   v-model.trim="ruleLoginForm.username"
                   tabindex="1"
-                  style="user-select: none;"
+                  style="user-select: none"
                   autocomplete="on"
                   name="username"
                   ref="username"
@@ -51,7 +51,7 @@
                   placeholder="请输入密码"
                   v-model.trim="ruleLoginForm.password"
                   name="password"
-                  style=" user-select: none;"
+                  style="user-select: none"
                   type="password"
                   tabindex="2"
                   autocomplete="on"
@@ -64,7 +64,7 @@
               <div class="identify-item">
                 <el-form-item
                   prop="kaptcha"
-                  style="display:inline-block;width: 58%;"
+                  style="display: inline-block; width: 58%"
                 >
                   <span class="icon">
                     <svg-icon
@@ -74,7 +74,7 @@
                   </span>
                   <el-input
                     placeholder="请输入验证码"
-                    style="user-select: none;"
+                    style="user-select: none"
                     v-model.trim="ruleLoginForm.kaptcha"
                     tabindex="3"
                     autocomplete="off"
@@ -87,7 +87,7 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item
-                  style="display:inline-block;width: 38%;overflow: hidden"
+                  style="display: inline-block; width: 38%; overflow: hidden"
                 >
                   <div class="login-code" @click="refreshCode">
                     <!-- <i
@@ -98,9 +98,7 @@
                     <img
                       alt="验证码"
                       :src="`/rs-mgr/kaptcha?${numRandom}`"
-                      style="height: 44px;
-                  width: 100%;
-                  border-style: none;"
+                      style="height: 44px; width: 100%; border-style: none"
                     />
                   </div>
                 </el-form-item>
@@ -149,8 +147,10 @@ export default {
       // 随机数
       numRandom: '',
       ruleLoginForm: {
-        username: 'rsAdmin',
-        password: 'asdfQWER1234!',
+        // username: 'rsAdmin',
+        username: '',
+        // password: 'asdfQWER1234!',
+        password: '',
         kaptcha: ''
       },
       // 表单校验
@@ -208,12 +208,7 @@ export default {
   },
   created() {
     // eslint-disable-next-line no-console
-    console.log(
-      `%c © 2021 %c Sand %c`,
-      'background:#35495e ;font-size:16px ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
-      'background:#41b883 ;font-size:16px; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
-      'background:transparent'
-    )
+
     this.random()
     this.refreshCode()
   },
